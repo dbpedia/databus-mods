@@ -1,82 +1,86 @@
 # databus-online-stats
-Implementation of a Databus Describe web service to check whether all download links are working
+Prototype for Databus Describe to check whether all download links are working
 
-## Design
-Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize, debug info in short the DataId.
+## Motivation
+Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize, debug info in short the DataId. 
+Of course there ais much more metadata that users would like to have like:
+Is the syntax correct, which vocabulary does the file use, etc. 
+
+## Databus Describe
 We allow third-parties to add further descriptions in the following manner:
+
 * Add the webservice URL to the Databus, e.g. https://myservice.org/void-generator
-* Databus will ping all web services with a PUT request adding information to the request parameters
-* After the ping the Describe web services process the files at their own speed
-* The Databus website, will include and display the results, when the processing is done
+* Download relevant data (e.g. daily) via https://databus.dbpedia.org/repo/sparql
+* put interesting descriptions under:
+  * http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.$fileending
+* The Databus website, will link and display the results, when the processing is done
+  * we prefer `.jsonld` and `.svg` files as they display well
 
 ## Requirements
-* Strictly REST, PUT creates the resources, GET retrieves them
-* During processing web services are to return 202 Accepted
-* After processing web services are to return a JSON-LD summary. If additional descriptive data is available the JSON-LD can link to it
+* After processing web services are at least to return a JSON-LD summary. If additional descriptive data is available the JSON-LD can link to it
+* the JSON-LD needs to be connected to the existing metadata in some way, ideally a databus identifier.
 
-Furthermore, web services should validate correctness of parameters to prevent misuse and cache results.
+## Implementation of Online Stats
 
-### Example SPARQL
+### Download updates (download.sh)
+Once a day, we query the databus for this info:
+
 ```
-PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+QUERY="PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
 SELECT ?file ?sha256sum ?downloadURL   WHERE {
   ?s dcat:downloadURL ?downloadURL . 
   ?s dataid:sha256sum ?sha256sum .
   ?s dataid:file ?file .
-} 
+} "
+
+curl -d "format=text%2Ftab-separated-values" \
+--data-urlencode "query=$QUERY" \
+"https://databus.dbpedia.org/repo/sparql" > updates.tsv
 ```
 
+### Generate online stats
 
-## Online Stats
-This repo contains a reference implementation.
-PHP and Scala work on the same folder structure via config params.
+#### Run
 
-### online/index.php
-handling the PUT/GET and saving all requests into a databus repo folder structure
-Note that the internal handling can be changed, i.e. use a database instead of a folder structure
+* Arg1: localpath to `repo`
+* Arg2: onlinepath to `repo`
+* Expects to find the updates.tsv from above in same folder:
+```
+mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo|http://88.99.242.78//online/repo"
+```
 
-### Ammonite Scala script
-The script is intended as a cronjob and checks whether all downloadURLs are reachable via HEAD requests and saves the stats in tsv files:
+#### Online Stats
+The script is intended as a cronjob and checks whether all downloadURLs are reachable via HEAD requests and saves (append) the stats in $sha256sum.tsv files:
 ```
 timestamp	success		downloadurl
 ```
-From the tsv calculates a JSON-LD summary which rates the online availability accoding to the historic data samples it collected, i.e. mostly online
+From the tsv it calculates a JSON-LD summary which rates the online availability accoding to the historic data samples it collected as a percentage.
 
-TODO only partially implemented
-
-#### Run
-```
-sudo amm check_if_online.scala /var/www/html/online/repo
-```
-
-
-
-### Example PUT
-```
-# create new resource
-curl -X PUT "http://localhost/online/index.php?\
-file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
-sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
-downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
+##### JSON-LD Example
+Notes:
+* http://dataid.dbpedia.org/ns/describe# is a free vocab, just invent properties
+* we include links to the data (stats) and the svg
+* subject uses the stable databus file identifier
  
-```
-### Example GET (same URL)
-```
-# retrieve summary
-curl -X GET "http://localhost/online/index.php?\
-file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
-sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
-downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
- 
+
 ```
 
-`mvn clean compile assembly:single`
-mvn clean compile package assembly:single
+{"@context": {
+  	"desc": "http://dataid.dbpedia.org/ns/describe#",
+	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
+	"svg" : {"@id":"desc:svg","@type":"@id"},
+	"stats" : {"@id":"desc:stats","@type":"@id"}
+  },
+ "@id": "https://databus.dbpedia.org/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/geo-coordinates-mappingbased_lang=ru.ttl.bz2",
+ "onlinerate": "1.0",
+ "svg": "http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg",
+ "stats": "http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.tsv"
 
+}
 
-java -cp target/databus-online-stats-1.0-SNAPSHOT-jar-with-dependencies.jar check_if_online /var/www/html/online/repo http://localhost/online
+```
+##### SVG
+We used an existing template and replace color and text
 
-
-mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo|http://localhost/online"
