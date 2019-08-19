@@ -72,3 +72,11 @@ downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literal
  
 ```
 
+`mvn clean compile assembly:single`
+mvn clean compile package assembly:single
+
+
+java -cp target/databus-online-stats-1.0-SNAPSHOT-jar-with-dependencies.jar check_if_online /var/www/html/online/repo http://localhost/online
+
+
+mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo|http://localhost/online"

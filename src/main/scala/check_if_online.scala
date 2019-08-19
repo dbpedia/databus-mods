@@ -8,11 +8,10 @@ object check_if_online {
 
   def main(args: Array[String]): Unit = {
     //def main(repo: String, serviceRepoURL: String) = {
-    println(args)
-    System.exit(0)
+    println(args(0))
+    println(args(1))
 
     val repo = args(0)
-
     val serviceRepoURL = args(1)
 
     var first = true
@@ -21,10 +20,11 @@ object check_if_online {
       if (first) {
         first = false
       } else {
-        val cols = line.split("\t").map(c => c.trim.replace("\"", ""))
-        val file = cols(0)
-        val sha = cols(1)
-        val downloadURL = cols(2)
+        val split = line.split("\t")
+        val file = split(0).trim.replace("\"", "")
+        val sha = split(1).trim.replace("\"", "")
+        val downloadURL = split(2).trim.replace("\"", "")
+
         // path
         val tmp = file.replace("https://databus.dbpedia.org/", "")
         val pos = tmp.lastIndexOf("/")
@@ -111,9 +111,10 @@ object check_if_online {
     var successcount = 0f
 
     for (line <- bufferedSource.getLines) {
-      val cols = line.split("\t").map(_.trim)
+      val split =  line.split("\t")
+     // val cols = line.split("\t").map(_.trim)
       count += 1
-      if (cols(1) == "true") {
+      if (split(1).trim == "true") {
         successcount += 1
       }
       //	println(s"${cols(0)}|${cols(1)}|${cols(2)}")
