@@ -11,31 +11,46 @@ $file = $_REQUEST["file"] ;
 $sha256sum = $_REQUEST["sha256sum"] ;
 $downloadURL = $_REQUEST["downloadURL"] ;
 // maps params to local repo
-$path = str_replace("https://databus.dbpedia.org/","", $file) ;
-$pos = strrpos($path, "/");
-$folder = substr($path, 0, $pos+1);
+$tmp = str_replace("https://databus.dbpedia.org/","", $file) ;
+$pos = strrpos($tmp, "/");
+$path = substr($tmp, 0, $pos+1);
+$filename = substr($path, $pos+1);
 // simple ini for internal processing
-$metadatafile = $folder.$sha256sum.".ini";
-$fileprefix = $folder.substr($path, $pos+1);
+$prefix = $path.$sha256sum;
+$metadatafile = $prefix.".ini";
+$svgfile = $prefix.".svg";
+$summaryfile = $prefix.".jsonld";
+$statfile = $prefix.".tsv";
+
+//$fileprefix = $folder.substr($path, $pos+1);
 // summary result files MUST be JSONLD and MAY link to further detailed data 
-$summaryfile = $fileprefix.".jsonld";
+//$summaryfile = $fileprefix.".jsonld";
+//$statfile = $fileprefix.".tsv";
 
 
 // create a new description resource
 if ($method === "put"){
 	if(is_file($BASEDIR.$metadatafile)){
 		header("HTTP/1.1 200 OK");
+		//implement update, but not required here, since we work on the sha256sum
 		echo "\nresource already exists\n";
 	}else { 
 		// validate values at databus
 		// otherwise people might misuse the service for other things
 		if(validate ($file, $downloadURL, $sha256sum) === "true"){
 			// create the folder if not exist
-			if(!is_dir($BASEDIR.$folder)){
-			  mkdir($BASEDIR.$folder,0700,$recursive=true);
+			if(!is_dir($BASEDIR.$path)){
+			  mkdir($BASEDIR.$path,0700,$recursive=true);
 			}
 			// write the metadata, we use .ini files here
-			$contents = "[metadata]\nfileprefix=$fileprefix\nsummaryfile=$summaryfile\ndownloadURL=$downloadURL\n";
+			$contents = "[metadata]\n
+				databusfile=$file\n
+				downloadURL=$downloadURL\n
+				sha256sum=$sha256sum\n
+				prefix=$prefix\n
+				summaryfile=$summaryfile\n
+				statfile=$statfile\n
+				svgfile=$svgfile";
 			file_put_contents ($BASEDIR.$metadatafile , $contents);
 			header("HTTP/1.1 201 Created");
 		} else {

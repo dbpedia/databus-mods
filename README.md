@@ -16,25 +16,18 @@ We allow third-parties to add further descriptions in the following manner:
 
 Furthermore, web services should validate correctness of parameters to prevent misuse and cache results.
 
+### Example SPARQL
+```
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
-### Example PUT
+SELECT ?file ?sha256sum ?downloadURL   WHERE {
+  ?s dcat:downloadURL ?downloadURL . 
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dataid:file ?file .
+} 
 ```
-# create new resource
-curl -X PUT "http://localhost/online/index.php?\
-file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
-sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
-downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
- 
-```
-### Example GET (same URL)
-```
-# retrieve summary
-curl -X GET "http://localhost/online/index.php?\
-file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
-sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
-downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
- 
-```
+
 
 ## Online Stats
 This repo contains a reference implementation.
@@ -57,3 +50,25 @@ TODO only partially implemented
 ```
 sudo amm check_if_online.scala /var/www/html/online/repo
 ```
+
+
+
+### Example PUT
+```
+# create new resource
+curl -X PUT "http://localhost/online/index.php?\
+file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
+sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
+downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
+ 
+```
+### Example GET (same URL)
+```
+# retrieve summary
+curl -X GET "http://localhost/online/index.php?\
+file=https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2&\
+sha256sum=cf52dda5ef16f823702aba3f41db14e4f2d1f758e88070158eed331eeb609ec5&\
+downloadURL=https://downloads.dbpedia.org/repo/lts/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=hi.ttl.bz2"
+ 
+```
+
