@@ -82,5 +82,7 @@ Notes:
 
 ```
 ##### SVG
-We used an existing template and replace color and text
+We used an existing template and replace color and text:
+
+ [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.jsonld)
 
