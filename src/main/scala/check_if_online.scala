@@ -1,140 +1,146 @@
-#!/usr/bin/env amm
-
-
 import scala.io.Source
 import java.io.File
-import $ivy.`org.ini4j:ini4j:0.5.4`
-import $ivy.`org.apache.httpcomponents:httpclient:4.5.9`
-import org.ini4j.Ini
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.impl.client.HttpClients
 import java.io.FileWriter
 
-@main
-def main(repo: String,serviceRepoURL:String) = {
-	
-	var first = true
-	val bufferedSource = io.Source.fromFile("updates.tsv")
-		for (line <- bufferedSource.getLines) {
-			if(first) {
-				first=false
-			}else{
-				val cols = line.split("\t").map(c=> c.trim.replace("\"",""))
-				val file = cols(0)
-				val sha = cols(1)
-				val downloadURL = cols(2)
-				// path
-				val tmp = file.replace("https://databus.dbpedia.org/","")
-				val pos = tmp.lastIndexOf("/")
-				val path = tmp.substring(0,pos)
-				val filename = tmp.substring(pos+1)
-	
-				new File (s"$repo/$path/").mkdirs
-				//println(path)
-				
-				// check
-				val success =  check(downloadURL)
-				//write stats
-				writeStats(s"$repo/$path/$sha.tsv", success,  downloadURL)
-				//write svg
-			    val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
-				writeSVG (s"$repo/$path/$sha.svg", successrate)
-				//write json
-				writeJSONLD (s"$repo/$path/$sha.jsonld", file, successrate , serviceRepoURL, path , sha)
-			}
-		}
-		bufferedSource.close
+object check_if_online {
+
+  def main(args: Array[String]): Unit = {
+    //def main(repo: String, serviceRepoURL: String) = {
+    println(args)
+    System.exit(0)
+
+    val repo = args(0)
+
+    val serviceRepoURL = args(1)
+
+    var first = true
+    val bufferedSource = io.Source.fromFile("updates.tsv")
+    for (line <- bufferedSource.getLines) {
+      if (first) {
+        first = false
+      } else {
+        val cols = line.split("\t").map(c => c.trim.replace("\"", ""))
+        val file = cols(0)
+        val sha = cols(1)
+        val downloadURL = cols(2)
+        // path
+        val tmp = file.replace("https://databus.dbpedia.org/", "")
+        val pos = tmp.lastIndexOf("/")
+        val path = tmp.substring(0, pos)
+        val filename = tmp.substring(pos + 1)
+
+        new File(s"$repo/$path/").mkdirs
+        //println(path)
+
+        // check
+        val success = check(downloadURL)
+        //write stats
+        writeStats(s"$repo/$path/$sha.tsv", success, downloadURL)
+        //write svg
+        val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
+        writeSVG(s"$repo/$path/$sha.svg", successrate)
+        //write json
+        writeJSONLD(s"$repo/$path/$sha.jsonld", file, successrate, serviceRepoURL, path, sha)
+      }
     }
+    bufferedSource.close
+  }
 
- 
- def writeJSONLD (summaryfile:String, databusfile: String, successrate:Float , serviceRepoURL:String, path:String, sha:String ){
-	 
-		val jsonld= s"""|
+
+  def writeJSONLD(summaryfile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String) {
+
+    val jsonld =
+      s"""|
 			|{"@context": {
-			|  	"desc": "http://dataid.dbpedia.org/ns/describe#",
-			|	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
-			|	"svg" : {"@id":"desc:svg","@type":"@id"},
-			|	"stats" : {"@id":"desc:stats","@type":"@id"}	
-			|  },
-			| "@id": "${databusfile}",
-			| "onlinerate": "$successrate",
-			| "svg": "$serviceRepoURL/$path/$sha.svg",
-			| "stats": "$serviceRepoURL/$path/$sha.tsv"
-			| 
-			|}
-		|""".stripMargin
-		
-		println(s"$serviceRepoURL/$path/$sha.svg")
-		writefile(summaryfile, jsonld,false)
-	 }
- 
-def check (downloadURL:String):Boolean = {
-		// do the stats
-		val httpclient = HttpClients.createDefault();
-		val httpHead = new HttpHead(downloadURL);
-		var success = false
-		try{
-			val code = httpclient.execute(httpHead).getStatusLine.getStatusCode;
-			if(code==200|| code==302||code == 401||code==403){
-				success = true
-				}
-		
-		}catch{ case _: Throwable => success=false }
-		success
-	}    
+          													|  	"desc": "http://dataid.dbpedia.org/ns/describe#",
+          													|	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
+          													|	"svg" : {"@id":"desc:svg","@type":"@id"},
+          													|	"stats" : {"@id":"desc:stats","@type":"@id"}
+          													|  },
+          													| "@id": "${databusfile}",
+          													| "onlinerate": "$successrate",
+          													| "svg": "$serviceRepoURL/$path/$sha.svg",
+          													| "stats": "$serviceRepoURL/$path/$sha.tsv"
+          													|
+          													|}
+          												|""".stripMargin
 
-def writeStats(statfile:String,success:Boolean, downloadURL:String ) = {
-		// save the stats
-		val timestamp: Long = System.currentTimeMillis / 1000
-		val stat=timestamp+"\t"+success+"\t"+downloadURL+"\n"
-		writefile(statfile, stat,true)
-	}
- 
-def writefile(file:String,contents:String, append:Boolean)={
-	val fw = new FileWriter(file, append)
-			try {
-				fw.write(contents)
-				println("written "+file)
-			}
-			finally fw.close() 
-	
-	}    
-    
-def getSuccessRate (statfile:String) = {
-		val bufferedSource = io.Source.fromFile(statfile)
-		var count = 0f
-		var successcount = 0f
-		
-		for (line <- bufferedSource.getLines) {
-			val cols = line.split("\t").map(_.trim)
-			count +=1
-			if(cols(1)=="true"){successcount+=1}
-			//	println(s"${cols(0)}|${cols(1)}|${cols(2)}")
-		}
-		bufferedSource.close
-		successcount/count
-	}
+    println(s"$serviceRepoURL/$path/$sha.svg")
+    writefile(summaryfile, jsonld, false)
+  }
+
+  def check(downloadURL: String): Boolean = {
+    // do the stats
+    val httpclient = HttpClients.createDefault();
+    val httpHead = new HttpHead(downloadURL);
+    var success = false
+    try {
+      val code = httpclient.execute(httpHead).getStatusLine.getStatusCode;
+      if (code == 200 || code == 302 || code == 401 || code == 403) {
+        success = true
+      }
+
+    } catch {
+      case _: Throwable => success = false
+    }
+    success
+  }
+
+  def writeStats(statfile: String, success: Boolean, downloadURL: String) = {
+    // save the stats
+    val timestamp: Long = System.currentTimeMillis / 1000
+    val stat = timestamp + "\t" + success + "\t" + downloadURL + "\n"
+    writefile(statfile, stat, true)
+  }
+
+  def writefile(file: String, contents: String, append: Boolean) = {
+    val fw = new FileWriter(file, append)
+    try {
+      fw.write(contents)
+      println("written " + file)
+    }
+    finally fw.close()
+
+  }
+
+  def getSuccessRate(statfile: String) = {
+    val bufferedSource = io.Source.fromFile(statfile)
+    var count = 0f
+    var successcount = 0f
+
+    for (line <- bufferedSource.getLines) {
+      val cols = line.split("\t").map(_.trim)
+      count += 1
+      if (cols(1) == "true") {
+        successcount += 1
+      }
+      //	println(s"${cols(0)}|${cols(1)}|${cols(2)}")
+    }
+    bufferedSource.close
+    successcount / count
+  }
 
 
-
-
-def getRecursiveListOfFiles(dir: File): Array[File] = {
+  def getRecursiveListOfFiles(dir: File): Array[File] = {
     val these = dir.listFiles
     these ++ these.filter(_.isDirectory).flatMap(getRecursiveListOfFiles)
-}
+  }
 
-//#4c1
+  //#4c1
 
-def writeSVG( svgfile:String, successrate:Float)={
-		
-		var color = successrate match {
-			case x if x >= 0.95f =>  "#4c1"
-			case x if x < 0.95f =>  "#fc0"
-			case _ =>  "#fc0"
-		}
-		val percentage =  BigDecimal(successrate*100 ).setScale(2, BigDecimal.RoundingMode.HALF_UP)+"%" 
+  def writeSVG(svgfile: String, successrate: Float) = {
 
-val svg = s"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+    var color = successrate match {
+      case x if x >= 0.95f => "#4c1"
+      case x if x < 0.95f => "#fc0"
+      case _ => "#fc0"
+    }
+    val percentage = BigDecimal((successrate * 100).toDouble).setScale(2, BigDecimal.RoundingMode.HALF_UP) + "%"
+
+    val svg =
+      s"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
@@ -244,7 +250,8 @@ val svg = s"""<?xml version="1.0" encoding="UTF-8" standalone="no"?>
        id="text25">$percentage</text>
   </g>
 </svg>
-"""	
-writefile(svgfile, svg, false)
+"""
+    writefile(svgfile, svg, false)
 
+  }
 }
