@@ -14,6 +14,9 @@ object check_if_online {
     val repo = args(0)
     val serviceRepoURL = args(1)
 
+    //reset aggregate
+    writefile(s"$repo/aggregate.nt","",false)
+
     val vocab =
       s"""
          |@prefix desc: <http://dataid.dbpedia.org/ns/describe#> .
