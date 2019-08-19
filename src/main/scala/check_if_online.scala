@@ -7,15 +7,43 @@ import java.io.FileWriter
 object check_if_online {
 
   def main(args: Array[String]): Unit = {
-    //def main(repo: String, serviceRepoURL: String) = {
+    val updates = "/tmp/online-updates.tsv"
+
     println(args(0))
     println(args(1))
-
     val repo = args(0)
     val serviceRepoURL = args(1)
 
+    val vocab =
+      s"""
+         |@prefix desc: <http://dataid.dbpedia.org/ns/describe#> .
+         |@prefix owl: <http://www.w3.org/2002/07/owl#>.
+         |@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
+         |@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+         |
+         |
+         |desc:onlinerate a owl:DatatypeProperty ;
+         |  rdfs:label "onlinerate" ;
+         |  rdfs:comment "percentage of answered test requests" ;
+         |  rdfs:range xsd:float .
+         |
+         |desc:svg a owl:ObjectProperty ;
+         |  rdfs:label "svg" ;
+         |  rdfs:comment "an svg summarizing the status of stats" .
+         |
+         |desc:describedBy a owl:ObjectProperty ;
+         |  rdfs:label "described by" ;
+         |  rdfs:comment "the JSON LD document" .
+         |
+         |desc:stats a owl:ObjectProperty ;
+         |  rdfs:label "statistics" ;
+         |  rdfs:comment "further detailed statistics" .
+       """.stripMargin
+
+    writefile(s"$repo/vocab.ttl", vocab, false)
+
     var first = true
-    val bufferedSource = io.Source.fromFile("updates.tsv")
+    val bufferedSource = io.Source.fromFile(updates)
     for (line <- bufferedSource.getLines) {
       if (first) {
         first = false
@@ -42,33 +70,42 @@ object check_if_online {
         val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
         writeSVG(s"$repo/$path/$sha.svg", successrate)
         //write json
-        writeJSONLD(s"$repo/$path/$sha.jsonld", file, successrate, serviceRepoURL, path, sha)
+        writeJSONLD(s"$repo/$path/$sha.jsonld", file, successrate, serviceRepoURL, path, sha, repo)
       }
     }
     bufferedSource.close
   }
 
 
-  def writeJSONLD(summaryfile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String) {
+  def writeJSONLD(summaryfile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
 
     val jsonld =
       s"""|
 			|{"@context": {
-          													|  	"desc": "http://dataid.dbpedia.org/ns/describe#",
-          													|	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
-          													|	"svg" : {"@id":"desc:svg","@type":"@id"},
-          													|	"stats" : {"@id":"desc:stats","@type":"@id"}
-          													|  },
-          													| "@id": "${databusfile}",
-          													| "onlinerate": "$successrate",
-          													| "svg": "$serviceRepoURL/$path/$sha.svg",
-          													| "stats": "$serviceRepoURL/$path/$sha.tsv"
-          													|
-          													|}
-          												|""".stripMargin
+          | "desc": "http://dataid.dbpedia.org/ns/describe#",
+          |	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
+          |	"describedBy" :   {"@id":"desc:describedBy","@type":"@id"},
+          |	"svg" :   {"@id":"desc:svg","@type":"@id"},
+          |	"stats" : {"@id":"desc:stats","@type":"@id"}
+          |  },
+          | "@id": "${databusfile}",
+          | "describedBy" : "$serviceRepoURL/$path/$sha.jsonld" ,
+          | "onlinerate": "$successrate",
+          | "svg": "$serviceRepoURL/$path/$sha.svg",
+          | "stats": "$serviceRepoURL/$path/$sha.tsv"
+          |
+      |}""".stripMargin
 
     println(s"$serviceRepoURL/$path/$sha.svg")
     writefile(summaryfile, jsonld, false)
+    val ntriples =
+      s"""
+         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#describedBy> <$serviceRepoURL/$path/$sha.jsonld> .
+         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
+         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#svg> <$serviceRepoURL/$path/$sha.svg> .
+         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#stats> <$serviceRepoURL/$path/$sha.tsv> .
+       """.stripMargin
+    writefile(s"$repo/aggregate.nt", ntriples, true)
   }
 
   def check(downloadURL: String): Boolean = {
@@ -111,8 +148,8 @@ object check_if_online {
     var successcount = 0f
 
     for (line <- bufferedSource.getLines) {
-      val split =  line.split("\t")
-     // val cols = line.split("\t").map(_.trim)
+      val split = line.split("\t")
+      // val cols = line.split("\t").map(_.trim)
       count += 1
       if (split(1).trim == "true") {
         successcount += 1

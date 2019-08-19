@@ -10,4 +10,4 @@ SELECT ?file ?sha256sum ?downloadURL   WHERE {
 
 curl -d "format=text%2Ftab-separated-values" \
 --data-urlencode "query=$QUERY" \
-"https://databus.dbpedia.org/repo/sparql" > updates.tsv
+"https://databus.dbpedia.org/repo/sparql" > /tmp/online-updates.tsv
