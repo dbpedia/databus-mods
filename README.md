@@ -1,5 +1,5 @@
-# databus-online-stats
-Prototype for Databus Mod to check whether all download links are working
+# databus-mods
+Prototype for Databus Mods to check whether all download links are working
 
 ## Motivation
 Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize in short the DataId.
