@@ -22,7 +22,7 @@ object check_if_online {
     val modVocab =
       s"""
          |# no base
-         |@prefix mod: <http://dataid.dbpedia.org/ns/mod#> .
+         |@prefix mod: <http://dataid.dbpedia.org/ns/mod.ttl#> .
          |@prefix owl: <http://www.w3.org/2002/07/owl#>.
          |@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
          |@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
@@ -102,8 +102,8 @@ object check_if_online {
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
     val ntriples =
       s"""
-         |<$serviceRepoURL/$path/$sha.svg> <http://dataid.dbpedia.org/ns/mod#svgDerivedFrom> <${databusfile}> .
-         |<$serviceRepoURL/$path/$sha.tsv> <http://dataid.dbpedia.org/ns/mod#statisticsDerivedFrom> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.svg> <http://dataid.dbpedia.org/ns/mod.ttl#svgDerivedFrom> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.tsv> <http://dataid.dbpedia.org/ns/mod.ttl#statisticsDerivedFrom> <${databusfile}> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.svg> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.tsv> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .

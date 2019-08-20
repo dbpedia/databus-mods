@@ -1,12 +1,11 @@
 # databus-online-stats
-Prototype for Databus Describe to check whether all download links are working
+Prototype for Databus Mod to check whether all download links are working
 
 ## Motivation
-Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize, debug info in short the DataId. 
-Of course there ais much more metadata that users would like to have like:
-Is the syntax correct, which vocabulary does the file use, etc. 
-
-## Databus Describe
+Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize in short the DataId.
+Mods are Activities analysing the files or the metadata and provide usefull Stats, Enrichment and Ratings.
+ 
+## Databus Mods
 We allow third-parties to add further descriptions in the following manner:
 
 * Add the webservice URL to the Databus, e.g. https://myservice.org/void-generator
