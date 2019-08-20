@@ -4,7 +4,8 @@ Contains a working mod to check whether all download links are working
 
 ## Motivation
 Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize in short the DataId.
-Mods are Activities analysing the files or the metadata and provide usefull Stats, Enrichment and Ratings.
+Mods are Activities analysing the files or the metadata and provide usefull Stats, Enrichment and Ratings or visuals such as this SVG:  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.ttl)
+
  
 ## Databus Mods
 We allow third-parties to add further descriptions in the following manner.
