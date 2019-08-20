@@ -59,96 +59,95 @@ mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
     mymodvocab:onlinerate "1.0"^^xsd:float ;
     a mymodvocab:OnlineTestMod ;
     prov:endedAtTime "2019-08-20T21:35:11.931+02:00[Europe/Berlin]"^^xsd:dateTime ;
-    prov:generated mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg, mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv ;
-    prov:used <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
-
+    prov:generated mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg, mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv .
 ```
+
 ## Databus SPARQL API
-We will load the above description of your mode into https://databus.dbpedia.org/repo/sparql
+We will load the above description of your mode into https://databus.dbpedia.org/repo/sparql .
+
+### Requirements:
+* We expect this to be 5-10 triples per record linking to much more data, visualisations and detailed reports.
+* Please look at the [mod.ttl](mod.ttl) and use subproperties of `prov:wasDerivedFrom` and 
 
 Example query:
-```
 
 ```
-
-
-## URLs of Mode
-
-
-
-* Add the webservice URL to the Databus, e.g. https://myservice.org/void-generator
-* Download relevant data 
-* put interesting descriptions under:
-  * http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.$fileending
-* The Databus website, will link and display the results, when the processing is done
-  * we prefer `.jsonld` and `.svg` files as they display well
-
-## Requirements
-* After processing web services are at least to return a JSON-LD summary. If additional descriptive data is available the JSON-LD can link to it
-* the JSON-LD needs to be connected to the existing metadata in some way, ideally a databus identifier.
-
-## Implementation of Online Stats
-
-### Download updates (download.sh)
-Once a day, we query the databus for this info:
-
-```
-QUERY="PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
-SELECT ?file ?sha256sum ?downloadURL   WHERE {
-  ?s dcat:downloadURL ?downloadURL . 
-  ?s dataid:sha256sum ?sha256sum .
-  ?s dataid:file ?file .
-} "
+SELECT ?file ?property ?result WHERE {
+  ?s dataid:file ?file . 
+  ?property rdfs:subPropertyOf prov:wasDerivedFrom . 
+  ?result ?property ?file .
+  # optionally getting the mod
+  # ?activity prov:generated ?result .
+  # ?activity a ?mod .
+    
+} 
 
-curl -d "format=text%2Ftab-separated-values" \
---data-urlencode "query=$QUERY" \
-"https://databus.dbpedia.org/repo/sparql" > updates.tsv
 ```
 
-### Generate online stats
 
-#### Run
+## URLs of the Mod (draft, not binding)
+For activities (one analysis process): 
 
-* Arg1: localpath to `repo`
-* Arg2: onlinepath to `repo`
+* http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.ttl
+
+For entities (results):
+
+* http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.$fileending
+
+For easier handling an aggregated file:
+
+* http://myservice.org/$servicename/repo/aggregate.nt
+
+For the modvocab and description:
+
+* http://myservice.org/$servicename/repo/modvocab.ttl
+
+
+
+## Implementaion of Online Check Mod 
+
+Code is in this repo 
+
+The service dumps all results here:
+
+* http://88.99.242.78/online/repo/
+
+
+### Compile and Run
+
+
+* Arg1: localpath to `repo`, in our deployment: `/var/www/html/online/repo`
+* Arg2: onlinepath to `repo`, in our deployment: `http://88.99.242.78//online/repo` 
 * Expects to find the updates.tsv from above in same folder:
+
 ```
+cd online-check-mod
+mvn clean compile 
 mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo|http://88.99.242.78//online/repo"
 ```
+### Cronjob, daily at 3 am
 
-#### Online Stats
+```
+# m h  dom mon dow   command
+0 3 * * * cd /root/databus-mods/online-check-mod && ./download-updates.sh && mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo|http://88.99.242.78/online/repo"
+```
+
+### Results
+
+Read more about the mod in the modvocab.ttl: http://88.99.242.78/online/repo/modvocab.ttl
+
+#### TSV Online Stats
 The script is intended as a cronjob and checks whether all downloadURLs are reachable via HEAD requests and saves (append) the stats in $sha256sum.tsv files:
 ```
 timestamp	success		downloadurl
 ```
-From the tsv it calculates a JSON-LD summary which rates the online availability accoding to the historic data samples it collected as a percentage.
 
-##### JSON-LD Example
-Notes:
-* http://dataid.dbpedia.org/ns/describe# is a free vocab, just invent properties
-* we include links to the data (stats) and the svg
-* subject uses the stable databus file identifier
- 
-
-```
-
-{"@context": {
-  	"desc": "http://dataid.dbpedia.org/ns/describe#",
-	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
-	"svg" : {"@id":"desc:svg","@type":"@id"},
-	"stats" : {"@id":"desc:stats","@type":"@id"}
-  },
- "@id": "https://databus.dbpedia.org/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/geo-coordinates-mappingbased_lang=ru.ttl.bz2",
- "onlinerate": "1.0",
- "svg": "http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg",
- "stats": "http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.tsv"
-
-}
-
-```
-##### SVG
+#### SVG
 We used an existing template and replace color and text:
 
  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.jsonld)
