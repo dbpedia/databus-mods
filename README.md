@@ -1,15 +1,76 @@
 # databus-mods
-Prototype for Databus Mods to check whether all download links are working
+Prototype for Databus Mods (Ontology and Process)
+Contains a working mod to check whether all download links are working
 
 ## Motivation
 Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize in short the DataId.
 Mods are Activities analysing the files or the metadata and provide usefull Stats, Enrichment and Ratings.
  
 ## Databus Mods
-We allow third-parties to add further descriptions in the following manner:
+We allow third-parties to add further descriptions in the following manner.
+
+### Getting updates
+Mods can query and download relevant metadata (e.g. daily) via https://databus.dbpedia.org/repo/sparql 
+Some examples:
+
+```
+# Ex1: query all file records
+QUERY="PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+
+SELECT ?file ?sha256sum ?downloadURL   WHERE {
+  ?s dcat:downloadURL ?downloadURL . 
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dataid:file ?file .
+} "
+
+curl -d "format=text%2Ftab-separated-values" \
+--data-urlencode "query=$QUERY" \
+"https://databus.dbpedia.org/repo/sparql" > updates.tsv
+```
+```
+#Ex2: add a only recent record filter
+  ?s dct:modified  ?mod .  
+  # last five days
+  Filter (?mod >= "2019-05-11T00:55:48Z"^^xsd:dateTime) 
+```
+
+### Result of mods
+
+[![Mod Ontology](https://raw.githubusercontent.com/dbpedia/databus-mods/master/provo_databus-modrelation.svg)](https://raw.githubusercontent.com/dbpedia/databus-mods/master/provo_databus-modrelation.svg)
+http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-ma
+ppingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.jsonld)
+
+
+
+```
+@prefix mymod: <http://88.99.242.78/online/repo/dbpedia/mappings/mappingbased-literals/2018.12.01/> .
+@prefix mymodvocab: <http://88.99.242.78/online/repo/modvocab.ttl#> .
+@prefix mod: <http://dataid.dbpedia.org/ns/mod.ttl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix databus: <https://databus.dbpedia.org/> .
+
+mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg
+    mod:svgDerivedFrom <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
+
+mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv
+    mod:statisticsDerivedFrom <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
+
+mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
+    mymodvocab:onlinerate "1.0"^^xsd:float ;
+    a mymodvocab:OnlineTestMod ;
+    prov:endedAtTime "2019-08-20T21:35:11.931+02:00[Europe/Berlin]"^^xsd:dateTime ;
+    prov:generated mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg, mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv ;
+    prov:used <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
+
+```
+
+
+
 
 * Add the webservice URL to the Databus, e.g. https://myservice.org/void-generator
-* Download relevant data (e.g. daily) via https://databus.dbpedia.org/repo/sparql
+* Download relevant data 
 * put interesting descriptions under:
   * http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.$fileending
 * The Databus website, will link and display the results, when the processing is done
