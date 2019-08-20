@@ -36,12 +36,10 @@ curl -d "format=text%2Ftab-separated-values" \
 ```
 
 ### Result of mods
-
-[![Mod Ontology](https://raw.githubusercontent.com/dbpedia/databus-mods/master/provo_databus-modrelation.svg)](https://raw.githubusercontent.com/dbpedia/databus-mods/master/provo_databus-modrelation.svg)
-http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-ma
-ppingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.jsonld)
+![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/provo_databus-modrelation.png)
 
 
+Here is an example description of the online-checker
 
 ```
 @prefix mymod: <http://88.99.242.78/online/repo/dbpedia/mappings/mappingbased-literals/2018.12.01/> .
@@ -65,7 +63,16 @@ mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
     prov:used <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
 
 ```
+## Databus SPARQL API
+We will load the above description of your mode into https://databus.dbpedia.org/repo/sparql
 
+Example query:
+```
+
+```
+
+
+## URLs of Mode
 
 
 

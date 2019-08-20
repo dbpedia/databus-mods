@@ -27,8 +27,8 @@
      inkscape:window-height="1031"
      id="namedview150"
      showgrid="false"
-     inkscape:zoom="0.45079365"
-     inkscape:cx="724.69902"
+     inkscape:zoom="1.8031746"
+     inkscape:cx="346.47719"
      inkscape:cy="61.877276"
      inkscape:window-x="0"
      inkscape:window-y="27"
@@ -169,8 +169,10 @@
      y="0"
      x="0"
      id="rect36"
-     height="379.5932"
-     width="1462.0203" />
+     height="390.24109"
+     width="1462.0203"
+     inkscape:export-xdpi="44.322231"
+     inkscape:export-ydpi="44.322231" />
   <rect
      x="341.84836"
      y="180.41969"
@@ -190,7 +192,7 @@
        y="192.41966"
        textLength="33.039062"
        id="tspan46"
-       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00c700;fill-opacity:1">used</tspan>
+       style="font-weight:normal;font-size:16px;font-family:Georgia;fill:#000000;fill-opacity:1">used</tspan>
   </text>
   <line
      x1="455.78229"
