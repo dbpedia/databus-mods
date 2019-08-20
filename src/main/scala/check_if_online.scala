@@ -1,8 +1,10 @@
 import scala.io.Source
 import java.io.File
+
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.impl.client.HttpClients
 import java.io.FileWriter
+import java.time.{Instant, ZoneId, ZonedDateTime}
 
 object check_if_online {
 
@@ -17,33 +19,28 @@ object check_if_online {
     //reset aggregate
     writefile(s"$repo/aggregate.nt","",false)
 
-    val vocab =
+    val modVocab =
       s"""
-         |@prefix desc: <http://dataid.dbpedia.org/ns/describe#> .
+         |# no base
+         |@prefix mod: <http://dataid.dbpedia.org/ns/mod#> .
          |@prefix owl: <http://www.w3.org/2002/07/owl#>.
          |@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
          |@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
          |
+         |<#OnlineTestMod> a owl:Class
+         |  rdfs:subClassOf mod:DatabusMod ;
+         |  rdfs:label "Online Stats of dcat:downloadURL" ;
+         |  rdfs:comment "Sends daily HEAD requests and logs them in a .tsv file (time, success/failure, url) and calculates a rating." ;
          |
-         |desc:onlinerate a owl:DatatypeProperty ;
-         |  rdfs:label "onlinerate" ;
-         |  rdfs:comment "percentage of answered test requests" ;
+         |
+         |<onlinerate> a owl:DatatypeProperty ;
+         |  rdfs:subPropertyOf mod:statSummary ;
+         |  rdfs:label "online rate" ;
+         |  rdfs:comment "A daily head request is sent to dcat:downloadURL. Online rate is the percentage of success over all test requests" ;
          |  rdfs:range xsd:float .
-         |
-         |desc:svg a owl:ObjectProperty ;
-         |  rdfs:label "svg" ;
-         |  rdfs:comment "an svg summarizing the status of stats" .
-         |
-         |desc:describedBy a owl:ObjectProperty ;
-         |  rdfs:label "described by" ;
-         |  rdfs:comment "the JSON LD document" .
-         |
-         |desc:stats a owl:ObjectProperty ;
-         |  rdfs:label "statistics" ;
-         |  rdfs:comment "further detailed statistics" .
        """.stripMargin
 
-    writefile(s"$repo/vocab.ttl", vocab, false)
+    writefile(s"$repo/modvocab.ttl", modVocab, false)
 
     var first = true
     val bufferedSource = io.Source.fromFile(updates)
@@ -73,15 +70,16 @@ object check_if_online {
         val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
         writeSVG(s"$repo/$path/$sha.svg", successrate)
         //write json
-        writeJSONLD(s"$repo/$path/$sha.jsonld", file, successrate, serviceRepoURL, path, sha, repo)
+        writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate, serviceRepoURL, path, sha, repo)
       }
     }
     bufferedSource.close
   }
 
 
-  def writeJSONLD(summaryfile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
+  def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
 
+    /**
     val jsonld =
       s"""|
 			|{"@context": {
@@ -98,16 +96,23 @@ object check_if_online {
           | "stats": "$serviceRepoURL/$path/$sha.tsv"
           |
       |}""".stripMargin
-
-    println(s"$serviceRepoURL/$path/$sha.svg")
-    writefile(summaryfile, jsonld, false)
+**/
+   // println(s"$serviceRepoURL/$path/$sha.svg")
+   // writefile(summaryfile, jsonld, false)
+    val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
     val ntriples =
       s"""
-         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#describedBy> <$serviceRepoURL/$path/$sha.jsonld> .
-         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
-         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#svg> <$serviceRepoURL/$path/$sha.svg> .
-         |<${databusfile}> <http://dataid.dbpedia.org/ns/describe#stats> <$serviceRepoURL/$path/$sha.tsv> .
-       """.stripMargin
+         |<$serviceRepoURL/$path/$sha.svg> <http://dataid.dbpedia.org/ns/mod#svgDerivedFrom> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.tsv> <http://dataid.dbpedia.org/ns/mod#statisticsDerivedFrom> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.svg> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.tsv> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#endedAtTime> "$invocationTime"^^xsd:dateTime .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$serviceRepoURL}/modvocab.ttl#OnlineTestMod> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <$serviceRepoURL}/modvocab.ttl#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
+         |""".stripMargin
+
+    writefile(activityFile, ntriples,false)
     writefile(s"$repo/aggregate.nt", ntriples, true)
   }
 
@@ -130,8 +135,10 @@ object check_if_online {
 
   def writeStats(statfile: String, success: Boolean, downloadURL: String) = {
     // save the stats
-    val timestamp: Long = System.currentTimeMillis / 1000
-    val stat = timestamp + "\t" + success + "\t" + downloadURL + "\n"
+    //val timestamp: Long = System.currentTimeMillis / 1000
+    val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
+
+    val stat = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
     writefile(statfile, stat, true)
   }
 
