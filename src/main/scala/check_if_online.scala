@@ -27,10 +27,10 @@ object check_if_online {
          |@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>.
          |@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
          |
-         |<#OnlineTestMod> a owl:Class
+         |<#OnlineTestMod> a owl:Class ;
          |  rdfs:subClassOf mod:DatabusMod ;
          |  rdfs:label "Online Stats of dcat:downloadURL" ;
-         |  rdfs:comment "Sends daily HEAD requests and logs them in a .tsv file (time, success/failure, url) and calculates a rating." ;
+         |  rdfs:comment "Sends daily HEAD requests and logs them in a .tsv file (time, success/failure, url) and calculates a rating." .
          |
          |
          |<onlinerate> a owl:DatatypeProperty ;
