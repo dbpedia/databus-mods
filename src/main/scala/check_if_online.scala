@@ -9,7 +9,7 @@ import java.time.{Instant, ZoneId, ZonedDateTime}
 object check_if_online {
 
   def main(args: Array[String]): Unit = {
-    val updates = "/tmp/online-updates.tsv"
+    val updates = "online-updates.tsv"
 
     println(args(0))
     println(args(1))
