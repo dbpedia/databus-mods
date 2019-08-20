@@ -106,11 +106,13 @@ object check_if_online {
          |<$serviceRepoURL/$path/$sha.tsv> <http://dataid.dbpedia.org/ns/mod.ttl#statisticsDerivedFrom> <${databusfile}> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.svg> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.tsv> .
-         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#endedAtTime> "$invocationTime"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$serviceRepoURL/modvocab.ttl#OnlineTestMod> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <$serviceRepoURL/modvocab.ttl#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
          |""".stripMargin
+
+   // removed used
+   //          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
 
     writefile(activityFile, ntriples,false)
     writefile(s"$repo/aggregate.nt", ntriples, true)
