@@ -111,11 +111,9 @@ For the modvocab and description:
 
 ## Implementaion of Online Check Mod 
 
-Code is in this repo 
+Code is in this repo under [`online-check-mod`](https://github.com/dbpedia/databus-mods/tree/master/online-check-mod)
 
-The service dumps all results here:
-
-* http://88.99.242.78/online/repo/
+The service dumps all results in the `repo` folder: http://88.99.242.78/online/repo/
 
 
 ### Compile and Run
