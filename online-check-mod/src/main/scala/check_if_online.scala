@@ -59,17 +59,18 @@ object check_if_online {
         val path = tmp.substring(0, pos)
         val filename = tmp.substring(pos + 1)
 
+        //create dir
         new File(s"$repo/$path/").mkdirs
-        //println(path)
+
 
         // check
         val success = check(downloadURL)
         //write stats
         writeStats(s"$repo/$path/$sha", success, downloadURL)
+        val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
 
 
         //write svg
-        val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
         writeSVG(s"$repo/$path/$sha.svg", successrate)
 
         // write HTML Summary
@@ -101,7 +102,8 @@ object check_if_online {
 
     var content = ""
     for (line <- bufferedSource.getLines) {
-      content += line+"n"
+      content += line+"\n"
+      println(content)
     }
     bufferedSource.close
 
