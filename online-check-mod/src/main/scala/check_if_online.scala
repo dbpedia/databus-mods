@@ -65,7 +65,7 @@ object check_if_online {
         // check
         val success = check(downloadURL)
         //write stats
-        writeStats(s"$repo/$path/$sha.htmltable", success, downloadURL)
+        writeStats(s"$repo/$path/$sha", success, downloadURL)
 
 
         //write svg
@@ -163,9 +163,10 @@ object check_if_online {
     //val timestamp: Long = System.currentTimeMillis / 1000
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
 
-    //val stat = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
-    val stat = s"<tr><td>$invocationTime</td><td>$success</td><td>$downloadURL/td></tr>\n"
-    writefile(statfile, stat, true)
+    val stattsv = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
+    val stathtml = s"<tr><td>$invocationTime</td><td>$success</td><td>$downloadURL/td></tr>\n"
+    writefile(statfile+".htmltable", stathtml, true)
+    writefile(statfile+".tsv", stattsv, true)
   }
 
   def writefile(file: String, contents: String, append: Boolean) = {
