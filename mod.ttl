@@ -32,17 +32,36 @@
 @prefix sh: <http://www.w3.org/ns/shacl#>.
 
 
-mod:DatabusMod a owl:Class ;
+mod:DatabusMod a owl:Class ; a sh:NodeShape ;
 	rdfs:subClassOf prov:Activity ;
 	rdfs:label "Databus Mode" ;
 	rdfs:comment "Activities that used individual Databus files or whole version/group/publisher-level collections to generate summaries, ratings, detailed statistics, error reports, enrichments or anything else really. Modding activities don't create new datasets, they are triggered, when new data is available and generate useful stats and add-ons. " ;
-	# SHACL 
-	rdfs:subClassOf sh:NodeShape ;
+	# SHACL Class Target 
+	sh:targetClass mod:DatabusMod ;
 	sh:property [
 		sh:path prov:endedAtTime ;
 		sh:minCount 1 ;
 		sh:maxCount 1 ;
+	] ;
+	sh:poperty [
+		sh:path prov:generated ;
+		sh:minCount 2 ;	
+	] ;
+	sh:poperty [
+		sh:path prov:used ;
+		sh:minCount 1 ;
 	] .
+#	sh:sparql [
+#		a sh:SPARQLConstraint ;   # This triple is optional
+#		sh:message "Form a triangle with the html, svg results, databus ids and avtivity" ;
+#		sh:select """
+#			SELECT $this (ex:germanLabel AS ?path) ?value
+#			WHERE {
+#				$this ex:germanLabel ?value .
+#				FILTER (!isLiteral(?value) || !langMatches(lang(?value), "de"))
+#			}
+#			""" ;
+
 	
 mod:Summary a owl:Class ;
     rdfs:subClassOf prov:Entity ;

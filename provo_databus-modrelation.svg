@@ -27,8 +27,8 @@
      inkscape:window-height="1031"
      id="namedview150"
      showgrid="false"
-     inkscape:zoom="1.8031746"
-     inkscape:cx="564.58108"
+     inkscape:zoom="1.275037"
+     inkscape:cx="1423.6846"
      inkscape:cy="197.99437"
      inkscape:window-x="0"
      inkscape:window-y="27"
@@ -570,26 +570,44 @@
        sodipodi:role="line"
        x="621.09088"
        y="123.98915"
-       id="tspan4356">they prov:used databus entities (file ,version, artifact, group)</tspan><tspan
+       id="tspan4356">- they prov:used databus entities (file ,version, artifact, group)</tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="157.53502"
-       id="tspan4358">they prov:generated Summaries, Statistics and Enrichments </tspan><tspan
+       id="tspan4358">- they prov:generated Summaries, Statistics and Enrichments </tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="191.08087"
-       id="tspan4362" /><tspan
+       id="tspan3423">- We require that Mods prov:generate a small SVG image as well</tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="224.62674"
-       id="tspan4364">image from https://www.w3.org/TR/prov-o/</tspan><tspan
+       id="tspan3429">  as a HTML summary to display/link on databus.dbpedia.org and</tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="258.17261"
-       id="tspan4368">(green properties/classes used)</tspan><tspan
+       id="tspan3435">  are provided as ntriples or turtle (RDF) </tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="291.71844"
+       id="tspan3425">- beyond that Mods can provide their results in any formats </tspan><tspan
+       sodipodi:role="line"
+       x="621.09088"
+       y="325.26431"
+       id="tspan3421" /><tspan
+       sodipodi:role="line"
+       x="621.09088"
+       y="358.81018"
+       id="tspan4364"
+       style="line-height:125%">     image from https://www.w3.org/TR/prov-o/</tspan><tspan
+       sodipodi:role="line"
+       x="621.09088"
+       y="392.35605"
+       id="tspan4368"
+       style="line-height:125%">     (green properties/classes used)</tspan><tspan
+       sodipodi:role="line"
+       x="621.09088"
+       y="425.90192"
        id="tspan4366" /></text>
   <path
      d="m 574.86884,79.788732 -63.625,0 c -13.80712,0 -25,11.19288 -25,24.999998 l 0,4 c 0,13.80712 11.19288,25 25,25 l 63.625,0 c 13.80712,0 25,-11.19288 25,-25 l 0,-4 c 0,-13.807118 -11.19288,-24.999998 -25,-24.999998 0,0 0,0 0,0 z"
@@ -643,4 +661,15 @@
        id="tspan118-3-9"
        style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Result</tspan>
   </text>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:32px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+     x="1437.2917"
+     y="222.57275"
+     id="text3431"
+     sodipodi:linespacing="125%"><tspan
+       sodipodi:role="line"
+       id="tspan3433"
+       x="1437.2917"
+       y="222.57275"> </tspan></text>
 </svg>

@@ -105,6 +105,10 @@ object check_if_online {
          |</style>
          |</head>
          |<body>
+         |<h1>Online Check Mod for files on the Databus<\h1>
+         |
+         |The mod is retrieving the download
+         |
          |<table style="width:100%">
          |  <tr>
          |    <th>Time</th>

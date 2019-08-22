@@ -1,17 +1,19 @@
 # databus-mods
-Prototype for Databus Mods (Ontology and Process)
+Prototype for Databus Mods (incl/ Ontology and Process)
 Contains a working mod to check whether all download links are working
 
 ## Motivation
-Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize in short the DataId.
-Mods are Activities analysing the files or the metadata and provide usefull Stats, Enrichment and Ratings or visuals such as this SVG:  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.ttl)
+Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize, license all captured in the dataid.ttl which are crawled and hosted in the [Databus SPARQL API](https://databus.dbpedia.org/yasgui/) .
+Mods are activities analysing the files or the DataId metadata on the Databus and provide usefull Stats, Enrichment and Ratings or visuals such as this SVG:  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.html) 
+Mods allow any user to customize and extend the DBpedia Databus website with their own code. 
+Mods can spot errors in data, provide fixes and patches or simply count rdf:type statements or words.
 
- 
 ## Databus Mods
-We allow third-parties to add further descriptions in the following manner.
+We allow third-parties to add further descriptions in the following manner:
+
 
 ### Getting updates
-Mods can query and download relevant metadata (e.g. daily) via https://databus.dbpedia.org/repo/sparql 
+Mods need to query and download relevant metadata (e.g. daily) via https://databus.dbpedia.org/repo/sparql 
 Some examples:
 
 ```
@@ -40,7 +42,8 @@ curl -d "format=text%2Ftab-separated-values" \
 ![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/provo_databus-modrelation.png)
 
 
-Here is an example description of the online-checker
+Here is an example description of the online-checker taken from:
+http://88.99.242.78/online/repo/dbpedia/mappings/mappingbased-literals/2018.12.01/28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
 
 ```
 @prefix mymod: <http://88.99.242.78/online/repo/dbpedia/mappings/mappingbased-literals/2018.12.01/> .
@@ -53,45 +56,72 @@ Here is an example description of the online-checker
 mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg
     mod:svgDerivedFrom <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
 
-mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv
-    mod:statisticsDerivedFrom <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
+mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.html
+    mod:htmlDerivedFrom <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01/mappingbased-literals_lang=ro.ttl.bz2> .
 
 mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
     mymodvocab:onlinerate "1.0"^^xsd:float ;
     a mymodvocab:OnlineTestMod ;
     prov:endedAtTime "2019-08-20T21:35:11.931+02:00[Europe/Berlin]"^^xsd:dateTime ;
-    prov:generated mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg, mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.tsv .
+    prov:generated mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.svg, mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.html .
 ```
+and an example of the modvocab:
+http://88.99.242.78/online/repo/modvocab.ttl
 
 ## Databus SPARQL API
-We will load the above description of your mode into https://databus.dbpedia.org/repo/sparql .
+We will load the above descriptions of your mod into https://databus.dbpedia.org/repo/sparql .
+Therefore we require:
+1. the link to the modvocab.ttl 
+2. the link to an aggregation, which we should load
+See the example here: http://88.99.242.78/online/repo/ 
 
-### Requirements:
-* We expect this to be 5-10 triples per record linking to much more data, visualisations and detailed reports.
-* Please look at the [mod.ttl](mod.ttl) and use subproperties of `prov:wasDerivedFrom` and 
+### Limits
+As of Aug, 2019 Databus has 20k files. Each activity produces at least 7 triples. Each additional report 2 triples. Which is 140k triples per mod minimum. We therefore expect mods to only generate maximum of two additional result entities next to the svg and html. Further reports can be linked from the HTML reports.     
 
-Example query:
+
+### Example queries:
 
 ```
+# query all files and their mod results for dbpedia/mappings/mappingbased-literals/2018.12.01
+
+
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dataiddebug: <http://dataid.dbpedia.org/ns/debug.ttl#>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 
-SELECT ?file ?property ?result WHERE {
-  ?s dataid:file ?file . 
-  ?property rdfs:subPropertyOf prov:wasDerivedFrom . 
-  ?result ?property ?file .
-  # optionally getting the mod
+# group_concat see: https://stackoverflow.com/questions/18212697/aggregating-results-from-sparql-query
+SELECT ?file (group_concat(?result;separator=",") as ?results)  WHERE {
+  ?dataset dataid:version <https://databus.dbpedia.org/dbpedia/mappings/mappingbased-literals/2018.12.01> .
+  ?singlefile dataid:isDistributionOf ?dataset .
+  ?singlefile dataid:file ?file .
+  
+  #?property rdfs:subPropertyOf prov:wasDerivedFrom . 
+  #?result ?property ?file .
+  ?resultsvg <http://dataid.dbpedia.org/ns/mod.ttl#svgDerivedFrom> ?file .
+  # UPDATE statistics -> htmlDerivedFrom
+  ?resultstat <http://dataid.dbpedia.org/ns/mod.ttl#htmlDerivedFrom> ?file .
+  # from the same activity on the same file
+  ?activity prov:generated ?resultsvg .
+  ?activity prov:generated ?resultstat .
+  # UPDATE added line below
+  ?activity prov:used ?file .
+  
+  # transform to image link
+  # <img src="smiley.gif" alt="Smiley face" height="42" width="42"> 
+  BIND (concat("<a href=\"",?resultstat, "\"> <img src=\"",?resultsvg,"\"></a>" ) AS ?result )
+  # optionally getting label of the mod
   # ?activity prov:generated ?result .
   # ?activity a ?mod .
-    
+     
 } 
+Group by ?file 
 
 ```
 
 
-## URLs of the Mod (draft, not binding)
+## URLs of the Mod (just an example)
 For activities (one analysis process): 
 
 * http://myservice.org/$servicename/repo/$account/$group/$artifact/$version/$sha256sum.ttl
@@ -140,8 +170,9 @@ mvn scala:run -DmainClass="check_if_online" -DaddArgs="/var/www/html/online/repo
 
 Read more about the mod in the modvocab.ttl: http://88.99.242.78/online/repo/modvocab.ttl
 
-#### TSV Online Stats
-The script is intended as a cronjob and checks whether all downloadURLs are reachable via HEAD requests and saves (append) the stats in $sha256sum.tsv files:
+#### HTML Online Stats
+The script is intended as a cronjob and checks whether all downloadURLs are reachable via HEAD requests and saves (append) the stats in $sha256sum.html files:
+http://88.99.242.78/online/repo/dbpedia/mappings/mappingbased-literals/2018.12.01/28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.html
 ```
 timestamp	success		downloadurl
 ```
@@ -149,5 +180,5 @@ timestamp	success		downloadurl
 #### SVG
 We used an existing template and replace color and text:
 
- [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.jsonld)
+ [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.html)
 
