@@ -65,54 +65,77 @@ object check_if_online {
         // check
         val success = check(downloadURL)
         //write stats
-        writeStats(s"$repo/$path/$sha.tsv", success, downloadURL)
+        writeStats(s"$repo/$path/$sha.htmltable", success, downloadURL)
+
+
         //write svg
         val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
         writeSVG(s"$repo/$path/$sha.svg", successrate)
-        //write json
+
+        // write HTML Summary
+        writeHTMLSummary(s"$repo/$path/$sha.html", s"$repo/$path/$sha.htmltable")
+
+        //write ttl
         writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate, serviceRepoURL, path, sha, repo)
       }
     }
     bufferedSource.close
   }
 
+  def writeHTMLSummary ( htmlFile:String, statFile : String) ={
+    val header =
+      s"""
+         |<html>
+         |<body>
+         |<table style="width:100%">
+         |  <tr>
+         |    <th>Time</th>
+         |    <th>Success</th>
+         |    <th>dcat:downloadURL</th>
+         |  </tr>
+         |
+       """.stripMargin
+    writefile(htmlFile,header,false);
+
+    val bufferedSource = io.Source.fromFile(statFile)
+
+    var content = ""
+    for (line <- bufferedSource.getLines) {
+      content += line+"n"
+    }
+    bufferedSource.close
+
+    writefile(statFile,content,true);
+
+    val footer =
+      s"""
+         |
+         |</table>
+         |</body>
+         |</html>
+       """.stripMargin
+    writefile(htmlFile,footer,true);
+
+  }
 
   def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
-
-    /**
-    val jsonld =
-      s"""|
-			|{"@context": {
-          | "desc": "http://dataid.dbpedia.org/ns/describe#",
-          |	"onlinerate": { "@id": "desc:onlinerate","@type": "xsd:float"},
-          |	"describedBy" :   {"@id":"desc:describedBy","@type":"@id"},
-          |	"svg" :   {"@id":"desc:svg","@type":"@id"},
-          |	"stats" : {"@id":"desc:stats","@type":"@id"}
-          |  },
-          | "@id": "${databusfile}",
-          | "describedBy" : "$serviceRepoURL/$path/$sha.jsonld" ,
-          | "onlinerate": "$successrate",
-          | "svg": "$serviceRepoURL/$path/$sha.svg",
-          | "stats": "$serviceRepoURL/$path/$sha.tsv"
-          |
-      |}""".stripMargin
-**/
    // println(s"$serviceRepoURL/$path/$sha.svg")
    // writefile(summaryfile, jsonld, false)
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
     val ntriples =
       s"""
          |<$serviceRepoURL/$path/$sha.svg> <http://dataid.dbpedia.org/ns/mod.ttl#svgDerivedFrom> <${databusfile}> .
-         |<$serviceRepoURL/$path/$sha.tsv> <http://dataid.dbpedia.org/ns/mod.ttl#statisticsDerivedFrom> <${databusfile}> .
+         |<$serviceRepoURL/$path/$sha.html> <http://dataid.dbpedia.org/ns/mod.ttl#htmlDerivedFrom> <${databusfile}> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.svg> .
-         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.tsv> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#generated> <$serviceRepoURL/$path/$sha.html> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#endedAtTime> "$invocationTime"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$serviceRepoURL/modvocab.ttl#OnlineTestMod> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <$serviceRepoURL/modvocab.ttl#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
          |""".stripMargin
 
    // removed used
-   //          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
+   //
 
     writefile(activityFile, ntriples,false)
     writefile(s"$repo/aggregate.nt", ntriples, true)
@@ -140,7 +163,8 @@ object check_if_online {
     //val timestamp: Long = System.currentTimeMillis / 1000
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
 
-    val stat = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
+    //val stat = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
+    val stat = s"<tr><td>$invocationTime</td><td>$success</td><td>$downloadURL/td></tr>\n"
     writefile(statfile, stat, true)
   }
 

@@ -28,8 +28,8 @@
      id="namedview150"
      showgrid="false"
      inkscape:zoom="1.8031746"
-     inkscape:cx="346.47719"
-     inkscape:cy="61.877276"
+     inkscape:cx="564.58108"
+     inkscape:cy="197.99437"
      inkscape:window-x="0"
      inkscape:window-y="27"
      inkscape:window-maximized="1"
@@ -192,7 +192,7 @@
        y="192.41966"
        textLength="33.039062"
        id="tspan46"
-       style="font-weight:normal;font-size:16px;font-family:Georgia;fill:#000000;fill-opacity:1">used</tspan>
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b300;fill-opacity:1">used</tspan>
   </text>
   <line
      x1="455.78229"
@@ -272,15 +272,15 @@
      id="rect68"
      style="fill:#ffffff;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1" />
   <text
-     y="175.93333"
-     x="458.69214"
+     y="169.65901"
+     x="452.41782"
      id="text70"
      style="fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1">
     <tspan
        font-size="16"
        font-weight="500"
-       x="458.84448"
-       y="190.93333"
+       x="452.57016"
+       y="184.65901"
        textLength="118.69531"
        id="tspan72"
        style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">generated</tspan>
@@ -328,10 +328,11 @@
        style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#009e00;fill-opacity:1">wasDerivedFrom</tspan>
   </text>
   <path
-     d="m 424.76745,80.57143 c 4.71068,-12.3587 22.82628,-49.88286 -5.73607,-50.000001 -22.05772,-0.09041 -14.78593,21.996956 -8.18125,38.071191"
+     d="m 548.9928,79.240444 c 1.74893,-4.588386 -1.11696,-9.384628 -6.40969,-16.232105 -7.30703,-9.453476 -18.91885,-15.284782 -77.37777,-14.592016 -19.42169,0.230157 -30.48172,8.364568 -37.41452,23.10357"
      id="path86"
      inkscape:connector-curvature="0"
-     style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#FilledArrow_Marker_2)" />
+     style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#FilledArrow_Marker_2)"
+     sodipodi:nodetypes="cssc" />
   <rect
      x="355.65805"
      y="330.8197"
@@ -364,10 +365,11 @@
      inkscape:connector-curvature="0"
      style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#FilledArrow_Marker_2)" />
   <path
-     d="m 434.30098,227.20962 c 5.90954,-11.51722 18.39312,-18.93423 17.7304,-34.55514 -0.53315,-12.5669 -9.57494,-30.4495 -16.8571,-47.2316"
+     d="m 443.50565,228.22082 c 6.89332,-11.49275 35.69673,-15.73371 51.11252,-18.16846 51.76059,-8.17498 51.57437,-45.44318 48.72682,-59.9936"
      id="path98"
      inkscape:connector-curvature="0"
-     style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#FilledArrow_Marker_2)" />
+     style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:2.15777111;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#FilledArrow_Marker_2)"
+     sodipodi:nodetypes="csc" />
   <path
      d="m 127.59024,185.08037 c -20.577,-5.86201 -55.43082,-12.66717 -54.977246,3.76718 0.571486,20.70468 22.714286,10.31629 67.755846,10.45912"
      id="path100"
@@ -413,19 +415,48 @@
      inkscape:connector-curvature="0"
      style="fill:none;fill-opacity:1;stroke:#999999;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
   <text
-     y="98.071426"
-     x="368.40637"
+     y="88.471436"
+     x="360.40634"
      id="text116"
      style="fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1">
     <tspan
        font-size="16"
        font-weight="bold"
-       x="395.24622"
-       y="113.07143"
+       x="387.24619"
+       y="103.47143"
        textLength="49.945312"
        id="tspan118"
-       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Entity</tspan>
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Databus</tspan>
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="387.24619"
+       y="103.47143"
+       textLength="49.945312"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1"
+       id="tspan4342" />
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="387.24619"
+       y="103.47143"
+       textLength="49.945312"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1"
+       id="tspan4344" />
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="387.24619"
+       y="103.47143"
+       textLength="49.945312"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1"
+       id="tspan4346" />
   </text>
+  <text
+     y="98.071426"
+     x="368.40637"
+     style="fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1"
+     id="text4336" />
   <path
      d="m 140.36884,210.71741 0,-36.41957 c 0,-2.43841 1.47571,-4.63429 3.73344,-5.55542 l 50.8421,-20.74313 c 1.4529,-0.59277 3.08022,-0.59277 4.53312,0 l 50.8421,20.74313 c 2.25773,0.92113 3.73344,3.11701 3.73344,5.55542 l 0,36.41957 c 0,3.31371 -2.68629,6 -6,6 l -101.6842,0 c -3.31371,0 -6,-2.68629 -6,-6 z"
      id="path120"
@@ -535,7 +566,7 @@
        sodipodi:role="line"
        x="621.09088"
        y="90.443291"
-       id="tspan4354">Databus Mods are prov-o Activities</tspan><tspan
+       id="tspan4354">Databus Mods are stored as prov-o Activities</tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="123.98915"
@@ -555,9 +586,61 @@
        sodipodi:role="line"
        x="621.09088"
        y="258.17261"
-       id="tspan4368">(highlighted properties/classes used)</tspan><tspan
+       id="tspan4368">(green properties/classes used)</tspan><tspan
        sodipodi:role="line"
        x="621.09088"
        y="291.71844"
        id="tspan4366" /></text>
+  <path
+     d="m 574.86884,79.788732 -63.625,0 c -13.80712,0 -25,11.19288 -25,24.999998 l 0,4 c 0,13.80712 11.19288,25 25,25 l 63.625,0 c 13.80712,0 25,-11.19288 25,-25 l 0,-4 c 0,-13.807118 -11.19288,-24.999998 -25,-24.999998 0,0 0,0 0,0 z"
+     id="path112-6"
+     inkscape:connector-curvature="0"
+     style="fill:#fffedf;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1" />
+  <path
+     d="m 574.86884,79.788732 -63.625,0 c -13.80712,0 -25,11.19288 -25,24.999998 l 0,4 c 0,13.80712 11.19288,25 25,25 l 63.625,0 c 13.80712,0 25,-11.19288 25,-25 l 0,-4 c 0,-13.807118 -11.19288,-24.999998 -25,-24.999998 0,0 0,0 0,0 z"
+     id="path114-7"
+     inkscape:connector-curvature="0"
+     style="fill:none;fill-opacity:1;stroke:#999999;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:none;stroke-opacity:1" />
+  <text
+     y="108.38028"
+     x="491.6875"
+     id="text116-5"
+     style="font-size:12px;fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1">
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="518.52734"
+       y="123.38028"
+       textLength="49.945312"
+       id="tspan118-3"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Entity</tspan>
+  </text>
+  <text
+     y="107.63644"
+     x="369.25858"
+     id="text116-5-5"
+     style="font-size:12px;fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1">
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="396.09842"
+       y="122.63645"
+       textLength="49.945312"
+       id="tspan118-3-6"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Entity</tspan>
+  </text>
+  <text
+     y="90.522354"
+     x="490.3783"
+     id="text116-5-2"
+     style="font-size:12px;fill:#000000;fill-opacity:1;stroke:none;stroke-dasharray:none;stroke-opacity:1">
+    <tspan
+       font-size="16"
+       font-weight="bold"
+       x="517.21814"
+       y="105.52236"
+       textLength="49.945312"
+       id="tspan118-3-9"
+       style="font-weight:bold;font-size:16px;font-family:Georgia;fill:#00b800;fill-opacity:1">Result</tspan>
+  </text>
 </svg>
