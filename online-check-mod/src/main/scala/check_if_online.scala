@@ -165,7 +165,7 @@ object check_if_online {
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
 
     val stattsv = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
-    val stathtml = s"<tr><td>$invocationTime</td><td>$success</td><td>$downloadURL/td></tr>\n"
+    val stathtml = s"<tr>\n<td>$invocationTime</td>\n<td>$success</td>\n<td>$downloadURL</td>\n</tr>\n"
     writefile(statfile+".htmltable", stathtml, true)
     writefile(statfile+".tsv", stattsv, true)
   }
