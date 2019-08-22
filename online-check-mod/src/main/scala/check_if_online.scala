@@ -103,11 +103,10 @@ object check_if_online {
     var content = ""
     for (line <- bufferedSource.getLines) {
       content += line+"\n"
-      println(content)
     }
     bufferedSource.close
 
-    writefile(statFile,content,true);
+    writefile(htmlFile,content,true);
 
     val footer =
       s"""
