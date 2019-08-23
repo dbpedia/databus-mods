@@ -77,7 +77,7 @@ See the example here: http://88.99.242.78/online/repo/
 
 ### Limits
 As of Aug, 2019 Databus has 20k files. Each activity produces at least 7 triples. Each additional report 2 triples. Which is 140k triples per mod minimum. We therefore expect mods to only generate maximum of two additional result entities next to the svg and html. Further reports can be linked from the HTML reports.     
-
+Note: we are planning to move all the Mod data in a separate endpoint, then there can be more reports. 
 
 ### Example queries:
 
