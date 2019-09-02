@@ -38,6 +38,12 @@ object check_if_online {
          |  rdfs:label "online rate" ;
          |  rdfs:comment "A daily head request is sent to dcat:downloadURL. Online rate is the percentage of success over all test requests" ;
          |  rdfs:range xsd:float .
+         |
+         |<weeklyOnlinerate> a owl:DatatypeProperty ;
+         |  rdfs:subPropertyOf mod:statSummary ;
+         |  rdfs:label "online rate last week" ;
+         |  rdfs:comment "see onlinerate, but for the last 7 daily tests." ;
+         |  rdfs:range xsd:float .
        """.stripMargin
 
     writefile(s"$repo/modvocab.ttl", modVocab, false)
@@ -67,17 +73,17 @@ object check_if_online {
         val success = check(downloadURL)
         //write stats
         writeStats(s"$repo/$path/$sha", success, downloadURL)
-        val successrate = getSuccessRate(s"$repo/$path/$sha.tsv")
+        val (successrate: Float, weeklySuccessRate: Float) = getSuccessRate(s"$repo/$path/$sha.tsv")
 
 
         //write svg
-        writeSVG(s"$repo/$path/$sha.svg", successrate)
+        writeSVG(s"$repo/$path/$sha.svg", weeklySuccessRate)
 
         // write HTML Summary
         writeHTMLSummary(s"$repo/$path/$sha.html", s"$repo/$path/$sha.htmltable")
 
         //write ttl
-        writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate, serviceRepoURL, path, sha, repo)
+        writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate,weeklySuccessRate, serviceRepoURL, path, sha, repo)
       }
     }
     bufferedSource.close
@@ -107,7 +113,11 @@ object check_if_online {
          |<body>
          |<h1>Online Check Mod for files on the Databus<\h1>
          |
-         |The mod is retrieving the download
+         |The mod is checking whether files are online.
+         |Sends daily HEAD requests and logs them in a .tsv file (time, success/failure, url) and calculates these rating.
+         |<br>
+         |weeklyonlinerate = stats for the last 7 days shown in the SVG.
+         |onlinerate = overall
          |
          |<table style="width:100%">
          |  <tr>
@@ -140,7 +150,7 @@ object check_if_online {
 
   }
 
-  def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
+  def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, weeklySuccessRate:Float , serviceRepoURL: String, path: String, sha: String, repo: String) {
    // println(s"$serviceRepoURL/$path/$sha.svg")
    // writefile(summaryfile, jsonld, false)
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
@@ -153,6 +163,7 @@ object check_if_online {
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#endedAtTime> "$invocationTime"^^<http://www.w3.org/2001/XMLSchema#dateTime> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/1999/02/22-rdf-syntax-ns#type> <$serviceRepoURL/modvocab.ttl#OnlineTestMod> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <$serviceRepoURL/modvocab.ttl#onlinerate> "$successrate"^^<http://www.w3.org/2001/XMLSchema#float> .
+         |<$serviceRepoURL/$path/$sha.ttl#this> <$serviceRepoURL/modvocab.ttl#weeklyonlinerate> "$weeklySuccessRate"^^<http://www.w3.org/2001/XMLSchema#float> .
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
          |""".stripMargin
 
@@ -201,10 +212,11 @@ object check_if_online {
 
   }
 
-  def getSuccessRate(statfile: String) = {
+  def getSuccessRate(statfile: String): (Float, Float) = {
     val bufferedSource = io.Source.fromFile(statfile)
     var count = 0f
     var successcount = 0f
+    var weeklysuccesscount = 0f
 
     for (line <- bufferedSource.getLines) {
       val split = line.split("\t")
@@ -212,11 +224,16 @@ object check_if_online {
       count += 1
       if (split(1).trim == "true") {
         successcount += 1
+        if(count<=7){
+          weeklysuccesscount +=1
+        }
       }
+
+
       //	println(s"${cols(0)}|${cols(1)}|${cols(2)}")
     }
     bufferedSource.close
-    successcount / count
+    ((successcount / count), (weeklysuccesscount/7))
   }
 
 
