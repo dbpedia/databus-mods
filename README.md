@@ -38,6 +38,10 @@ curl -d "format=text%2Ftab-separated-values" \
   Filter (?mod >= "2019-05-11T00:55:48Z"^^xsd:dateTime) 
 ```
 
+### Full control, on which and how many dataset the mod runs
+Because the mod runs the SELECT query, it can select exactly the datasets it mods.
+Publishing your datasets on the databus and then writing mods for your data is possible. Or you run it over all files and share the results with others. 
+
 ### Result of mods
 ![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/provo_databus-modrelation.png)
 
@@ -75,9 +79,9 @@ Therefore we require:
 2. the link to an aggregation, which we should load
 See the example here: http://88.99.242.78/online/repo/ 
 
-### Limits
-As of Aug, 2019 Databus has 20k files. Each activity produces at least 7 triples. Each additional report 2 triples. Which is 140k triples per mod minimum. We therefore expect mods to only generate maximum of two additional result entities next to the svg and html. Further reports can be linked from the HTML reports.     
-Note: we are planning to move all the Mod data in a separate endpoint, then there can be more reports. 
+### Fair Use Limits
+As of Aug, 2019 Databus has 20k files. Each activity produces at least 7 triples. Each additional report 2 triples. Which is 140k triples per mod minimum. We therefore expect mods to only generate maximum of two additional result entities next to the svg and html. Further reports can be linked from the HTML reports. This is only relevant, if you would like to mod all files or datasets. Since you write the SPARQL query, the limit increases, if the mod targets only 100 files or 5.     
+Note: in the future, we are planning to move all the Mod data in a separate endpoint, then there can be more reports and the limit is raised. 
 
 ### Example queries:
 
