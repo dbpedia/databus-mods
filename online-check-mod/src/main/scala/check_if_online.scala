@@ -39,11 +39,12 @@ object check_if_online {
          |  rdfs:comment "A daily head request is sent to dcat:downloadURL. Online rate is the percentage of success over all test requests" ;
          |  rdfs:range xsd:float .
          |
-         |<weeklyOnlinerate> a owl:DatatypeProperty ;
+         |<weeklyonlinerate> a owl:DatatypeProperty ;
          |  rdfs:subPropertyOf mod:statSummary ;
          |  rdfs:label "online rate last week" ;
          |  rdfs:comment "see onlinerate, but for the last 7 daily tests." ;
          |  rdfs:range xsd:float .
+         |
        """.stripMargin
 
     writefile(s"$repo/modvocab.ttl", modVocab, false)
@@ -111,12 +112,12 @@ object check_if_online {
          |</style>
          |</head>
          |<body>
-         |<h1>Online Check Mod for files on the Databus<\h1>
+         |<h1>Online Check Mod for files on the Databus</h1>
          |
          |The mod is checking whether files are online.
          |Sends daily HEAD requests and logs them in a .tsv file (time, success/failure, url) and calculates these rating.
          |<br>
-         |weeklyonlinerate = stats for the last 7 days shown in the SVG.
+         |weeklyonlinerate = stats for the last 7 days shown in the SVG.<br>
          |onlinerate = overall
          |
          |<table style="width:100%">
