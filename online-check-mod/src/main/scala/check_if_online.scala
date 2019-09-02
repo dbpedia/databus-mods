@@ -17,7 +17,7 @@ object check_if_online {
     val serviceRepoURL = args(1)
 
     //reset aggregate
-    writefile(s"$repo/aggregate.nt","",false)
+    writefile(s"$repo/aggregate.nt", "", false)
 
     val modVocab =
       s"""
@@ -84,13 +84,13 @@ object check_if_online {
         writeHTMLSummary(s"$repo/$path/$sha.html", s"$repo/$path/$sha.htmltable")
 
         //write ttl
-        writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate,weeklySuccessRate, serviceRepoURL, path, sha, repo)
+        writeActivityTTL(s"$repo/$path/$sha.ttl", file, successrate, weeklySuccessRate, serviceRepoURL, path, sha, repo)
       }
     }
     bufferedSource.close
   }
 
-  def writeHTMLSummary ( htmlFile:String, statFile : String) ={
+  def writeHTMLSummary(htmlFile: String, statFile: String) = {
     val header =
       s"""
          |<!DOCTYPE html>
@@ -128,17 +128,17 @@ object check_if_online {
          |  </tr>
          |
        """.stripMargin
-    writefile(htmlFile,header,false);
+    writefile(htmlFile, header, false);
 
     val bufferedSource = io.Source.fromFile(statFile)
 
     var content = ""
     for (line <- bufferedSource.getLines) {
-      content += line+"\n"
+      content += line + "\n"
     }
     bufferedSource.close
 
-    writefile(htmlFile,content,true);
+    writefile(htmlFile, content, true);
 
     val footer =
       s"""
@@ -147,13 +147,13 @@ object check_if_online {
          |</body>
          |</html>
        """.stripMargin
-    writefile(htmlFile,footer,true);
+    writefile(htmlFile, footer, true);
 
   }
 
-  def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, weeklySuccessRate:Float , serviceRepoURL: String, path: String, sha: String, repo: String) {
-   // println(s"$serviceRepoURL/$path/$sha.svg")
-   // writefile(summaryfile, jsonld, false)
+  def writeActivityTTL(activityFile: String, databusfile: String, successrate: Float, weeklySuccessRate: Float, serviceRepoURL: String, path: String, sha: String, repo: String) {
+    // println(s"$serviceRepoURL/$path/$sha.svg")
+    // writefile(summaryfile, jsonld, false)
     val invocationTime: ZonedDateTime = ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault())
     val ntriples =
       s"""
@@ -168,10 +168,10 @@ object check_if_online {
          |<$serviceRepoURL/$path/$sha.ttl#this> <http://www.w3.org/ns/prov#used> <${databusfile}> .
          |""".stripMargin
 
-   // removed used
-   //
+    // removed used
+    //
 
-    writefile(activityFile, ntriples,false)
+    writefile(activityFile, ntriples, false)
     writefile(s"$repo/aggregate.nt", ntriples, true)
   }
 
@@ -199,8 +199,8 @@ object check_if_online {
 
     val stattsv = invocationTime + "\t" + success + "\t" + downloadURL + "\n"
     val stathtml = s"<tr>\n<td>$invocationTime</td>\n<td>$success</td>\n<td>$downloadURL</td>\n</tr>\n"
-    writefile(statfile+".htmltable", stathtml, true)
-    writefile(statfile+".tsv", stattsv, true)
+    writefile(statfile + ".htmltable", stathtml, true)
+    writefile(statfile + ".tsv", stattsv, true)
   }
 
   def writefile(file: String, contents: String, append: Boolean) = {
@@ -225,16 +225,15 @@ object check_if_online {
       count += 1
       if (split(1).trim == "true") {
         successcount += 1
-        if(count<=7){
-          weeklysuccesscount +=1
+        if (count <= 7) {
+          weeklysuccesscount += 1
         }
       }
-
-
       //	println(s"${cols(0)}|${cols(1)}|${cols(2)}")
     }
     bufferedSource.close
-    ((successcount / count), (weeklysuccesscount/7))
+    import scala.math.min
+    ((successcount / count), (weeklysuccesscount / min(count, 7)))
   }
 
 
