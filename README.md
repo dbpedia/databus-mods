@@ -1,19 +1,29 @@
-# databus-mods
-Prototype for Databus Mods (incl/ Ontology and Process)
-Contains a working mod to check whether all download links are working
+# Databus Mods
+Description and Demo for Databus Mods (incl/ Ontology and Process)
+Contains a working mod to check whether all download links are working.
+Please post ideas and endeavours to mod in the [DBpedia Forum](https://forum.dbpedia.org) 
 
 ## Motivation
-Data providers on the bus publish their files with a core set of metadata descriptions like where to download them, filesize, license all captured in the dataid.ttl which are crawled and hosted in the [Databus SPARQL API](https://databus.dbpedia.org/yasgui/) .
-Mods are activities analysing the files or the DataId metadata on the Databus and provide usefull Stats, Enrichment and Ratings or visuals such as this SVG:  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.html) 
-Mods allow any user to customize and extend the DBpedia Databus website with their own code. 
-Mods can spot errors in data, provide fixes and patches or simply count rdf:type statements or words.
+Data providers on the bus publish their files on their own servers with a core set of metadata descriptions like where to download them, filesize, license. 
+These are captured in the `dataid.ttl` and hosted in the [Databus SPARQL API](https://dev.dbpedia.org/Download_Data).
 
-## Databus Mods
+* Mods are activities analysing the files or the DataId metadata on the Databus and provide usefull Stats, Enrichment and Ratings or visuals such as this SVG:  [![Build Status](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.svg)](http://88.99.242.78/online/repo/dbpedia/mappings/geo-coordinates-mappingbased/2018.12.01/978e5a0884ccbefbedb2c699d385247fd52d5968e013cd7f0dbec98124eb64b3.html) 
+* Mods allow any user to customize and extend the DBpedia Databus website with their own code and add a consistent layer of annotation over all files. 
+* Mods can spot errors in data, provide links, fixes and patches or simply count rdf:type statements or words.
+
+### Use cases and incentives
+* If you would like to have consistent [VOID description](https://www.w3.org/TR/void/) for the whole bus, you can write a mod generating VOID for all datasets. 
+* Mods are great to discover new datasets and data or generate stats for datasets. 
+* Mods can be used to build platforms with your tools. You could create a Mod, where users can contribute mappings, links or patches, e.g. via [PatchR](https://hpi.de/fileadmin/user_upload/fachgebiete/meinel/Semantic-Technologies/slides/USEWOD2012.pdf) 
+
+
+## Databus Mod Description
 We allow third-parties to add further descriptions in the following manner:
 
 
 ### Getting updates
-Mods need to query and download relevant metadata (e.g. daily) via https://databus.dbpedia.org/repo/sparql 
+Mods need to query and download relevant metadata (e.g. daily).
+
 Some examples:
 
 ```
@@ -38,9 +48,12 @@ curl -d "format=text%2Ftab-separated-values" \
   Filter (?mod >= "2019-05-11T00:55:48Z"^^xsd:dateTime) 
 ```
 
-### Full control, on which and how many dataset the mod runs
-Because the mod runs the SELECT query, it can select exactly the datasets it mods.
-Publishing your datasets on the databus and then writing mods for your data is possible. Or you run it over all files and share the results with others. 
+### Full control over which datasets the mods run
+Because each mod uses a SPARQL SELECT query, it can select exactly the datasets it will process.
+Publishing your datasets on the databus and then writing mods for your data only, is possible. 
+
+
+
 
 ### Result of mods
 ![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/provo_databus-modrelation.png)
