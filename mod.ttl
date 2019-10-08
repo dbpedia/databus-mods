@@ -121,12 +121,12 @@ mod:statisticsDerivedFrom a owl:ObjectProperty ;
   rdfs:label "statistic derived from" ;
   rdfs:comment "Any detailed statistical resource (tsv, rdf, xml) derived from the file/version." .
 	
-mod:enrichementDerivedFrom a owl:ObjectProperty ;
+mod:enrichmentDerivedFrom a owl:ObjectProperty ;
   rdfs:subPropertyOf prov:wasDerivedFrom ;
-  rdfs:domain mod:Enrichement ; 
+  rdfs:domain mod:Enrichment ; 
   # rdfs:range sth. sth. databus 
-  rdfs:label "enrichement derived from" ;
-  rdfs:comment "Any resource (tsv, rdf, xml) providing an enrichement of the file/version." .
+  rdfs:label "enrichment derived from" ;
+  rdfs:comment "Any resource (tsv, rdf, xml) providing an enrichment of the file/version." .
 
 mod:statSummary a owl:DatatypeProperty ;
   rdfs:domain mod:DatabusMod ; 
