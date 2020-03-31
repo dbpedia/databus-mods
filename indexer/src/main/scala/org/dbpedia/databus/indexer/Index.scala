@@ -20,10 +20,6 @@
  */
 package org.dbpedia.databus.indexer
 
-import java.io.FileOutputStream
-
-import scala.collection.parallel.mutable.ParHashSet
-import java.net.URL
 
 /**
  *
@@ -34,6 +30,9 @@ object Index {
   def main(args: Array[String]): Unit = {
     println(DerbyHandler.databaseURL)
     updateIndex("dbpedia/mappings/%")
+    DerbyHandler.printNewResultSets
+    DerbyHandler.setStatusProcessed("shatest")
+
   }
 
   /**
@@ -63,14 +62,9 @@ object Index {
          |}
          |""".stripMargin
 
-    //TODO SPARQL all with limit and offset
+    //TODO SPARQL all with limit and offset and add to index with  DerbyHandler.addIfNotExists
 
-    DerbyHandler.addIfNotExists("sshatest", "http://example.org", "http://example.org", "http://example.org", "http://example.org")
-
-
-
-
-
+    DerbyHandler.addIfNotExists("shatest", "http://example.org", "http://example.org", "http://example.org", "http://example.org")
   }
 
 }

@@ -1,12 +1,8 @@
 package org.dbpedia.databus.indexer
 
-import java.net.URL
-import java.sql.DriverManager
-import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.SQLException
-import java.sql.Statement
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
 
@@ -58,26 +54,44 @@ object DerbyHandler {
     conn.close()
   }
 
-  def setStatus(shasum: String) = {
-
+  def setStatusProcessed(shasum: String) = {
+    val conn = DriverManager.getConnection(databaseURL)
+    val statement = conn.createStatement
+    val sql =
+      s"""
+         |UPDATE item SET status = 'processed'
+         |WHERE shasum = '${shasum}'
+         |""".stripMargin
+    try {
+      statement.executeUpdate(sql)
+    } catch {
+      case e: Exception => e.printStackTrace()
+      //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage) //TODO do nothing
+    }
+    conn.close()
   }
 
-  def getNewResultSet: ResultSet = {
+  def printNewResultSets = {
+    val rs = getNewResultSet
+    while (rs.next) {
+      val item = rs.getItem
+      System.out.println(item)
+    }
+    rs.close
+  }
+
+  /**
+   * retrieves all with status open
+   *
+   * @return ResultSet for iterating into threads
+   */
+  def getNewResultSet: ItemSet = {
 
     val conn = DriverManager.getConnection(databaseURL)
     val statement = conn.createStatement
-    val query = "SELECT * FROM item"
+    val query = "SELECT * FROM item WHERE status = 'open'"
     val rs: ResultSet = statement.executeQuery(query)
-    rs
-
-    /* while ( {
-       rs.next
-     }) {
-       val id = rs.getString("shasum")
-       val status = rs.getString("status")
-       System.out.println(id + " " + status)
-     }*/
-
+    new ItemSet(rs)
   }
 
 }

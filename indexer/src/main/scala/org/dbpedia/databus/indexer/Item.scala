@@ -12,5 +12,6 @@ class Item(
 
           ) extends scala.Serializable {
 
-  def factory() = {}
+
+  override def toString = s"Item(shaSum=$shaSum, downloadURL=$downloadURL, dataset=$dataset, version=$version, distribution=$distribution)"
 }
