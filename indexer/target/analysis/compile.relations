@@ -1,0 +1,8 @@
+products:
+   indexer/src/main/scala/org/dbpedia/databus/indexer/Test.scala -> indexer/target/classes/Test.class
+binary dependencies:
+   indexer/src/main/scala/org/dbpedia/databus/indexer/Test.scala -> /usr/lib/jvm/java-8-openjdk-amd64/jre/lib/rt.jar
+source dependencies:
+external dependencies:
+class names:
+   indexer/src/main/scala/org/dbpedia/databus/indexer/Test.scala -> Test
