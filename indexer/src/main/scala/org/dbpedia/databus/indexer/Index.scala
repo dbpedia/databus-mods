@@ -11,7 +11,7 @@ object  Index {
   }
 
   /**
-   * takes a pattern in the form of $user// *
+   * takes a pattern in the form of "dbpedia/mappings/%" as used in LIKE
    * @param pattern
    */
   def updateIndex(pattern:String){
