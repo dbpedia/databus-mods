@@ -32,9 +32,10 @@ object Index {
 
   def main(args: Array[String]): Unit = {
     println(DerbyHandler.databaseURL)
-    updateIndex("dbpedia/mappings/")
-    DerbyHandler.printNewResultSets
+    updateIndex("dbpedia/")
+    //DerbyHandler.printNewResultSets
     DerbyHandler.setStatusProcessed("shatest")
+    DerbyHandler.shutdown
 
   }
 
@@ -48,11 +49,11 @@ object Index {
 
     val count:Int = countResults(pattern)
     val runs:Int = count/10000
-//    println(s"Number of Results: $count")
+    println(s"Number of Results / Runs: $count / $runs")
     var offset = 0
 
     for(i <- 0 to runs){
-
+      println(s"Run: ${i}")
       val sparql =
         s"""
            |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
