@@ -22,7 +22,15 @@ package org.dbpedia.databus.indexer
 
 import java.net.URL
 
-
+/**
+ * I am a DAO
+ *
+ * @param shaSum
+ * @param downloadURL
+ * @param dataset
+ * @param version
+ * @param distribution
+ */
 class Item(
             val shaSum: String,
             val downloadURL: URL,

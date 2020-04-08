@@ -24,35 +24,54 @@ import org.apache.jena.query.{Query, QueryExecutionFactory, QueryFactory}
 
 
 /**
- *
+ * Example
  */
 object Index {
-
-  private val endpoint: String = "https://databus.dbpedia.org/repo/sparql"
-
   def main(args: Array[String]): Unit = {
-    println(DerbyHandler.databaseURL)
-    updateIndex("dbpedia/")
-    //DerbyHandler.printNewResultSets
-    DerbyHandler.setStatusProcessed("shatest")
-    DerbyHandler.shutdown
+    val old = "jdbc:derby:.indexdb;create=true"
+
+    val index = new Index(".indexdb")
+    index.updateIndex("dbpedia/")
+    //index.printNewResultSets
+    index.derbyHandler.setStatusProcessed("shatest")
+    index.derbyHandler.shutdown
 
   }
+}
+
+/**
+ * Retrieves and stores information of files on the Databus in a local database file
+ *
+ * @param indexdbfile the local path, where the DB is created/reused
+ */
+class Index(val indexdbfile: String) {
+
+
+  private val endpoint: String = "https://databus.dbpedia.org/repo/sparql"
+  private val derbyHandler: DerbyHandler = DerbyFactory.init(indexdbfile)
+
 
   /**
-   * takes a pattern in the form of "dbpedia/mappings/%" as used in LIKE
+   * loads ALL records matching the pattern into the local database
+   * FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>
    *
-   * @param pattern defines which indexes are updated
+   * Pattern examples for user, group, artifact, version
+   * dbpedia/
+   * dbpedia/mappings/
+   * dbpedia/mappings/infobox-properties/
+   * dbpedia/mappings/infobox-properties/2020.03.01
+   *
+   * @param pattern a pattern in the form of "dbpedia/mappings/" .
    */
   def updateIndex(pattern: String) {
 
 
-    val count:Int = countResults(pattern)
-    val runs:Int = count/10000
+    val count: Int = countResults(pattern)
+    val runs: Int = count / 10000
     println(s"Number of Results / Runs: $count / $runs")
     var offset = 0
 
-    for(i <- 0 to runs){
+    for (i <- 0 to runs) {
       println(s"Run: ${i}")
       val sparql =
         s"""
@@ -63,7 +82,7 @@ object Index {
            |PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
            |PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
            |
-         |SELECT ?dataset ?version ?distribution ?downloadURL ?shaSum WHERE
+           |SELECT ?dataset ?version ?distribution ?downloadURL ?shaSum WHERE
            |{
            |  ?dataset dataid:version ?version .
            |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
@@ -83,7 +102,7 @@ object Index {
       while (resultSet.hasNext) {
         val querySolution = resultSet.next()
 
-        DerbyHandler.addIfNotExists(
+        derbyHandler.addIfNotExists(
           querySolution.getLiteral("shaSum").getString,
           querySolution.getResource("downloadURL").getURI,
           querySolution.getResource("dataset").getURI,
@@ -96,22 +115,55 @@ object Index {
       offset += 10000
     }
 
-    }
+  }
 
-  def countResults(pattern:String): Int ={
+  /**
+   * retrieves all with status "open"
+   *
+   * @return ResultSet for iterating into threads
+   */
+  def getNewResultSet: ItemSet = derbyHandler.getNewResultSet
+
+  /**
+   * marks the file with the particular shasum as "processed"
+   *
+   * @param shasum the shasum of the file
+   */
+  def setStatusProcessed(shasum: String) = derbyHandler.setStatusProcessed(shasum)
+
+  /**
+   * for debugging
+   */
+  def printNewResultSets = {
+    val rs = getNewResultSet
+    while (rs.next) {
+      val item = rs.getItem
+      System.out.println(item)
+    }
+    rs.close
+  }
+
+  /**
+   * auxiliary function
+   * counts results of the pattern matched on the databus
+   *
+   * @param pattern
+   * @return
+   */
+  def countResults(pattern: String): Int = {
 
     val sparql =
       s"""
-        |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-        |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-        |
-        |SELECT (COUNT(?shaSum) AS ?count) WHERE
-        |{
-        |  ?dataset dataid:version ?version .
-        |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
-        |  ?dataset dcat:distribution ?distribution .
-        |  ?distribution  dataid:sha256sum ?shaSum .
-        |}
+         |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+         |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+         |
+         |SELECT (COUNT(?shaSum) AS ?count) WHERE
+         |{
+         |  ?dataset dataid:version ?version .
+         |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
+         |  ?dataset dcat:distribution ?distribution .
+         |  ?distribution  dataid:sha256sum ?shaSum .
+         |}
       """.stripMargin
 
     val query: Query = QueryFactory.create(sparql)

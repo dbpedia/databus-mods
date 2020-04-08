@@ -20,25 +20,30 @@
  */
 package org.dbpedia.databus.indexer
 
-import java.sql.DriverManager
-import java.sql.ResultSet
-import java.sql.SQLException
+import java.sql.{DriverManager, ResultSet, SQLException}
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
 
-object DerbyHandler {
+object DerbyFactory {
 
-  val databaseURL = "jdbc:derby:.indexdb;create=true"
-  val wtf = init()
+  def init(filename: String): DerbyHandler = {
+    val dbh = new DerbyHandler(s"""jdbc:derby:${filename}""")
+    dbh.init()
+    dbh
+  }
+}
+
+class DerbyHandler(val databaseURL: String) {
+
 
   def shutdown = {
     try {
-      DriverManager.getConnection("jdbc:derby:.indexdb;shutdown=true")
+      DriverManager.getConnection(databaseURL + ";shutdown=true")
     } catch {
       case e: SQLException =>
         if (e.getErrorCode == 45000) {
           println("derby shutdown")
-        }else{
+        } else {
           println(e.getErrorCode)
           e.printStackTrace()
         }
@@ -49,7 +54,7 @@ object DerbyHandler {
   def init(): Boolean = {
 
     Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
-    val conn = DriverManager.getConnection(databaseURL)
+    val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     try {
       val sql: String =
@@ -65,16 +70,22 @@ object DerbyHandler {
     } catch {
       case e: SQLException => println("IGNORE: " + e.getMessage)
     }
-    statement.execute("CREATE INDEX status on item (status)")
+    val ret = statement.execute("CREATE INDEX status on item (status)")
+    conn.close()
+    ret
 
   }
 
+  /**
+   *
+   * @return true if created, false if exists
+   */
   def addIfNotExists(shaSum: String,
                      downloadURL: String,
                      dataset: String,
                      version: String,
-                     distribution: String) = {
-    val conn = DriverManager.getConnection(databaseURL)
+                     distribution: String): Boolean = {
+    val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     val sql =
       s"""
@@ -83,17 +94,23 @@ object DerbyHandler {
          |""".stripMargin
     try {
       statement.execute(sql)
+      true
     } catch {
       case e: DerbySQLIntegrityConstraintViolationException =>
-        if(e.getErrorCode!=30000){
+        //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage) //TODO do nothing
+
+        if (e.getErrorCode != 30000) {
           e.printStackTrace()
         }
+        false
+    } finally {
+      conn.close()
     }
-    conn.close()
+
   }
 
   def setStatusProcessed(shasum: String) = {
-    val conn = DriverManager.getConnection(databaseURL)
+    val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     val sql =
       s"""
@@ -104,19 +121,10 @@ object DerbyHandler {
       statement.executeUpdate(sql)
     } catch {
       case e: Exception => e.printStackTrace()
-      //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage) //TODO do nothing
     }
     conn.close()
   }
 
-  def printNewResultSets = {
-    val rs = getNewResultSet
-    while (rs.next) {
-      val item = rs.getItem
-      System.out.println(item)
-    }
-    rs.close
-  }
 
   /**
    * retrieves all with status open
@@ -125,7 +133,7 @@ object DerbyHandler {
    */
   def getNewResultSet: ItemSet = {
 
-    val conn = DriverManager.getConnection(databaseURL)
+    val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     val query = "SELECT * FROM item WHERE status = 'open'"
     val rs: ResultSet = statement.executeQuery(query)

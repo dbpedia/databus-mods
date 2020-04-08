@@ -24,7 +24,7 @@ import java.net.URL
 import java.sql.ResultSet
 
 /**
- * decorating resultset
+ * decorating result set iterator to return scala object
  *
  * @param rs
  */
