@@ -1,5 +1,6 @@
-package org.dbpedia.databus.indexer
+package org.dbpedia.databus.controller
 
+import org.dbpedia.databus.indexer.Index
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
 object SpringExample extends App{
