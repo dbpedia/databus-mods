@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd" >
+<beans>
+    <!--bean id="test" class="org.dbpedia.databus.indexer.Index" c:indexdbfile=".indexdb"/-->
+    <bean id="index" class="org.dbpedia.databus.indexer.Index">
+        <constructor-arg value=".indexdb"/>
+        <constructor-arg>
+            <list>
+                <value>dbpedia/text/</value>
+                <value>dbpedia/mappings/</value>
+            </list>
+        </constructor-arg>
+    </bean>
+    <!--bean id="cat" class="scalaspring.Cat">
+        <constructor-arg value="Felix" />
+    </bean-->
+</beans>

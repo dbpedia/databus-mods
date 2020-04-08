@@ -30,26 +30,33 @@ object Index {
   def main(args: Array[String]): Unit = {
     val old = "jdbc:derby:.indexdb;create=true"
 
-    val index = new Index(".indexdb")
-    index.updateIndex("dbpedia/")
+    /**val index = new Index(".indexdb", List = ("").)
+      index.updateIndex("dbpedia/")
     //index.printNewResultSets
     index.derbyHandler.setStatusProcessed("shatest")
     index.derbyHandler.shutdown
-
+*/
   }
 }
 
 /**
  * Retrieves and stores information of files on the Databus in a local database file
  *
+ * Note: this allows to have many indexes, separated in different dbs
+ * If only one index is needed, then use the same database
+ *
  * @param indexdbfile the local path, where the DB is created/reused
  */
-class Index(val indexdbfile: String) {
+class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
 
 
   private val endpoint: String = "https://databus.dbpedia.org/repo/sparql"
   private val derbyHandler: DerbyHandler = DerbyFactory.init(indexdbfile)
 
+
+  def updateIndexes()={
+    patterns.forEach(updateIndex(_))
+  }
 
   /**
    * loads ALL records matching the pattern into the local database
@@ -65,6 +72,7 @@ class Index(val indexdbfile: String) {
    */
   def updateIndex(pattern: String) {
 
+    println("pattern"+pattern)
 
     val count: Int = countResults(pattern)
     val runs: Int = count / 10000
