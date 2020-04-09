@@ -7,11 +7,19 @@
         <constructor-arg>
             <list>
                 <value>dbpedia/text/</value>
-                <value>dbpedia/mappings/</value>
+                <!--value>dbpedia/mappings/</value-->
             </list>
         </constructor-arg>
     </bean>
-    <!--bean id="cat" class="scalaspring.Cat">
-        <constructor-arg value="Felix" />
-    </bean-->
+
+    <bean id="agent" class="org.dbpedia.databus.controller.Agent">
+        <constructor-arg>
+            <list>
+                <ref bean="print"/>
+            </list>
+        </constructor-arg>
+        <constructor-arg ref="printSink" />
+    </bean>
+    <bean id="printSink" class="org.dbpedia.databus.sink.PrintSink"/>
+    <bean id="print" class="org.dbpedia.databus.process.PrintProcessor"/>
 </beans>
