@@ -26,6 +26,9 @@ import org.dbpedia.databus.sink.Sink
 class MimeTypeProcessor extends Processor {
   override def process(item: Item, sink: Sink): Unit = {
     //TODO FABIAN
+    val file = "TODO from method parameter "
+    val mimetype = "TODO"
 
+    sink.consume(s"File ${file} has mimetype ${mimetype}")
   }
 }
