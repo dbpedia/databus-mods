@@ -37,7 +37,12 @@ class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
     // process and sink
     // TODO Fabian
     // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.
-    processors.forEach(_.process(item,sink))
+    var i=0
+    while (i < processors.size()){
+      processors.get(i).process(item,sink)
+      i+=1
+    }
+
 
 
   }
