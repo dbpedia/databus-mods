@@ -55,7 +55,11 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
 
 
   def updateIndexes()={
-    patterns.forEach(updateIndex(_))
+    var i=0
+    while (i < patterns.size()){
+      updateIndex(patterns.get(i))
+      i+=1
+    }
   }
 
   /**

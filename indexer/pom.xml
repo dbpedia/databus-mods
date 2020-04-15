@@ -37,10 +37,14 @@
         </plugins>
     </build>
 
-  
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
 
     <dependencies>
-
         <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
         <dependency>
             <groupId>org.apache.derby</groupId>
@@ -59,9 +63,27 @@
             <artifactId>spring-context</artifactId>
             <version>5.2.5.RELEASE</version>
         </dependency>
-
-
+        <dependency>
+            <groupId>com.github.dbpedia</groupId>
+            <artifactId>databus-client</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
+        <dependency>
+            <groupId>com.github.pathikrit</groupId>
+            <artifactId>better-files_2.11</artifactId>
+            <version>3.8.0</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest -->
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.11</artifactId>
+            <version>3.3.0-SNAP2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+
 
 </project>
 

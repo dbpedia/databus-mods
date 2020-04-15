@@ -20,6 +20,9 @@
  */
 package org.dbpedia.databus.controller
 
+import better.files.File
+import org.dbpedia.databus.filehandling.FileUtil
+import org.dbpedia.databus.filehandling.download.Downloader
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.process.Processor
 import org.dbpedia.databus.sink.Sink
@@ -36,9 +39,24 @@ class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
 
     // process and sink
     // TODO Fabian
-    // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.
-    processors.forEach(_.process(item,sink))
 
+    val tempDir = File("./temp")
+    tempDir.createDirectoryIfNotExists()
+
+    val file = tempDir/"tempFile"
+
+    (0 to 4).iterator
+      .takeWhile(_ => !FileUtil.checkSum(file, item.shaSum))
+      .foreach(i => Downloader.downloadUrlToFile(item.downloadURL, file))
+
+    // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.
+    var i=0
+    while (i < processors.size()){
+      processors.get(i).process(file, item, sink)
+      i+=1
+    }
+
+    file.delete()
 
   }
 
