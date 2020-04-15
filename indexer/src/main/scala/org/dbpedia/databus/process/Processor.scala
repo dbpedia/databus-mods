@@ -20,10 +20,11 @@
  */
 package org.dbpedia.databus.process
 
+import better.files.File
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
 abstract class Processor {
 
-  def process(item:Item, sink:Sink)
+  def process(file:File, item:Item, sink:Sink)
 }

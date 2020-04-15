@@ -19,16 +19,50 @@
  * #L%
  */
 package org.dbpedia.databus.process
+import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.nio.file.Files
+
+import better.files.File
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.utils.IOUtils
+import org.dbpedia.databus.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
+import org.dbpedia.databus.process.archived.Decompressor
 import org.dbpedia.databus.sink.Sink
 
 
 class MimeTypeProcessor extends Processor {
-  override def process(item: Item, sink: Sink): Unit = {
-    //TODO FABIAN
-    val file = "TODO from method parameter "
-    val mimetype = "TODO"
 
+  override def process(file:File, item: Item, sink: Sink): Unit = {
+    //TODO FABIAN
+
+    val preparedFile:File = {
+      val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(file.toJava)))
+
+      if(inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
+        val decompressedFile = file.parent/ s"${file.nameWithoutExtension(includeAll = false)}"
+        copyStream(inStream,new FileOutputStream(decompressedFile.toJava))
+
+        sink.consume(s"File ${file} has compression ${checkMimeType(file)}")
+        decompressedFile
+      }
+      else file
+    }
+
+    val mimetype = checkMimeType(preparedFile)
     sink.consume(s"File ${file} has mimetype ${mimetype}")
+  }
+
+  def checkMimeType(file: File): String = {
+    Files.probeContentType(file.path)
+  }
+
+  def copyStream(in: InputStream, out: OutputStream): Unit = {
+    try {
+      IOUtils.copy(in, out)
+    }
+    finally if (out != null) {
+      out.close()
+    }
   }
 }
