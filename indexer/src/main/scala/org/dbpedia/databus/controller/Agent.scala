@@ -20,6 +20,9 @@
  */
 package org.dbpedia.databus.controller
 
+import java.nio.file.Files
+import java.security.MessageDigest
+
 import better.files.File
 import org.dbpedia.databus.filehandling.FileUtil
 import org.dbpedia.databus.filehandling.download.Downloader
@@ -45,9 +48,10 @@ class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
 
     val file = tempDir/"tempFile"
 
-    (0 to 4).iterator
-      .takeWhile(_ => !FileUtil.checkSum(file, item.shaSum))
-      .foreach(i => Downloader.downloadUrlToFile(item.downloadURL, file))
+    do{
+      Downloader.downloadUrlToFile(item.downloadURL, file)
+    } while(!checkSum(file, item.shaSum))
+//    } while(!FileUtil.checkSum(file, item.shaSum))
 
     // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.
     var i=0
@@ -59,5 +63,17 @@ class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
     file.delete()
 
   }
+
+  def getSha256(file:File) : String = {
+    MessageDigest.getInstance("SHA-256")
+      .digest(Files.readAllBytes(file.path))
+      .map("%02x".format(_)).mkString
+  }
+
+  def checkSum(file: File, sha: String): Boolean = {
+    if (getSha256(file)== sha) true
+    else false
+  }
+
 
 }
