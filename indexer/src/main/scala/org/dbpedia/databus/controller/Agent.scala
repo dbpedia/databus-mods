@@ -30,7 +30,7 @@ import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.process.Processor
 import org.dbpedia.databus.sink.Sink
 
-class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
+class Agent ( val datadir : String,   val processors: java.util.List[Processor], val sink:Sink ) {
 
 
   def process(item:Item) = {
@@ -43,14 +43,17 @@ class Agent ( val processors: java.util.List[Processor], val sink:Sink ) {
     // process and sink
     // TODO Fabian
 
-    val tempDir = File("./temp")
+    val tempDir = File(datadir)
     tempDir.createDirectoryIfNotExists()
 
+    // folder with user/group/artifact/version
     val file = tempDir/"tempFile"
+
 
     do{
       Downloader.downloadUrlToFile(item.downloadURL, file)
-    } while(!checkSum(file, item.shaSum))
+    } while(!checkSum(file, item.shaSum) )
+
 //    } while(!FileUtil.checkSum(file, item.shaSum))
 
     // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.

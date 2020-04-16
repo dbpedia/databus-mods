@@ -13,6 +13,7 @@
     </bean>
 
     <bean id="agent" class="org.dbpedia.databus.controller.Agent">
+        <constructor-arg value=".datatmp" />
         <constructor-arg>
             <list>
                 <ref bean="print"/>
