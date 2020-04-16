@@ -23,11 +23,9 @@ import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStr
 import java.nio.file.Files
 
 import better.files.File
-import org.apache.commons.compress.compressors.CompressorInputStream
 import org.apache.commons.compress.utils.IOUtils
 import org.dbpedia.databus.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
-import org.dbpedia.databus.process.archived.Decompressor
 import org.dbpedia.databus.sink.Sink
 
 
