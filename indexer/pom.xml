@@ -52,11 +52,11 @@
             <version>10.14.2.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-arq -->
-        <dependency>
+<!--        <dependency>
             <groupId>org.apache.jena</groupId>
             <artifactId>jena-arq</artifactId>
             <version>3.14.0</version>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.springframework/spring-context -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -68,13 +68,14 @@
             <artifactId>databus-client</artifactId>
             <version>master-SNAPSHOT</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
             <artifactId>better-files_2.11</artifactId>
             <version>3.8.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.scalatest/scalatest -->
+<!--         https://mvnrepository.com/artifact/org.scalatest/scalatest -->
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.11</artifactId>

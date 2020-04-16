@@ -20,12 +20,9 @@
  */
 package org.dbpedia.databus.controller
 
-import java.nio.file.Files
-import java.security.MessageDigest
-
 import better.files.File
-import org.dbpedia.databus.filehandling.FileUtil
-import org.dbpedia.databus.filehandling.download.Downloader
+import org.dbpedia.databus.client.filehandling.download.Downloader
+import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.process.Processor
 import org.dbpedia.databus.sink.Sink
@@ -43,40 +40,28 @@ class Agent ( val datadir : String,   val processors: java.util.List[Processor],
     // process and sink
     // TODO Fabian
 
-    val tempDir = File(datadir)
+    val targetDir = File(datadir)
+    val tempDir = targetDir / "downloadTemp"
     tempDir.createDirectoryIfNotExists()
 
-    // folder with user/group/artifact/version
-    val file = tempDir/"tempFile"
+    Downloader.downloadFile(item.downloadURL.toString, item.shaSum, tempDir) match {
+      case Some(tempFile:File) => {
+        val file = FileHandler.handleFile(tempFile, targetDir, "same", "same").get
+        tempFile.delete()
 
+        var i=0
+        while (i < processors.size()){
+          processors.get(i).process(file, item, sink)
+          i+=1
+        }
 
-    do{
-      Downloader.downloadUrlToFile(item.downloadURL, file)
-    } while(!checkSum(file, item.shaSum) )
+        file.delete()
+      }
 
-//    } while(!FileUtil.checkSum(file, item.shaSum))
+      case None => "could not process file"
 
-    // Processor.scala needs to extended, as def process method needs more variables, such as the filename, etc.
-    var i=0
-    while (i < processors.size()){
-      processors.get(i).process(file, item, sink)
-      i+=1
     }
 
-    file.delete()
-
   }
-
-  def getSha256(file:File) : String = {
-    MessageDigest.getInstance("SHA-256")
-      .digest(Files.readAllBytes(file.path))
-      .map("%02x".format(_)).mkString
-  }
-
-  def checkSum(file: File, sha: String): Boolean = {
-    if (getSha256(file)== sha) true
-    else false
-  }
-
 
 }
