@@ -41,6 +41,9 @@ class Item(
 
           ) extends scala.Serializable {
 
+  def getPath = {
+    version.toString.replace("https://databus.dbpedia.org/","")
+  }
 
   override def toString = s"Item(shaSum=$shaSum, downloadURL=$downloadURL, dataset=$dataset, version=$version, file=$file, distribution=$distribution)"
 }

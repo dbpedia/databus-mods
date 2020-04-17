@@ -48,14 +48,14 @@ class MimeTypeProcessor extends Processor {
         val decompressedFile = file.parent/ s"${file.nameWithoutExtension(includeAll = false)}"
         copyStream(inStream,new FileOutputStream(decompressedFile.toJava))
 
-        sink.consume(s"File ${file} has compression ${checkMimeType(file)}")
+        sink.consume(s"${checkMimeType(file)} compression for file ${file} ")
         decompressedFile
       }
       else file
     }
 
     val mimetype = checkMimeType(preparedFile)
-    sink.consume(s"File ${file} has mimetype ${mimetype}")
+    sink.consume(s"${mimetype} mimetype for file ${file}")
   }
 
   /**

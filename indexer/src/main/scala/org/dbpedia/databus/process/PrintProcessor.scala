@@ -21,6 +21,7 @@
 package org.dbpedia.databus.process
 
 import better.files.File
+import org.apache.jena.rdf.model.ModelFactory
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
@@ -28,8 +29,17 @@ class PrintProcessor extends Processor {
 
   def process(file:File,item:Item, sink:Sink)={
 
+
+
     //example
     sink.consume(item.shaSum)
+
+    val m = ModelFactory.createDefaultModel()
+    val dist = m.createResource(item.distribution.toString)
+    dist.addLiteral(m.createProperty("http://shasum.org/sha"), item.shaSum)
+    sink.consume(item, m)
+
+
   }
 
 }

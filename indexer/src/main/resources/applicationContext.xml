@@ -20,9 +20,11 @@
                 <ref bean="mimetype"/>
             </list>
         </constructor-arg>
-        <constructor-arg ref="printSink" />
+        <constructor-arg ref="sink" />
     </bean>
-    <bean id="printSink" class="org.dbpedia.databus.sink.PrintSink"/>
+    <bean id="sink" class="org.dbpedia.databus.sink.ModelToFileSink">
+        <constructor-arg value=".resultdir" />
+    </bean>
     <bean id="print" class="org.dbpedia.databus.process.PrintProcessor"/>
     <bean id="mimetype" class="org.dbpedia.databus.process.MimeTypeProcessor"/>
 </beans>
