@@ -22,7 +22,7 @@
         </constructor-arg>
         <constructor-arg ref="sink" />
     </bean>
-    <bean id="sink" class="org.dbpedia.databus.sink.ModelToFileSink">
+    <bean id="sink" class="org.dbpedia.databus.sink.DataidExtSink">
         <constructor-arg value=".resultdir" />
     </bean>
     <bean id="print" class="org.dbpedia.databus.process.PrintProcessor"/>
