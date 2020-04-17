@@ -32,6 +32,7 @@ import scala.util.{Failure, Success}
 object ControllerMain extends App{
 
 
+    val time = System.currentTimeMillis()
     // open & read the application context file
     val ctx = new ClassPathXmlApplicationContext("applicationContext.xml")
     val i = ctx.getBean("index").asInstanceOf[Index]
@@ -59,4 +60,9 @@ object ControllerMain extends App{
             case Success(_) => jobsRunning.remove(future)
         }
     }
+    printf(
+        s"""
+           |maxparallelprocesses ${maxParallelProcesses}
+           |time needed: ${System.currentTimeMillis() - time} ms
+           |""".stripMargin)
 }
