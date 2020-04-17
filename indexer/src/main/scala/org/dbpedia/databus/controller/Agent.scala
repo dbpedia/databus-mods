@@ -27,7 +27,7 @@ import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.process.Processor
 import org.dbpedia.databus.sink.Sink
 
-class Agent ( val datadir : String,   val processors: java.util.List[Processor], val sink:Sink ) {
+class Agent ( val datadir : String,   val processors: java.util.List[Processor], val sink:Sink ) extends Serializable {
 
 
   def process(item:Item) = {
@@ -41,10 +41,9 @@ class Agent ( val datadir : String,   val processors: java.util.List[Processor],
     // TODO Fabian
 
     val targetDir = File(datadir)
-    val tempDir = targetDir / "downloadTemp"
-    tempDir.createDirectoryIfNotExists()
+    targetDir.createDirectoryIfNotExists()
 
-    Downloader.downloadFile(item.downloadURL.toString, item.shaSum, tempDir) match {
+    Downloader.downloadFile(item.downloadURL.toString, item.shaSum, targetDir) match {
       case Some(tempFile:File) => {
         val file = FileHandler.handleFile(tempFile, targetDir, "same", "same").get
         tempFile.delete()

@@ -94,13 +94,14 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
            |PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
            |PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
            |
-           |SELECT ?dataset ?version ?distribution ?downloadURL ?shaSum WHERE
+           |SELECT ?dataset ?version ?distribution ?downloadURL ?file ?shaSum WHERE
            |{
            |  ?dataset dataid:version ?version .
            |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
            |  ?dataset dcat:distribution ?distribution .
            |  ?distribution  dcat:downloadURL ?downloadURL .
            |  ?distribution  dataid:sha256sum ?shaSum .
+           |  ?distribution  dataid:file ?file .
            |}
            |LIMIT 10000
            |OFFSET $offset
@@ -119,6 +120,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
           querySolution.getResource("downloadURL").getURI,
           querySolution.getResource("dataset").getURI,
           querySolution.getResource("version").getURI,
+          querySolution.getResource("file").getURI,
           querySolution.getResource("distribution").getURI)
       }
 

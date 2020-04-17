@@ -20,8 +20,14 @@
  */
 package org.dbpedia.databus.controller
 
+import java.util.concurrent.ConcurrentLinkedQueue
+
 import org.dbpedia.databus.indexer.Index
 import org.springframework.context.support.ClassPathXmlApplicationContext
+
+import scala.concurrent.Future
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util.{Failure, Success}
 
 object ControllerMain extends App{
 
@@ -33,10 +39,24 @@ object ControllerMain extends App{
 
 
     // process
+    //Execute the extraction jobs one by one
+
+    val jobsRunning = new ConcurrentLinkedQueue[Future[java.io.Serializable]]()
+    val maxParallelProcesses = 1
     val iterItem = i.getNewResultSet
     while (iterItem.next) {
+        while(jobsRunning.size() >= maxParallelProcesses){
+            Thread.sleep(1000)
+        }
+
         val item = iterItem.getItem
         val agent = ctx.getBean("agent").asInstanceOf[Agent]
         agent.process(item)
+        val  future = Future(agent.process(item))
+        jobsRunning.add(future)
+        future.onComplete {
+            case Failure(f) => throw f
+            case Success(_) => jobsRunning.remove(future)
+        }
     }
 }

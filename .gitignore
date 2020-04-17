@@ -3,4 +3,5 @@
 */target
 updates.tsv
 .indexdb
+.downloadtemp
 derby.log
