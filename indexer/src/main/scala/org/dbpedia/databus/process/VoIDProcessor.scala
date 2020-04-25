@@ -47,7 +47,7 @@ class VoIDProcessor extends Processor {
       else propertyPartitionSeq+=triple.getPredicate.toString
     }
 
-    var result = new StringBuilder(s"item.downloadURL a void:Dataset;\n")
+    var result = new StringBuilder(s"${item.file} a void:Dataset;\n")
 
     classpartitionSeq.toList.distinct.foreach(x=> {
       result++=s"void:classPartition [ void:class $x; ];\n"
