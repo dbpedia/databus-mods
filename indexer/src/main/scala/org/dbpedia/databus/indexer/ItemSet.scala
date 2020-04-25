@@ -41,6 +41,7 @@ class ItemSet(val rs: ResultSet) {
       new URL(rs.getString("downloadURL")),
       new URL(rs.getString("dataset")),
       new URL(rs.getString("version")),
+      new URL(rs.getString("file")),
       new URL(rs.getString("distribution"))
     )
   }

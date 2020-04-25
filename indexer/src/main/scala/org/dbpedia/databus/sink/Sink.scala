@@ -21,9 +21,13 @@
 package org.dbpedia.databus.sink
 
 import org.apache.jena.atlas.lib.ProgressMonitor.Output
+import org.apache.jena.rdf.model.Model
+import org.dbpedia.databus.indexer.Item
 
 abstract class Sink {
 
   def consume(output: String)
+
+  def consume(item:Item, model:Model)
 
 }

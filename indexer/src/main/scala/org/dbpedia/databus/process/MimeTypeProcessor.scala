@@ -26,7 +26,7 @@ import better.files.File
 import org.apache.commons.compress.utils.IOUtils
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
-import org.dbpedia.databus.sink.Sink
+import org.dbpedia.databus.sink.{DataidExtSink, Sink}
 
 
 class MimeTypeProcessor extends Processor {
@@ -39,7 +39,6 @@ class MimeTypeProcessor extends Processor {
     * @param sink
     */
   override def process(file:File, item: Item, sink: Sink): Unit = {
-    //TODO FABIAN
 
     val preparedFile:File = {
       val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(file.toJava)))
@@ -48,14 +47,16 @@ class MimeTypeProcessor extends Processor {
         val decompressedFile = file.parent/ s"${file.nameWithoutExtension(includeAll = false)}"
         copyStream(inStream,new FileOutputStream(decompressedFile.toJava))
 
-        sink.consume(s"File ${file} has compression ${checkMimeType(file)}")
+
+        sink.consume(s"${checkMimeType(file)} compression for file ${file} ")
         decompressedFile
       }
       else file
     }
 
     val mimetype = checkMimeType(preparedFile)
-    sink.consume(s"File ${file} has mimetype ${mimetype}")
+    item.mimetype = mimetype
+    sink.consume(s"${mimetype} mimetype for file ${file}")
   }
 
   /**

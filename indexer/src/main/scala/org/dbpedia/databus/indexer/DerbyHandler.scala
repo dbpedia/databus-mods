@@ -64,6 +64,7 @@ class DerbyHandler(val databaseURL: String) {
           |downloadURL varchar(2000),
           |dataset varchar(2000),
           |version varchar(2000),
+          |file varchar(2000),
           |distribution varchar(2000)
           |)""".stripMargin
       statement.execute(sql)
@@ -84,13 +85,14 @@ class DerbyHandler(val databaseURL: String) {
                      downloadURL: String,
                      dataset: String,
                      version: String,
+                     file:String,
                      distribution: String): Boolean = {
     val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     val sql =
       s"""
          |INSERT INTO item VALUES
-         |('${shaSum}','open','${downloadURL}','${dataset}','${version}','${distribution}')
+         |('${shaSum}','open','${downloadURL}','${dataset}','${version}','${file}','${distribution}')
          |""".stripMargin
     try {
       statement.execute(sql)

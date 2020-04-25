@@ -36,10 +36,17 @@ class Item(
             val downloadURL: URL,
             val dataset: URL,
             val version: URL,
+            val file : URL,
             val distribution: URL
-
           ) extends scala.Serializable {
 
 
-  override def toString = s"Item(shaSum=$shaSum, downloadURL=$downloadURL, dataset=$dataset, version=$version, distribution=$distribution)"
+  var mimetype :String = null
+  var mimetypeUrl : URL = null
+
+  def getPath = {
+    version.toString.replace("https://databus.dbpedia.org/","")
+  }
+
+  override def toString = s"Item(shaSum=$shaSum, downloadURL=$downloadURL, dataset=$dataset, version=$version, file=$file, distribution=$distribution)"
 }

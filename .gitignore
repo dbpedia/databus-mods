@@ -3,4 +3,6 @@
 */target
 updates.tsv
 .indexdb
+.downloadtemp
+.resoultdir
 derby.log
