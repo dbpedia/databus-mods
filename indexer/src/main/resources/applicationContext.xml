@@ -7,6 +7,7 @@
         <constructor-arg>
             <list>
                 <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>
+<!--                https://databus.dbpedia.org/-->
                 <!--value>dbpedia/mappings/</value-->
             </list>
         </constructor-arg>
@@ -16,8 +17,9 @@
         <constructor-arg value=".downloadtemp" />
         <constructor-arg>
             <list>
-                <ref bean="print"/>
-                <ref bean="mimetype"/>
+<!--                <ref bean="print"/>-->
+<!--                <ref bean="mimetype"/>-->
+                <ref bean="spo"/>
             </list>
         </constructor-arg>
         <constructor-arg ref="sink" />
@@ -27,4 +29,7 @@
     </bean>
     <bean id="print" class="org.dbpedia.databus.process.PrintProcessor"/>
     <bean id="mimetype" class="org.dbpedia.databus.process.MimeTypeProcessor"/>
+
+    <bean id="void" class="org.dbpedia.databus.process.VoIDProcessor"/>
+    <bean id="spo" class="org.dbpedia.databus.process.SPOProcessor"/>
 </beans>

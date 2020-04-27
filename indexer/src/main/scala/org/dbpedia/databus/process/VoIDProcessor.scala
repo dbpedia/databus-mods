@@ -1,5 +1,5 @@
 package org.dbpedia.databus.process
-import java.io.{BufferedInputStream, FileInputStream}
+import java.io.{BufferedInputStream, BufferedWriter, FileInputStream, FileWriter}
 import java.util.concurrent.{ExecutorService, Executors}
 
 import better.files.File
@@ -26,6 +26,8 @@ class VoIDProcessor extends Processor {
     val classpartitionSeq: ListBuffer[String] = ListBuffer.empty
     val propertyPartitionSeq: ListBuffer[String] = ListBuffer.empty
 
+    val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
+
     // PipedRDFStream and PipedRDFIterator need to be on different threads
     val executor:ExecutorService = Executors.newSingleThreadExecutor()
 
@@ -33,7 +35,7 @@ class VoIDProcessor extends Processor {
     val parser:Runnable = new Runnable() {
       override def run() {
         // Call the parsing process.
-        RDFDataMgr.parse(rdfStream, in, Lang.TTL)
+        RDFDataMgr.parse(rdfStream, in, lang)
       }
     }
 
@@ -47,15 +49,25 @@ class VoIDProcessor extends Processor {
       else propertyPartitionSeq+=triple.getPredicate.toString
     }
 
-    var result = new StringBuilder(s"${item.file} a void:Dataset;\n")
+    var result = new StringBuilder(s"<distribution> dataid:file <${item.file}>;\n\tdataid:version <${item.version}> ;\n")
 
     classpartitionSeq.toList.distinct.foreach(x=> {
-      result++=s"void:classPartition [ void:class $x; ];\n"
+      result++=s"\tvoid:classPartition [ void:class <$x>; ] ;\n"
     })
 
     propertyPartitionSeq.toList.distinct.foreach(x=>{
-      result++=s"void:propertyPartition [ void:property $x; ];\n"
+      result++=s"\tvoid:propertyPartition [ void:property <$x>; ] ;\n"
     })
+
+    val count = classpartitionSeq.size + propertyPartitionSeq.size
+    result ++= s"\tvoid:triples $count"
+
+    val resultfile = File("./mappings_2020.04.01")
+//    resultfile.createFileIfNotExists()
+    val bw = new BufferedWriter(new FileWriter(resultfile.toJava, true))
+    bw.append(result.mkString("","",".\n"))
+    bw.append("\n")
+    bw.close()
 
     sink.consume(result.mkString("","","."))
   }
