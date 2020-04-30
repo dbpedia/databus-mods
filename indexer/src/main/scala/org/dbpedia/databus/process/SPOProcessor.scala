@@ -19,34 +19,20 @@ class SPOProcessor extends Processor {
     val dir = File("./spoResults")
     dir.createDirectoryIfNotExists()
 
-    val resultfile = dir / s"./${file.nameWithoutExtension(true)}_spoResult.csv"
-    resultfile.delete(true)
+    val resultFile = dir / s"./${file.nameWithoutExtension(true)}_spoResult.csv"
+    resultFile.delete(true)
 
+    val iter = readAsTriplesIterator(file,item)
+
+    val spo = calculateSPO(iter)
+
+    writeResult(resultFile, spo._1, spo._2, spo._3)
+  }
+
+  def calculateSPO(iter:PipedRDFIterator[Triple]):(mutable.HashMap[String,Int],mutable.HashMap[String,Int],mutable.HashMap[String,Int])={
     val subjectMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
     val predicateMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
     val objectMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
-
-
-    val bis = new BufferedInputStream(new FileInputStream(file.toJava))
-    val in = Compressor.decompress(bis)
-
-    val iter: PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
-    val rdfStream: PipedRDFStream[Triple] = new PipedTriplesStream(iter)
-
-    val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
-    // PipedRDFStream and PipedRDFIterator need to be on different threads
-    val executor: ExecutorService = Executors.newSingleThreadExecutor()
-
-    // Create a runnable for our parser thread
-    val parser: Runnable = new Runnable() {
-      override def run() {
-        // Call the parsing process.
-        RDFDataMgr.parse(rdfStream, in, lang)
-      }
-    }
-
-    // Start the parser on another thread
-    executor.submit(parser)
 
     while (iter.hasNext) {
       val triple = iter.next()
@@ -72,29 +58,50 @@ class SPOProcessor extends Processor {
         case None => objectMap.put(obj,1)
       }
     }
-//    val bw = new BufferedWriter(new FileWriter(File("./asdNumber").toJava, true))
-//    bw.append("subjects, countSubject, predicates, countPredicate, objects, countObject\n")
-//    var str = s"subject size: ${subjectMap.size}"
-//    str= str.concat(s"predicate size: ${predicateMap.size}")
-//    str = str.concat(s"object size: ${objectMap.size}")
-//
-//    bw.append(str)
-//
-//    bw.close()
 
-    writeResult(resultfile, subjectMap, predicateMap, objectMap)
-
+    (subjectMap,predicateMap,objectMap)
   }
+
+  /**
+    * read rdf file to triples iterator
+    *
+    * @param file local file to process
+    * @param item related item of local file
+    * @return triples iterator
+    */
+  def readAsTriplesIterator(file:File, item:Item):PipedRDFIterator[Triple] ={
+
+    val bis = new BufferedInputStream(new FileInputStream(file.toJava))
+    val in = Compressor.decompress(bis)
+
+    val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
+
+    val iter:PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
+    val rdfStream:PipedRDFStream[Triple] = new PipedTriplesStream(iter)
+
+    // PipedRDFStream and PipedRDFIterator need to be on different threads
+    val executor:ExecutorService = Executors.newSingleThreadExecutor()
+
+    // Create a runnable for our parser thread
+    val parser:Runnable = new Runnable() {
+      override def run() {
+        // Call the parsing process.
+        RDFDataMgr.parse(rdfStream, in, lang)
+      }
+    }
+
+    // Start the parser on another thread
+    executor.submit(parser)
+
+    iter
+  }
+
 
   def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int])={
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
     bw.append("subjects, countSubject, predicates, countPredicate, objects, countObject\n")
 
-//    var i=0
-
     while(subjectMap.nonEmpty || objectMap.nonEmpty || predicateMap.nonEmpty){
-//      i+=1
-//      println(i)
       val str = StringBuilder.newBuilder
 
       if (subjectMap.nonEmpty) {

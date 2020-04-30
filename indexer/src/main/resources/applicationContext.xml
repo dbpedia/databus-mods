@@ -19,7 +19,7 @@
             <list>
 <!--                <ref bean="print"/>-->
 <!--                <ref bean="mimetype"/>-->
-                <ref bean="void"/>
+                <ref bean="spo"/>
             </list>
         </constructor-arg>
         <constructor-arg ref="sink" />

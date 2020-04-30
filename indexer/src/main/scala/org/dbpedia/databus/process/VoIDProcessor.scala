@@ -36,7 +36,7 @@ class VoIDProcessor extends Processor {
   }
 
   /**
-    * read file to triples iterator
+    * read rdf file to triples iterator
     *
     * @param file local file to process
     * @param item related item of local file
