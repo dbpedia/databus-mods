@@ -12,13 +12,13 @@ import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
 import scala.collection.mutable
-import scala.collection.mutable.ListBuffer
 
 class SPOProcessor extends Processor {
 
   override def process(file: File, item: Item, sink: Sink): Unit = {
     val dir = File("./spoResults")
     dir.createDirectoryIfNotExists()
+
     val resultfile = dir / s"./${file.nameWithoutExtension(true)}_spoResult.csv"
     resultfile.delete(true)
 
@@ -51,9 +51,14 @@ class SPOProcessor extends Processor {
     while (iter.hasNext) {
       val triple = iter.next()
       val subj = triple.getSubject.toString
-      val obj = triple.getObject.toString
+      val obj = {
+        if (triple.getObject.isLiteral) triple.getObject.getLiteralLexicalForm
+        else if(triple.getObject.isURI) triple.getObject.getURI
+        else triple.getObject.toString
+      }
       val pre = triple.getPredicate.getURI
 
+      println(triple)
       subjectMap.get(subj) match {
         case Some(count) => subjectMap.update(subj, count+1)
         case None => subjectMap.put(subj,1)
@@ -67,6 +72,15 @@ class SPOProcessor extends Processor {
         case None => objectMap.put(obj,1)
       }
     }
+//    val bw = new BufferedWriter(new FileWriter(File("./asdNumber").toJava, true))
+//    bw.append("subjects, countSubject, predicates, countPredicate, objects, countObject\n")
+//    var str = s"subject size: ${subjectMap.size}"
+//    str= str.concat(s"predicate size: ${predicateMap.size}")
+//    str = str.concat(s"object size: ${objectMap.size}")
+//
+//    bw.append(str)
+//
+//    bw.close()
 
     writeResult(resultfile, subjectMap, predicateMap, objectMap)
 
@@ -76,7 +90,11 @@ class SPOProcessor extends Processor {
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
     bw.append("subjects, countSubject, predicates, countPredicate, objects, countObject\n")
 
+//    var i=0
+
     while(subjectMap.nonEmpty || objectMap.nonEmpty || predicateMap.nonEmpty){
+//      i+=1
+//      println(i)
       val str = StringBuilder.newBuilder
 
       if (subjectMap.nonEmpty) {
@@ -102,6 +120,7 @@ class SPOProcessor extends Processor {
 
       str.append("\n")
 
+      println(str)
       bw.append(str)
     }
 
