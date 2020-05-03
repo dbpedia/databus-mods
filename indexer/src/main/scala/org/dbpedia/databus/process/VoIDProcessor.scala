@@ -110,7 +110,7 @@ class VoIDProcessor extends Processor {
   def writeResultAsTurtle(item:Item, classPartitionsMap:Map[String,Int], propertyPartitionsMap:Map[String,Int], resultFile:File):String ={
 
     var result = new StringBuilder(
-      s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;\n" +
+      s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;n" +
         s"\t<http://dataid.dbpedia.org/ns/core#version> <${item.version}> ;\n")
 
     classPartitionsMap.foreach(x=> {

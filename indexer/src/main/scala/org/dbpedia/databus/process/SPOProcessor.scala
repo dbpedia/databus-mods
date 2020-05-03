@@ -94,9 +94,9 @@ class SPOProcessor extends Processor {
   }
 
 
-  def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int])={
+  def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int]):Unit={
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
-//      bw.append("uri; type; count\n")
+//      bw.append("uri;type; count\n")
 
     write(subjectMap, "subject")
     write(predicateMap, "predicate")
