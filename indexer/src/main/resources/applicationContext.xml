@@ -7,7 +7,7 @@
         <constructor-arg>
             <list>
 <!--                <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>-->
-                <value>ontologies/.*=parsed.ttl.**</value>
+                <value>ontologies/.*=parsed.ttl.*</value>
             </list>
         </constructor-arg>
     </bean>
