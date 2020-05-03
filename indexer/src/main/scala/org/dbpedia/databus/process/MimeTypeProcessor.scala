@@ -19,14 +19,14 @@
  * #L%
  */
 package org.dbpedia.databus.process
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import java.io._
 import java.nio.file.Files
 
 import better.files.File
 import org.apache.commons.compress.utils.IOUtils
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
-import org.dbpedia.databus.sink.{DataidExtSink, Sink}
+import org.dbpedia.databus.sink.Sink
 
 
 class MimeTypeProcessor extends Processor {

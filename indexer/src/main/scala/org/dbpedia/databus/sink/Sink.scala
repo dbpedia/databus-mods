@@ -20,7 +20,6 @@
  */
 package org.dbpedia.databus.sink
 
-import org.apache.jena.atlas.lib.ProgressMonitor.Output
 import org.apache.jena.rdf.model.Model
 import org.dbpedia.databus.indexer.Item
 

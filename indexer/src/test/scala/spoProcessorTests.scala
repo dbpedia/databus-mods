@@ -12,13 +12,14 @@ import org.dbpedia.databus.client.api.DatabusClient
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.client.sparql.QueryHandler.service
 import org.dbpedia.databus.indexer.Item
+import org.dbpedia.databus.process.SPOProcessor
 import org.dbpedia.databus.sink.Sink
 import org.scalatest.flatspec.AnyFlatSpec
 
 import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
-class SPOProcessor extends AnyFlatSpec{
+class SPOProcessorTest extends AnyFlatSpec{
 
   "test" should "return all included subjects,objects and predicates" in {
 
@@ -119,5 +120,17 @@ class SPOProcessor extends AnyFlatSpec{
     println("und jetzt?")
     myMap.remove(myMap.head._1)
     myMap.foreach(println(_))
+  }
+
+  "multiline objects" should "be recognized" in {
+
+    val multilineStr= """An OWL representation of part of the model for geometry and space from ISO 19107:2003 Geographic Information - Spatial Schema.
+
+This vocabulary is provisional, pending finalization of ISO 19150-2.
+
+The URI stem http://def.seegrid.csiro.au/isotc211/ is temporary. The vocabulary is expected to be ultimately published in the domain http://def.isotc211.org/. """
+
+    if (multilineStr.contains("\n")) println("yes")
+    else println("no")
   }
 }

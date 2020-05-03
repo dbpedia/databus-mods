@@ -19,11 +19,11 @@
  * #L%
  */
 package org.dbpedia.databus.sink
-import java.io.{FileOutputStream, FileWriter}
+import java.io.FileOutputStream
 
 import better.files.File
 import org.apache.jena.rdf.model.Model
-import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
+import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus.indexer.Item
 
 class DataidExtSink(val resultDir:String) extends Sink {

@@ -4,8 +4,8 @@ import java.io.{BufferedInputStream, BufferedWriter, FileInputStream, FileWriter
 import java.util.concurrent.{ExecutorService, Executors}
 
 import better.files.File
-import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.riot.{Lang, RDFDataMgr}
+import org.apache.jena.graph.Triple
+import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.{PipedRDFIterator, PipedRDFStream, PipedTriplesStream}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
@@ -16,11 +16,7 @@ import scala.collection.mutable
 class SPOProcessor extends Processor {
 
   override def process(file: File, item: Item, sink: Sink): Unit = {
-    val dir = File("./spoResults")
-    dir.createDirectoryIfNotExists()
-
-    val resultFile = dir / s"./${file.nameWithoutExtension(true)}_spoResult.csv"
-    resultFile.delete(true)
+    val resultFile = File(s"./spoResults.csv")
 
     val iter = readAsTriplesIterator(file,item)
 
@@ -36,31 +32,32 @@ class SPOProcessor extends Processor {
 
     while (iter.hasNext) {
       val triple = iter.next()
-      val subj = triple.getSubject.toString
+      val subj = {
+        if(triple.getSubject.isURI) triple.getSubject.getURI
+        else ""
+      }
       val obj = {
-        if (triple.getObject.isLiteral) triple.getObject.getLiteralLexicalForm
-        else if(triple.getObject.isURI) triple.getObject.getURI
-        else triple.getObject.toString
+        if(triple.getObject.isURI) triple.getObject.getURI
+        else ""
       }
       val pre = triple.getPredicate.getURI
 
-      println(triple)
-      subjectMap.get(subj) match {
-        case Some(count) => subjectMap.update(subj, count+1)
-        case None => subjectMap.put(subj,1)
-      }
-      predicateMap.get(pre) match {
-        case Some(count) => predicateMap.update(pre, count+1)
-        case None => predicateMap.put(pre,1)
-      }
-      objectMap.get(obj) match {
-        case Some(count) => objectMap.update(obj, count+1)
-        case None => objectMap.put(obj,1)
-      }
+      if(subj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(subjectMap,subj)
+      increaseCountIfExistsOrAddToMapIfNotExists(predicateMap,pre)
+      if(obj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(objectMap,obj)
     }
 
     (subjectMap,predicateMap,objectMap)
   }
+
+  def increaseCountIfExistsOrAddToMapIfNotExists(anyMap:mutable.HashMap[String,Int], elem:String):Unit ={
+    anyMap.get(elem) match {
+      case Some(count) => anyMap.update(elem, count+1)
+      case None => anyMap.put(elem,1)
+    }
+  }
+
+
 
   /**
     * read rdf file to triples iterator
@@ -99,36 +96,18 @@ class SPOProcessor extends Processor {
 
   def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int])={
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
-    bw.append("subjects, countSubject, predicates, countPredicate, objects, countObject\n")
+//      bw.append("uri; type; count\n")
 
-    while(subjectMap.nonEmpty || objectMap.nonEmpty || predicateMap.nonEmpty){
-      val str = StringBuilder.newBuilder
+    write(subjectMap, "subject")
+    write(predicateMap, "predicate")
+    write(objectMap, "object")
 
-      if (subjectMap.nonEmpty) {
-        if (subjectMap.head._1.contains(";")) str.append(s""""${subjectMap.head._1}";${subjectMap.head._2};""") //escape semicolon
-        else str.append(s"${subjectMap.head._1};${subjectMap.head._2};")
-        subjectMap.remove(subjectMap.head._1)
+    def write(myMap:mutable.HashMap[String,Int], spo:String):Unit={
+      while(myMap.nonEmpty) {
+        if (myMap.head._1.contains(";")) bw.append(s""""${myMap.head._1}";$spo;${myMap.head._2}\n""")
+        else bw.append(s"${myMap.head._1};$spo;${myMap.head._2}\n")
+        myMap.remove(myMap.head._1)
       }
-      else str.append(";;")
-
-      if(predicateMap.nonEmpty) {
-        if (predicateMap.head._1.contains(";")) str.append(s""""${predicateMap.head._1}";${predicateMap.head._2};""")
-        else str.append(s"${predicateMap.head._1};${predicateMap.head._2};")
-        predicateMap.remove(predicateMap.head._1)
-      }
-      else str.append(";;")
-
-      if(objectMap.nonEmpty) {
-        if (objectMap.head._1.contains(";")) str.append(s""""${objectMap.head._1}";${objectMap.head._2}""".stripMargin)
-        else  str.append(s"${objectMap.head._1};${objectMap.head._2}")
-        objectMap.remove(objectMap.head._1)
-      }
-      else str.append(";")
-
-      str.append("\n")
-
-      println(str)
-      bw.append(str)
     }
 
     bw.close()

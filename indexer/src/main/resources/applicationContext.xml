@@ -6,9 +6,8 @@
         <constructor-arg value=".indexdb"/>
         <constructor-arg>
             <list>
-                <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>
-<!--                https://databus.dbpedia.org/-->
-                <!--value>dbpedia/mappings/</value-->
+<!--                <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>-->
+                <value>ontologies/.*=parsed.ttl.*</value>
             </list>
         </constructor-arg>
     </bean>
@@ -19,7 +18,7 @@
             <list>
 <!--                <ref bean="print"/>-->
 <!--                <ref bean="mimetype"/>-->
-                <ref bean="spo"/>
+                <ref bean="void"/>
             </list>
         </constructor-arg>
         <constructor-arg ref="sink" />

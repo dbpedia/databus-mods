@@ -1,15 +1,8 @@
 package org.dbpedia.databus.util
 
-import java.io.{BufferedInputStream, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.net.URL
-import java.nio.file.Files
 
-import better.files.File
-import org.apache.commons.compress.utils.IOUtils
 import org.apache.jena.riot.Lang
-import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus.indexer.Item
-import org.dbpedia.databus.sink.Sink
 
 import scala.collection.mutable
 

@@ -21,8 +21,8 @@
 package org.dbpedia.databus.controller
 
 import better.files.File
+import org.dbpedia.databus.client.filehandling.FileHandler
 import org.dbpedia.databus.client.filehandling.download.Downloader
-import org.dbpedia.databus.client.filehandling.{FileHandler, FileUtil}
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.process.Processor
 import org.dbpedia.databus.sink.Sink
