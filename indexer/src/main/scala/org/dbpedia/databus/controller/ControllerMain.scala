@@ -28,6 +28,11 @@ import org.springframework.context.support.ClassPathXmlApplicationContext
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util.{Failure, Success}
+import org.springframework.boot.SpringApplication
+import org.springframework.boot.autoconfigure.SpringBootApplication
+
+@SpringBootApplication
+class ControllerMain
 
 object ControllerMain extends App{
 
