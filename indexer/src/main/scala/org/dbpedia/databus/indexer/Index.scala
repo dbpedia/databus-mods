@@ -76,7 +76,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
    */
   def updateIndex(pattern: String) {
 
-    println("pattern"+pattern)
+    println("pattern: "+pattern)
 
     val count: Int = countResults(pattern)
     val runs: Int = count / 10000
@@ -97,7 +97,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
            |SELECT ?dataset ?version ?distribution ?downloadURL ?file ?shaSum WHERE
            |{
            |  ?dataset dataid:version ?version .
-           |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
+           |  FILTER regex(?file, <https://databus.dbpedia.org/$pattern.*>).
            |  ?dataset dcat:distribution ?distribution .
            |  ?distribution  dcat:downloadURL ?downloadURL .
            |  ?distribution  dataid:sha256sum ?shaSum .

@@ -25,8 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import org.dbpedia.databus.indexer.Index
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
-import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.util.{Failure, Success}
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -57,7 +57,7 @@ object ControllerMain extends App{
 
         val item = iterItem.getItem
         val agent = ctx.getBean("agent").asInstanceOf[Agent]
-        agent.process(item)
+        // executes agent.process in a future thread (non blocking)
         val  future = Future(agent.process(item))
         jobsRunning.add(future)
         future.onComplete {
