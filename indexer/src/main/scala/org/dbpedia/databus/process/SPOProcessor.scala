@@ -1,3 +1,23 @@
+/*-
+ * #%L
+ * Indexing the Databus
+ * %%
+ * Copyright (C) 2018 - 2020 Sebastian Hellmann (on behalf of the DBpedia Association)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
 package org.dbpedia.databus.process
 
 import java.io.{BufferedInputStream, BufferedWriter, FileInputStream, FileWriter}
@@ -96,7 +116,6 @@ class SPOProcessor extends Processor {
 
   def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int]):Unit={
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
-//      bw.append("uri;type; count\n")
 
     write(subjectMap, "subject")
     write(predicateMap, "predicate")
