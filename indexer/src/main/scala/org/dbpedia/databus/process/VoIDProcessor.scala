@@ -110,7 +110,9 @@ class VoIDProcessor extends Processor {
     while(iter.hasNext){
       val triple = iter.next()
       propertyPartitionSeq+=triple.getPredicate.getURI
-      if(triple.predicateMatches(rdfType)) classPartitionSeq+=triple.getObject.getURI
+      if(triple.predicateMatches(rdfType)) {
+        if(triple.getObject.isURI) classPartitionSeq+=triple.getObject.getURI
+      }
     }
 
     val groupedClassesMap = classPartitionSeq.groupBy(identity).mapValues(_.size)
