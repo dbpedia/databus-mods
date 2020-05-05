@@ -48,17 +48,19 @@ class VoIDProcessor extends Processor {
   override def process(file: File, item: Item, sink: Sink): Unit = {
     val iter = readAsTriplesIterator(file,item)
 
-    val result = calculateVoIDPartitions(iter)
-    val classPartitionsMap = result._1
-    val propertyPartitionsMap = result._2
+    if (iter.hasNext){
+      val result = calculateVoIDPartitions(iter)
+      val classPartitionsMap = result._1
+      val propertyPartitionsMap = result._2
 
-    val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
-    dir.createDirectoryIfNotExists()
-    val resultFile = dir / s"./${file.nameWithoutExtension(true)}.ttl"
+      val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
+      dir.createDirectoryIfNotExists()
+      val resultFile = dir / s"./${file.nameWithoutExtension(true)}.ttl"
 
-    val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
+      val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
 
-    sink.consume(resultAsTurtle)
+      sink.consume(resultAsTurtle)
+    }
   }
 
   /**
