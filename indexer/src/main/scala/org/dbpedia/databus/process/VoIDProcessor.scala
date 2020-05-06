@@ -48,19 +48,18 @@ class VoIDProcessor extends Processor {
   override def process(file: File, item: Item, sink: Sink): Unit = {
     val iter = readAsTriplesIterator(file,item)
 
-    if (iter.hasNext){
-      val result = calculateVoIDPartitions(iter)
-      val classPartitionsMap = result._1
-      val propertyPartitionsMap = result._2
+    val result = calculateVoIDPartitions(iter)
+    val classPartitionsMap = result._1
+    val propertyPartitionsMap = result._2
 
-      val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
-      dir.createDirectoryIfNotExists()
-      val resultFile = dir / s"./${file.nameWithoutExtension(true)}.ttl"
+    val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
+    dir.createDirectoryIfNotExists()
+    val resultFile = dir / s"./${file.nameWithoutExtension(true)}.ttl"
 
-      val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
+    val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
 
-      sink.consume(resultAsTurtle)
-    }
+    sink.consume(resultAsTurtle)
+
   }
 
   /**
@@ -109,13 +108,18 @@ class VoIDProcessor extends Processor {
     val classPartitionSeq: ListBuffer[String] = ListBuffer.empty
     val propertyPartitionSeq: ListBuffer[String] = ListBuffer.empty
 
-    while(iter.hasNext){
-      val triple = iter.next()
-      propertyPartitionSeq+=triple.getPredicate.getURI
-      if(triple.predicateMatches(rdfType)) {
-        if(triple.getObject.isURI) classPartitionSeq+=triple.getObject.getURI
+    try{
+      while(iter.hasNext){
+        val triple = iter.next()
+        propertyPartitionSeq+=triple.getPredicate.getURI
+        if(triple.predicateMatches(rdfType)) {
+          if(triple.getObject.isURI) classPartitionSeq+=triple.getObject.getURI
+        }
       }
+    } catch {
+      case riotExpection:org.apache.jena.riot.RiotException=> println("iterator empty")
     }
+
 
     val groupedClassesMap = classPartitionSeq.groupBy(identity).mapValues(_.size)
     val groupedPropertiesMap = propertyPartitionSeq.groupBy(identity).mapValues(_.size)
