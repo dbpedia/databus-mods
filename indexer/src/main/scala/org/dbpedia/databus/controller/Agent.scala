@@ -30,7 +30,7 @@ import org.dbpedia.databus.sink.Sink
 class Agent ( val datadir : String,   val processors: java.util.List[Processor], val sink:Sink ) extends Serializable {
 
 
-  def process(item:Item):Unit = {
+  def process(item:Item) = {
 
     // download / check if downloaded
     //TODO Fabian databus client
