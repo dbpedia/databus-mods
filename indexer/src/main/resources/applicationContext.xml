@@ -8,7 +8,7 @@
             <list>
 <!--                <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>-->
 <!--                <value>ontologies/.*=parsed.ttl.*</value>-->
-                <value></value>
+                <value>marvin/wikidata/description/2020.03.01</value>
             </list>
         </constructor-arg>
     </bean>

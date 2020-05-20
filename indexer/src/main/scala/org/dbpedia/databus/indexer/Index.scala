@@ -54,7 +54,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
   private val derbyHandler: DerbyHandler = DerbyFactory.init(indexdbfile)
 
 
-  def updateIndexes()={
+  def updateIndexes():Unit ={
     var i=0
     while (i < patterns.size()){
       updateIndex(patterns.get(i))
@@ -84,7 +84,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
     var offset = 0
 
     for (i <- 0 to runs) {
-      println(s"Run: ${i}")
+      println(s"Run: $i")
       val sparql =
         s"""
            |PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
@@ -97,7 +97,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
            |SELECT ?dataset ?version ?distribution ?downloadURL ?file ?shaSum WHERE
            |{
            |  ?dataset dataid:version ?version .
-           |  FILTER regex(?file, <https://databus.dbpedia.org/$pattern.*>).
+           |  FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>).
            |  ?dataset dcat:distribution ?distribution .
            |  ?distribution  dcat:downloadURL ?downloadURL .
            |  ?distribution  dataid:sha256sum ?shaSum .
@@ -143,12 +143,12 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
    *
    * @param shasum the shasum of the file
    */
-  def setStatusProcessed(shasum: String) = derbyHandler.setStatusProcessed(shasum)
+  def setStatusProcessed(shasum: String):Unit = derbyHandler.setStatusProcessed(shasum)
 
   /**
    * for debugging
    */
-  def printNewResultSets = {
+  def printNewResultSets: Unit = {
     val rs = getNewResultSet
     while (rs.next) {
       val item = rs.getItem
@@ -161,7 +161,7 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
    * auxiliary function
    * counts results of the pattern matched on the databus
    *
-   * @param pattern
+   * @param pattern a pattern in the form of "dbpedia/mappings/" .
    * @return
    */
   def countResults(pattern: String): Int = {
