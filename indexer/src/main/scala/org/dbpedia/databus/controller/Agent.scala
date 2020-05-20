@@ -30,7 +30,7 @@ import org.dbpedia.databus.sink.Sink
 class Agent ( val datadir : String,   val processors: java.util.List[Processor], val sink:Sink ) extends Serializable {
 
 
-  def process(item:Item) = {
+  def process(item:Item):Unit = {
 
     // download / check if downloaded
     //TODO Fabian databus client
@@ -44,7 +44,8 @@ class Agent ( val datadir : String,   val processors: java.util.List[Processor],
     targetDir.createDirectoryIfNotExists()
 
     Downloader.downloadFile(item.downloadURL.toString, item.shaSum, targetDir) match {
-      case Some(tempFile:File) => {
+
+      case Some(tempFile:File) =>
         val file = FileHandler.handleFile(tempFile, targetDir, "same", "same").get
         tempFile.delete()
 
@@ -55,9 +56,12 @@ class Agent ( val datadir : String,   val processors: java.util.List[Processor],
         }
 
         file.delete()
-      }
 
-      case None => "could not process file"
+
+      case None =>
+        println("could not process file")
+        ""
+
 
     }
 

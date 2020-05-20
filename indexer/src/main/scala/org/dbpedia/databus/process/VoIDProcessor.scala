@@ -54,7 +54,7 @@ class VoIDProcessor extends Processor {
 
     val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
     dir.createDirectoryIfNotExists()
-    val resultFile = dir / s"./${file.nameWithoutExtension(true)}.ttl"
+    val resultFile = dir / s"./${file.name}_VoID.ttl"
 
     val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
 
@@ -75,7 +75,6 @@ class VoIDProcessor extends Processor {
     val in = Compressor.decompress(bis)
 
     val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
-
     val iter:PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
     val rdfStream:PipedRDFStream[Triple] = new PipedTriplesStream(iter)
 
@@ -138,7 +137,7 @@ class VoIDProcessor extends Processor {
   def writeResultAsTurtle(item:Item, classPartitionsMap:Map[String,Int], propertyPartitionsMap:Map[String,Int], resultFile:File):String ={
 
     var result = new StringBuilder(
-      s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;n" +
+      s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;\n" +
         s"\t<http://dataid.dbpedia.org/ns/core#version> <${item.version}> ;\n")
 
     classPartitionsMap.foreach(x=> {
