@@ -63,14 +63,13 @@ class Agent ( val datadir : String,   val processors: java.util.List[Processor],
           }
 
           file.delete()
-          ""
 
 
         case None =>
           println("could not process file")
           ""
       }
-    }
+    } else ""
 
 
   }
