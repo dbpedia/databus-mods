@@ -79,11 +79,11 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
     println("pattern: "+pattern)
 
     val count: Int = countResults(pattern)
-    val runs: Int = count / 10000
+    val runs: Int = math.ceil(count.toDouble/10000.0).toInt
     println(s"Number of Results / Runs: $count / $runs")
     var offset = 0
 
-    for (i <- 0 to runs) {
+    for (i <- 1 to runs) {
       println(s"Run: $i")
       val sparql =
         s"""
