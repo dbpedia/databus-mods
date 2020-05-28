@@ -10,6 +10,7 @@ import org.dbpedia.databus.sink.Sink
 
 import scala.io.{Codec, Source}
 
+@SerialVersionUID(1L)
 class DataIdProcessor extends Processor {
 
   var nonEmptyLines : Long = 0L
@@ -79,6 +80,27 @@ class DataIdProcessor extends Processor {
         case a: ArchiveInputStream => a.getBytesRead
         case i: BufferedInputStream => file.size
         case _ => uncompressedSize//log.warn(s"Bytesize only approximated for file: ${this.file.getAbsolutePath}");
+
+/*-
+ * #%L
+ * Indexing the Databus
+ * %%
+ * Copyright (C) 2018 - 2020 Sebastian Hellmann (on behalf of the DBpedia Association)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
       }
 
       nonEmptyLines = nonEmpty

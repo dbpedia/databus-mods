@@ -24,6 +24,8 @@ import java.sql.{DriverManager, ResultSet, SQLException}
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
 
+import scala.collection.mutable.ListBuffer
+
 object DerbyFactory {
 
   def init(filename: String): DerbyHandler = {
@@ -68,6 +70,13 @@ class DerbyHandler(val databaseURL: String) {
           |distribution varchar(2000)
           |)""".stripMargin
       statement.execute(sql)
+
+      val sqlProcessed: String =
+        """CREATE TABLE processed (
+          |shasum varchar(128) primary key,
+          |processor varchar(128)
+          |)""".stripMargin
+      statement.execute(sqlProcessed)
     } catch {
       case e: SQLException => println("IGNORE: " + e.getMessage)
     }
@@ -99,7 +108,7 @@ class DerbyHandler(val databaseURL: String) {
       true
     } catch {
       case e: DerbySQLIntegrityConstraintViolationException =>
-        //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage) //TODO do nothing
+        //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage)
 
         if (e.getErrorCode != 30000) {
           e.printStackTrace()
@@ -111,20 +120,71 @@ class DerbyHandler(val databaseURL: String) {
 
   }
 
-  def setStatusProcessed(shasum: String) = {
+
+
+  /**
+    * add processor and its serialVersionUID and shasum of item to Table 'processed', after processor processed item
+    *
+    * @param shasum sha sum of processed dataset
+    * @param processorUID processorClass+serialVersionUID
+    * @return
+    */
+  def setStatusProcessed(shasum: String, processorUID:String) = {
     val conn = DriverManager.getConnection(databaseURL + ";create=true")
     val statement = conn.createStatement
     val sql =
       s"""
-         |UPDATE item SET status = 'processed'
-         |WHERE shasum = '${shasum}'
+         |INSERT INTO processed VALUES
+         |('$shasum','$processorUID')
          |""".stripMargin
     try {
-      statement.executeUpdate(sql)
+      statement.execute(sql)
+      true
     } catch {
-      case e: Exception => e.printStackTrace()
+      case e: DerbySQLIntegrityConstraintViolationException =>
+        //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage)
+
+        if (e.getErrorCode != 30000) {
+          e.printStackTrace()
+        }
+        false
+    } finally {
+      conn.close()
     }
-    conn.close()
+  }
+
+  /**
+    * get all processors that already made calculations on item
+    *
+    * @param shasum sha sum of item
+    * @return ListBuffer of processors+serialVersionUID
+    */
+  def getStatus(shasum: String):ListBuffer[String] = {
+    val processors = new ListBuffer[String]
+    val conn = DriverManager.getConnection(databaseURL + ";create=true")
+    val statement = conn.createStatement
+    val sql =
+      s"""
+         |SELECT processor
+         |FROM processed
+         |WHERE shasum = '$shasum'
+         |""".stripMargin
+    try {
+      val rs =statement.executeQuery(sql)
+      while (rs.next()) {
+        processors += rs.getString("processor")
+      }
+      processors
+    } catch {
+      case e: DerbySQLIntegrityConstraintViolationException =>
+        //case e: DerbySQLIntegrityConstraintViolationException => println("IGNORE: " + e.getMessage)
+        if (e.getErrorCode != 30000) {
+          e.printStackTrace()
+        }
+        processors
+    } finally {
+      conn.close()
+    }
   }
 
 
@@ -141,5 +201,21 @@ class DerbyHandler(val databaseURL: String) {
     val rs: ResultSet = statement.executeQuery(query)
     new ItemSet(rs)
   }
+
+  //  def setStatusProcessed(shasum: String) = {
+  //    val conn = DriverManager.getConnection(databaseURL + ";create=true")
+  //    val statement = conn.createStatement
+  //    val sql =
+  //      s"""
+  //         |UPDATE item SET status = 'processed'
+  //         |WHERE shasum = '${shasum}'
+  //         |""".stripMargin
+  //    try {
+  //      statement.execute(sql)
+  //    } catch {
+  //      case e: Exception => e.printStackTrace()
+  //    }
+  //    conn.close()
+  //  }
 
 }

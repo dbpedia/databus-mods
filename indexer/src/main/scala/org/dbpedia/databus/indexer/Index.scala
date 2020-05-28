@@ -22,6 +22,8 @@ package org.dbpedia.databus.indexer
 
 import org.apache.jena.query.{Query, QueryExecutionFactory, QueryFactory}
 
+import scala.collection.mutable.ListBuffer
+
 
 /**
  * Example
@@ -143,7 +145,10 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
    *
    * @param shasum the shasum of the file
    */
-  def setStatusProcessed(shasum: String):Unit = derbyHandler.setStatusProcessed(shasum)
+  def setStatusProcessed(shasum: String, processorUID: String):Unit = derbyHandler.setStatusProcessed(shasum, processorUID)
+
+  def getStatuses(shasum:String):ListBuffer[String] = derbyHandler.getStatus(shasum)
+
 
   /**
    * for debugging

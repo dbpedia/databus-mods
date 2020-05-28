@@ -30,12 +30,15 @@ import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
+import scala.collection.mutable
 import scala.collection.mutable.ListBuffer
 
 /**
   * calculate all void:propertyPartition together with its number of occurrences and the void:classPartition of a processed file
   * also see here: https://www.w3.org/TR/void/#class-property-partitions
   */
+
+@SerialVersionUID(1L)
 class VoIDProcessor extends Processor {
 
   /**
@@ -101,29 +104,32 @@ class VoIDProcessor extends Processor {
     * @param iter iterator of RDF Triples
     * @return Tuple of classPartitionList and Map of propertyPartitions together with its number of occurrences
     */
-  def calculateVoIDPartitions(iter:PipedRDFIterator[Triple]): (Map[String,Int],Map[String,Int])={
+  def calculateVoIDPartitions(iter:PipedRDFIterator[Triple]): (mutable.HashMap[String,Int],mutable.HashMap[String,Int])={
 
     val rdfType = NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    val classPartitionSeq: ListBuffer[String] = ListBuffer.empty
-    val propertyPartitionSeq: ListBuffer[String] = ListBuffer.empty
+    val classPartitionMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
+    val propertyPartitionMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
 
     try{
       while(iter.hasNext){
         val triple = iter.next()
-        propertyPartitionSeq+=triple.getPredicate.getURI
+        increaseCountIfExistsOrAddToMapIfNotExists(propertyPartitionMap,triple.getPredicate.getURI)
         if(triple.predicateMatches(rdfType)) {
-          if(triple.getObject.isURI) classPartitionSeq+=triple.getObject.getURI
+          if (triple.getObject.isURI) increaseCountIfExistsOrAddToMapIfNotExists(classPartitionMap, triple.getObject.getURI)
         }
       }
     } catch {
       case riotExpection:org.apache.jena.riot.RiotException=> println("iterator empty")
     }
 
+    (classPartitionMap, propertyPartitionMap)
+  }
 
-    val groupedClassesMap = classPartitionSeq.groupBy(identity).mapValues(_.size)
-    val groupedPropertiesMap = propertyPartitionSeq.groupBy(identity).mapValues(_.size)
-
-    (groupedClassesMap, groupedPropertiesMap)
+  def increaseCountIfExistsOrAddToMapIfNotExists(anyMap:mutable.HashMap[String,Int], elem:String):Unit ={
+    anyMap.get(elem) match {
+      case Some(count) => anyMap.update(elem, count+1)
+      case None => anyMap.put(elem,1)
+    }
   }
 
   /**
@@ -134,7 +140,7 @@ class VoIDProcessor extends Processor {
     * @param propertyPartitionsMap map of void:PropertyPartitions with number of occurrences
     * @return turtle string
     */
-  def writeResultAsTurtle(item:Item, classPartitionsMap:Map[String,Int], propertyPartitionsMap:Map[String,Int], resultFile:File):String ={
+  def writeResultAsTurtle(item:Item, classPartitionsMap:mutable.HashMap[String,Int], propertyPartitionsMap:mutable.HashMap[String,Int], resultFile:File):String ={
 
     var result = new StringBuilder(
       s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;\n" +

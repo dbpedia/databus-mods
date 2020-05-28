@@ -58,7 +58,7 @@ object ControllerMain extends App{
         val item = iterItem.getItem
         val agent = ctx.getBean("agent").asInstanceOf[Agent]
         // executes agent.process in a future thread (non blocking)
-        val  future = Future(agent.process(item))
+        val  future = Future(agent.process(item,i))
         jobsRunning.add(future)
         future.onComplete {
             case Failure(f) => throw f
