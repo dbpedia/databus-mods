@@ -30,8 +30,7 @@ import org.dbpedia.databus.indexer.Item
 class RDFFileSink(val resultDir: String) extends Sink {
 
 
-
-  override def consume(output:String) = {
+  override def consume(output: String) = {
     println(output)
   }
 
@@ -42,12 +41,12 @@ class RDFFileSink(val resultDir: String) extends Sink {
 
     val targetFile = targetDir / fileName
 
-    this.synchronized{
+    this.synchronized {
       val fos = new FileOutputStream(targetFile.toJava, false)
       RDFDataMgr.write(fos, model, Lang.TTL)
       fos.close()
     }
 
   }
+
 }
-<
