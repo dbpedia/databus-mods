@@ -27,6 +27,7 @@ abstract class Sink {
 
   def consume(output: String)
 
-  def consume(item:Item, model:Model)
+  //  def consume(item:Item, model:Model)
 
+  def consume(item: Item, model: Model, fileName: String)
 }

@@ -23,13 +23,12 @@ package org.dbpedia.databus.controller
 import java.util.concurrent.ConcurrentLinkedQueue
 
 import org.dbpedia.databus.indexer.Index
+import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
-import org.springframework.boot.SpringApplication
-import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @SpringBootApplication
 class ControllerMain
@@ -58,7 +57,7 @@ object ControllerMain extends App{
         val item = iterItem.getItem
         val agent = ctx.getBean("agent").asInstanceOf[Agent]
         // executes agent.process in a future thread (non blocking)
-        val  future = Future(agent.process(item,i))
+        val future = Future(agent.process(item, i))
         jobsRunning.add(future)
         future.onComplete {
             case Failure(f) => throw f

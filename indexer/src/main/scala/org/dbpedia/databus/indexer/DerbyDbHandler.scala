@@ -26,16 +26,16 @@ import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolation
 
 import scala.collection.mutable.ListBuffer
 
-object DerbyFactory {
+object DerbyDbFactory {
 
-  def init(filename: String): DerbyHandler = {
-    val dbh = new DerbyHandler(s"""jdbc:derby:${filename}""")
+  def init(filename: String): DerbyDbHandler = {
+    val dbh = new DerbyDbHandler(s"""jdbc:derby:${filename}""")
     dbh.init()
     dbh
   }
 }
 
-class DerbyHandler(val databaseURL: String) {
+class DerbyDbHandler(val databaseURL: String) {
 
 
   def shutdown = {
