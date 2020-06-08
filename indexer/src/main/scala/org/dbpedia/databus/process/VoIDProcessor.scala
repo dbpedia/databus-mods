@@ -19,23 +19,26 @@
  * #L%
  */
 package org.dbpedia.databus.process
-import java.io.{BufferedInputStream, BufferedWriter, FileInputStream, FileWriter}
+
+import java.io.{BufferedInputStream, FileInputStream}
 import java.util.concurrent.{ExecutorService, Executors}
 
 import better.files.File
 import org.apache.jena.graph.{NodeFactory, Triple}
+import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.RDFDataMgr
 import org.apache.jena.riot.lang.{PipedRDFIterator, PipedRDFStream, PipedTriplesStream}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
-import scala.collection.mutable.ListBuffer
+import scala.collection.mutable
 
 /**
   * calculate all void:propertyPartition together with its number of occurrences and the void:classPartition of a processed file
   * also see here: https://www.w3.org/TR/void/#class-property-partitions
   */
+@SerialVersionUID(1L)
 class VoIDProcessor extends Processor {
 
   /**
@@ -46,19 +49,21 @@ class VoIDProcessor extends Processor {
     * @param sink sink result
     */
   override def process(file: File, item: Item, sink: Sink): Unit = {
-    val iter = readAsTriplesIterator(file,item)
+    val iter = readAsTriplesIterator(file, item)
 
-    val result = calculateVoIDPartitions(iter)
-    val classPartitionsMap = result._1
-    val propertyPartitionsMap = result._2
+    try {
+      if (iter.hasNext) {
+        val result = calculateVoIDPartitions(iter)
+        val classPartitionsMap = result._1
+        val propertyPartitionsMap = result._2
 
-    val dir = File(s"./voidResults${item.version.toString.split("dbpedia.org").last}")
-    dir.createDirectoryIfNotExists()
-    val resultFile = dir / s"./${file.name}_VoID.ttl"
+        val model = writeResultToModel(item, classPartitionsMap, propertyPartitionsMap)
 
-    val resultAsTurtle = writeResultAsTurtle(item, classPartitionsMap, propertyPartitionsMap,resultFile)
-
-    sink.consume(resultAsTurtle)
+        sink.consume(item, model, s"${file.name}_VoID.ttl")
+      }
+    } catch {
+      case riotExpection: org.apache.jena.riot.RiotException => println("iterator empty")
+    }
 
   }
 
@@ -69,20 +74,20 @@ class VoIDProcessor extends Processor {
     * @param item related item of local file
     * @return triples iterator
     */
-  def readAsTriplesIterator(file:File, item:Item):PipedRDFIterator[Triple] ={
+  def readAsTriplesIterator(file: File, item: Item): PipedRDFIterator[Triple] = {
 
     val bis = new BufferedInputStream(new FileInputStream(file.toJava))
     val in = Compressor.decompress(bis)
 
     val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
-    val iter:PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
-    val rdfStream:PipedRDFStream[Triple] = new PipedTriplesStream(iter)
+    val iter: PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()
+    val rdfStream: PipedRDFStream[Triple] = new PipedTriplesStream(iter)
 
     // PipedRDFStream and PipedRDFIterator need to be on different threads
-    val executor:ExecutorService = Executors.newSingleThreadExecutor()
+    val executor: ExecutorService = Executors.newSingleThreadExecutor()
 
     // Create a runnable for our parser thread
-    val parser:Runnable = new Runnable() {
+    val parser: Runnable = new Runnable() {
       override def run() {
         // Call the parsing process.
         RDFDataMgr.parse(rdfStream, in, lang)
@@ -101,63 +106,110 @@ class VoIDProcessor extends Processor {
     * @param iter iterator of RDF Triples
     * @return Tuple of classPartitionList and Map of propertyPartitions together with its number of occurrences
     */
-  def calculateVoIDPartitions(iter:PipedRDFIterator[Triple]): (Map[String,Int],Map[String,Int])={
+  def calculateVoIDPartitions(iter: PipedRDFIterator[Triple]): (mutable.HashMap[String, Int], mutable.HashMap[String, Int]) = {
 
     val rdfType = NodeFactory.createURI("http://www.w3.org/1999/02/22-rdf-syntax-ns#type")
-    val classPartitionSeq: ListBuffer[String] = ListBuffer.empty
-    val propertyPartitionSeq: ListBuffer[String] = ListBuffer.empty
 
-    try{
-      while(iter.hasNext){
-        val triple = iter.next()
-        propertyPartitionSeq+=triple.getPredicate.getURI
-        if(triple.predicateMatches(rdfType)) {
-          if(triple.getObject.isURI) classPartitionSeq+=triple.getObject.getURI
-        }
+    val classPartitionMap: mutable.HashMap[String, Int] = mutable.HashMap.empty
+    val propertyPartitionMap: mutable.HashMap[String, Int] = mutable.HashMap.empty
+
+    while (iter.hasNext) {
+      val triple = iter.next()
+      increaseCountOrAddToMapIfNotExists(propertyPartitionMap, triple.getPredicate.getURI)
+      if (triple.predicateMatches(rdfType)) {
+        if (triple.getObject.isURI) increaseCountOrAddToMapIfNotExists(classPartitionMap, triple.getObject.getURI)
       }
-    } catch {
-      case riotExpection:org.apache.jena.riot.RiotException=> println("iterator empty")
     }
 
-
-    val groupedClassesMap = classPartitionSeq.groupBy(identity).mapValues(_.size)
-    val groupedPropertiesMap = propertyPartitionSeq.groupBy(identity).mapValues(_.size)
-
-    (groupedClassesMap, groupedPropertiesMap)
+    (classPartitionMap, propertyPartitionMap)
   }
 
   /**
-    * write out result as turtle
+    * increase number of occurrences, or add element if not exists yet
     *
-    * @param item item of the processed file
-    * @param classPartitionsMap map of void:classPartitions with count occurrences
-    * @param propertyPartitionsMap map of void:PropertyPartitions with number of occurrences
-    * @return turtle string
+    * @param anyMap map
+    * @param elem   element to check
     */
-  def writeResultAsTurtle(item:Item, classPartitionsMap:Map[String,Int], propertyPartitionsMap:Map[String,Int], resultFile:File):String ={
-
-    var result = new StringBuilder(
-      s"<${item.distribution}> <http://dataid.dbpedia.org/ns/core#file> <${item.file}>;\n" +
-        s"\t<http://dataid.dbpedia.org/ns/core#version> <${item.version}> ;\n")
-
-    classPartitionsMap.foreach(x=> {
-      result++=s"\t<http://rdfs.org/ns/void#classPartition> [ \n\t\t<http://rdfs.org/ns/void#class> <${x._1}>; " +
-        s"\n\t\t<http://rdfs.org/ns/void#triples> ${x._2}\n\t] ;\n"
-    })
-
-    propertyPartitionsMap.foreach(x=>{
-      result++=s"\t<http://rdfs.org/ns/void#propertyPartition> [ \n\t\t<http://rdfs.org/ns/void#property> <${x._1}>; " +
-        s"\n\t\t<http://rdfs.org/ns/void#triples> ${x._2}\n\t] ;\n"
-    })
-
-    val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
-
-    val resultStr = result.replace(result.lastIndexOf(";"),result.size,".").mkString
-
-    bw.append(resultStr)
-    bw.append("\n")
-    bw.close()
-
-    resultStr
+  def increaseCountOrAddToMapIfNotExists(anyMap: mutable.HashMap[String, Int], elem: String): Unit = {
+    anyMap.get(elem) match {
+      case Some(count) => anyMap.update(elem, count + 1)
+      case None => anyMap.put(elem, 1)
+    }
   }
+
+  /**
+    * write out result to jena model
+    *
+    * @param item                  item of the processed file
+    * @param classPartitionsMap    map of void:classPartitions with count occurrences
+    * @param propertyPartitionsMap map of void:PropertyPartitions with number of occurrences
+    * @return rdf model
+    */
+  def writeResultToModel(item: Item, classPartitionsMap: mutable.HashMap[String, Int], propertyPartitionsMap: mutable.HashMap[String, Int]): Model = {
+
+    import scala.collection.JavaConverters.mapAsJavaMapConverter
+    val model: Model = ModelFactory.createDefaultModel()
+
+    val prefixMap: Map[String, String] = Map(
+      "dataid" -> "http://dataid.dbpedia.org/ns/core#",
+      "void" -> "http://rdfs.org/ns/void#"
+    )
+    model.setNsPrefixes(prefixMap.asJava)
+
+
+    model.add(
+      ResourceFactory.createStatement(
+        ResourceFactory.createResource(item.distribution.toString),
+        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#file"),
+        ResourceFactory.createResource(item.file.toString)))
+
+    model.add(
+      ResourceFactory.createStatement(
+        ResourceFactory.createResource(item.distribution.toString),
+        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#version"),
+        ResourceFactory.createResource(item.version.toString)))
+
+    addMapToModel(model, classPartitionsMap, item.distribution.toString, false)
+    addMapToModel(model, propertyPartitionsMap, item.distribution.toString)
+
+    model
+  }
+
+  /**
+    * add all elements of hash map (propertyPartitions and classPartitions) to model
+    *
+    * @param model        jena model
+    * @param map          propertyPartitionsMap or classPartitionsMap
+    * @param distribution distribution of item
+    * @param isPropertyMap
+    */
+  def addMapToModel(model: Model, map: mutable.HashMap[String, Int], distribution: String, isPropertyMap: Boolean = true) = {
+    map.foreach(x => {
+      val blankNode = ResourceFactory.createResource()
+
+      model.add(
+        ResourceFactory.createStatement(
+          ResourceFactory.createResource(distribution),
+          if (isPropertyMap) ResourceFactory.createProperty("http://rdfs.org/ns/void#propertyPartition")
+          else ResourceFactory.createProperty("http://rdfs.org/ns/void#classPartition"),
+          blankNode
+        ))
+
+      model.add(
+        ResourceFactory.createStatement(
+          blankNode,
+          if (isPropertyMap) ResourceFactory.createProperty("http://rdfs.org/ns/void#property")
+          else ResourceFactory.createProperty("http://rdfs.org/ns/void#class"),
+          ResourceFactory.createResource(x._1)
+        ))
+
+      model.add(
+        ResourceFactory.createStatement(
+          blankNode,
+          ResourceFactory.createProperty("http://rdfs.org/ns/void#triples"),
+          ResourceFactory.createTypedLiteral(x._2)
+        ))
+    })
+  }
+
 }

@@ -22,64 +22,68 @@ package org.dbpedia.databus.indexer
 
 import org.apache.jena.query.{Query, QueryExecutionFactory, QueryFactory}
 
+import scala.collection.mutable.ListBuffer
+
 
 /**
- * Example
- */
+  * Example
+  */
 object Index {
   def main(args: Array[String]): Unit = {
     val old = "jdbc:derby:.indexdb;create=true"
 
-    /**val index = new Index(".indexdb", List = ("").)
-      index.updateIndex("dbpedia/")
-    //index.printNewResultSets
-    index.derbyHandler.setStatusProcessed("shatest")
-    index.derbyHandler.shutdown
-*/
+    /** val index = new Index(".indexdb", List = ("").)
+      *index.updateIndex("dbpedia/")
+      * //index.printNewResultSets
+      *index.derbyHandler.setStatusProcessed("shatest")
+      *index.derbyHandler.shutdown
+      */
   }
 }
 
 /**
- * Retrieves and stores information of files on the Databus in a local database file
- *
- * Note: this allows to have many indexes, separated in different dbs
- * If only one index is needed, then use the same database
- *
- * @param indexdbfile the local path, where the DB is created/reused
- */
+  * Retrieves and stores information of files on the Databus in a local database file
+  *
+  * Note: this allows to have many indexes, separated in different dbs
+  * If only one index is needed, then use the same database
+  *
+  * @param indexdbfile the local path, where the DB is created/reused
+  */
 class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
 
 
   private val endpoint: String = "https://databus.dbpedia.org/repo/sparql"
-  private val derbyHandler: DerbyHandler = DerbyFactory.init(indexdbfile)
+  private val derbyHandler: DerbyDbHandler = DerbyDbFactory.init(indexdbfile)
 
 
-  def updateIndexes():Unit ={
-    var i=0
-    while (i < patterns.size()){
+  def updateIndexes(): Unit = {
+    var i = 0
+    while (i < patterns.size()) {
       updateIndex(patterns.get(i))
-      i+=1
+      i += 1
     }
   }
 
   /**
-   * loads ALL records matching the pattern into the local database
-   * FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>
-   *
-   * Pattern examples for user, group, artifact, version
-   * dbpedia/
-   * dbpedia/mappings/
-   * dbpedia/mappings/infobox-properties/
-   * dbpedia/mappings/infobox-properties/2020.03.01
-   *
-   * @param pattern a pattern in the form of "dbpedia/mappings/" .
-   */
+    * TODO filter (version > last updated)
+    *
+    * loads ALL records matching the pattern into the local database
+    * FILTER regex(?version, <https://databus.dbpedia.org/$pattern.*>
+    *
+    * Pattern examples for user, group, artifact, version
+    * dbpedia/
+    * dbpedia/mappings/
+    * dbpedia/mappings/infobox-properties/
+    * dbpedia/mappings/infobox-properties/2020.03.01
+    *
+    * @param pattern a pattern in the form of "dbpedia/mappings/" .
+    */
   def updateIndex(pattern: String) {
 
-    println("pattern: "+pattern)
+    println("pattern: " + pattern)
 
     val count: Int = countResults(pattern)
-    val runs: Int = math.ceil(count.toDouble/10000.0).toInt
+    val runs: Int = math.ceil(count.toDouble / 10000.0).toInt
     println(s"Number of Results / Runs: $count / $runs")
     var offset = 0
 
@@ -132,38 +136,12 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
   }
 
   /**
-   * retrieves all with status "open"
-   *
-   * @return ResultSet for iterating into threads
-   */
-  def getNewResultSet: ItemSet = derbyHandler.getNewResultSet
-
-  /**
-   * marks the file with the particular shasum as "processed"
-   *
-   * @param shasum the shasum of the file
-   */
-  def setStatusProcessed(shasum: String):Unit = derbyHandler.setStatusProcessed(shasum)
-
-  /**
-   * for debugging
-   */
-  def printNewResultSets: Unit = {
-    val rs = getNewResultSet
-    while (rs.next) {
-      val item = rs.getItem
-      System.out.println(item)
-    }
-    rs.close
-  }
-
-  /**
-   * auxiliary function
-   * counts results of the pattern matched on the databus
-   *
-   * @param pattern a pattern in the form of "dbpedia/mappings/" .
-   * @return
-   */
+    * auxiliary function
+    * counts results of the pattern matched on the databus
+    *
+    * @param pattern a pattern in the form of "dbpedia/mappings/" .
+    * @return
+    */
   def countResults(pattern: String): Int = {
 
     val sparql =
@@ -193,5 +171,34 @@ class Index(val indexdbfile: String, val patterns: java.util.List[String]) {
 
     count
   }
+
+  /**
+    * marks the file with the particular shasum as "processed"
+    *
+    * @param shasum the shasum of the file
+    */
+  def setStatusProcessed(shasum: String, processorUID: String): Unit = derbyHandler.setStatusProcessed(shasum, processorUID)
+
+  def getStatuses(shasum: String): ListBuffer[String] = derbyHandler.getStatus(shasum)
+
+
+  /**
+    * for debugging
+    */
+  def printNewResultSets: Unit = {
+    val rs = getNewResultSet
+    while (rs.next) {
+      val item = rs.getItem
+      System.out.println(item)
+    }
+    rs.close
+  }
+
+  /**
+    * retrieves all with status "open"
+    *
+    * @return ResultSet for iterating into threads
+    */
+  def getNewResultSet: ItemSet = derbyHandler.getNewResultSet
 
 }

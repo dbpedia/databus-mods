@@ -27,23 +27,26 @@ import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus.indexer.Item
 
-class VOIDSink(val resultDir:String) extends Sink {
+class RDFFileSink(val resultDir: String) extends Sink {
 
 
-
-  override def consume(output:String) = {
+  override def consume(output: String) = {
     println(output)
   }
 
-  override def consume(item: Item, model: Model): Unit = {
-    val targetDir = File(resultDir)/item.getPath
+  override def consume(item: Item, model: Model, fileName: String): Unit = {
+
+    val targetDir = File(resultDir) / item.getPath
     targetDir.createDirectoryIfNotExists()
-    val targetFile = targetDir/"result.nt"
-    this.synchronized{
-      val fos = new  FileOutputStream( targetFile.toJava, true)
-      RDFDataMgr.write(fos, model, Lang.NTRIPLES) ;
+
+    val targetFile = targetDir / fileName
+
+    this.synchronized {
+      val fos = new FileOutputStream(targetFile.toJava, false)
+      RDFDataMgr.write(fos, model, Lang.TTL)
       fos.close()
     }
 
   }
+
 }

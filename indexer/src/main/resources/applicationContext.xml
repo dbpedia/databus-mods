@@ -7,7 +7,7 @@
         <constructor-arg>
             <list>
 <!--                <value>dbpedia/mappings/geo-coordinates-mappingbased/2020.02.01</value>-->
-<!--                <value>ontologies/wikiba.se/ontology/2020.05.07-151938</value>-->
+                <!--                <value>ontologies/wikiba.se/ontology/2020.05.07-151938</value>-->
                 <value></value>
             </list>
         </constructor-arg>
@@ -24,7 +24,7 @@
         </constructor-arg>
         <constructor-arg ref="sink" />
     </bean>
-    <bean id="sink" class="org.dbpedia.databus.sink.DataidExtSink">
+    <bean id="sink" class="org.dbpedia.databus.sink.RDFFileSink">
         <constructor-arg value=".resultdir" />
     </bean>
     <bean id="print" class="org.dbpedia.databus.process.PrintProcessor"/>

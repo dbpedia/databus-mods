@@ -33,8 +33,18 @@ import org.dbpedia.databus.sink.Sink
 
 import scala.collection.mutable
 
+/**
+  * calculate the number of occurrences of each subject, predicate, and object of rdf file
+  */
 class SPOProcessor extends Processor {
 
+  /**
+    * calculate number of occurrences of each subject, predicate, and object of rdf file
+    *
+    * @param file rdf file
+    * @param item item
+    * @param sink output
+    */
   override def process(file: File, item: Item, sink: Sink): Unit = {
     val resultFile = File(s"./spoResults.csv")
 
@@ -45,6 +55,12 @@ class SPOProcessor extends Processor {
     writeResult(resultFile, spo._1, spo._2, spo._3)
   }
 
+  /**
+    * calculate number of occurrences of each subject, predicate, and object of rdf iterator
+    *
+    * @param iter rdf iterator
+    * @return subjectMap, predicateMap, objectMap
+    */
   def calculateSPO(iter:PipedRDFIterator[Triple]):(mutable.HashMap[String,Int],mutable.HashMap[String,Int],mutable.HashMap[String,Int])={
     val subjectMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
     val predicateMap: mutable.HashMap[String,Int] = mutable.HashMap.empty
@@ -70,6 +86,12 @@ class SPOProcessor extends Processor {
     (subjectMap,predicateMap,objectMap)
   }
 
+  /**
+    * increase number of occurrences, or add element if not exists yet
+    *
+    * @param anyMap map
+    * @param elem   element to check
+    */
   def increaseCountIfExistsOrAddToMapIfNotExists(anyMap:mutable.HashMap[String,Int], elem:String):Unit ={
     anyMap.get(elem) match {
       case Some(count) => anyMap.update(elem, count+1)
@@ -113,7 +135,14 @@ class SPOProcessor extends Processor {
     iter
   }
 
-
+  /**
+    * write results to csv file
+    *
+    * @param resultFile file to write to
+    * @param subjectMap
+    * @param predicateMap
+    * @param objectMap
+    */
   def writeResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int]):Unit={
     val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
 
@@ -121,6 +150,12 @@ class SPOProcessor extends Processor {
     write(predicateMap, "predicate")
     write(objectMap, "object")
 
+    /**
+      * write map to csv
+      *
+      * @param myMap map
+      * @param spo   subject,predicate, or object
+      */
     def write(myMap:mutable.HashMap[String,Int], spo:String):Unit={
       while(myMap.nonEmpty) {
         if (myMap.head._1.contains(";")) bw.append(s""""${myMap.head._1}";$spo;${myMap.head._2}\n""")

@@ -1,3 +1,23 @@
+/*-
+ * #%L
+ * Indexing the Databus
+ * %%
+ * Copyright (C) 2018 - 2020 Sebastian Hellmann (on behalf of the DBpedia Association)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
 package org.dbpedia.databus.process
 
 import java.io.{BufferedInputStream, InputStream}
@@ -10,28 +30,30 @@ import org.dbpedia.databus.sink.Sink
 
 import scala.io.{Codec, Source}
 
+/**
+  * The DataIDProcessor has the task to calculate the number of non-empty lines of a file, as well as the uncompressed byte size, the number of duplicates(triples).
+  * It also checks if the file is sorted.
+  */
+@SerialVersionUID(1L)
 class DataIdProcessor extends Processor {
 
-  var nonEmptyLines : Long = 0L
-  var duplicates : Long= 0L
+  var nonEmptyLines: Long = 0L
+  var duplicates: Long = 0L
   var sorted: Boolean = false
-  var uncompressedByteSize : Long = 0L
+  var uncompressedByteSize: Long = 0L
 
   /**
-   * calculate all void:propertyPartition together with its number of occurrences and the void:classPartition of a processed file
-   *
-   * @param file local file to process
-   * @param item item of processed file
-   * @param sink sink result
-   */
+    * calculate some metrics of a file:
+    * - non-empty lines
+    * - duplicates
+    * - sorted?
+    * - uncompressed byte size
+    *
+    * @param file file to process
+    * @param item item of processed file
+    * @param sink sink to give result to
+    */
   override def process(file: File, item: Item, sink: Sink): Unit = {
-      calculateFileMetrics(file)
-//    sink.consume(resultAsTurtle)
-
-  }
-
-  def calculateFileMetrics(file: File): Unit = {
-
     var nonEmpty = 0L
     var dupes = 0L
     var sort: Boolean = true
@@ -78,7 +100,7 @@ class DataIdProcessor extends Processor {
         case c: CompressorInputStream => c.getBytesRead
         case a: ArchiveInputStream => a.getBytesRead
         case i: BufferedInputStream => file.size
-        case _ => uncompressedSize//log.warn(s"Bytesize only approximated for file: ${this.file.getAbsolutePath}");
+        case _ => uncompressedSize //log.warn(s"Bytesize only approximated for file: ${this.file.getAbsolutePath}")
       }
 
       nonEmptyLines = nonEmpty
@@ -100,63 +122,23 @@ class DataIdProcessor extends Processor {
     }
 
 
-    println(nonEmptyLines)
-    println(duplicates)
-    println(sorted)
-    println(uncompressedByteSize)
+    sink.consume(
+      s"""
+         |nonEmptyLines: $nonEmptyLines
+         |duplicates: $duplicates
+         |sorted: $sorted
+         |uncompressedByteSize: $uncompressedByteSize
+      """.stripMargin)
+
   }
 
   /**
-    * translates a java (signed!) byte into an unsigned byte (emulated via short)
+    * Opens the file with compression, etc.
+    * NOTE: if file is an archive, we assume it is only one file in it and this will be on the stream
     *
-    * @param b signed byte to convert to unsigned byte value
-    * @return the unsigned byte value stored as short
+    * @return
     */
-  def toUnsignedByte(b: Byte):Short = {
-    val aByte: Int = 0xff & b.asInstanceOf[Int]
-    aByte.asInstanceOf[Short]
-  }
-
-  /**
-    * does a bytewise comparison in scala
-    *
-    * @param ab
-    * @param bb
-    * @return a negative value if a is in byte order before b, zero if a and b bytestreams match and, and a positive value else
-    */
-  def compareBytewise(ab: Array[Byte], bb: Array[Byte]): Int = {
-
-    val mLength = scala.math.min(ab.length, bb.length)
-
-    for (i <- 0 to mLength - 1) {
-      if (ab(i) == bb(i)) {}
-      else
-        return toUnsignedByte(ab(i)).compareTo(toUnsignedByte(bb(i)))
-    }
-    return ab.length - bb.length
-  }
-
-  //  /**
-  //   * does a bytewise string comparison in scala similar to LC_ALL=C sort does in Unix
-  //   *
-  //   * @param a
-  //   * @param b
-  //   * @return a negative value if a is in byte order before b, zero if a and b bytestreams match and, and a positive value else
-  //   */
-  //  def compareStringsBytewise(a: String, b: String): Int = {
-  //    val ab = a.getBytes("UTF-8")
-  //    val bb = b.getBytes("UTF-8")
-  //
-  //    compareBytewise(ab, bb)
-  //  }
-
-  /**
-   * Opens the file with compression, etc.
-   * NOTE: if file is an archive, we assume it is only one file in it and this will be on the stream
-   *
-   * @return
-   */
-  def getInputStream(file: File): InputStream ={
+  def getInputStream(file: File): InputStream = {
 
 
     lazy val archiveVariant: Option[String] = detectArchive(file)
@@ -185,6 +167,31 @@ class DataIdProcessor extends Processor {
     }
   }
 
+  /**
+    * does a bytewise comparison in scala
+    *
+    * @param ab
+    * @param bb
+    * @return a negative value if a is in byte order before b, zero if a and b bytestreams match and, and a positive value else
+    */
+  def compareBytewise(ab: Array[Byte], bb: Array[Byte]): Int = {
+
+    val mLength = scala.math.min(ab.length, bb.length)
+
+    for (i <- 0 to mLength - 1) {
+      if (ab(i) == bb(i)) {}
+      else
+        return toUnsignedByte(ab(i)).compareTo(toUnsignedByte(bb(i)))
+    }
+    return ab.length - bb.length
+  }
+
+  /**
+    * detect compression of a file
+    *
+    * @param datafile file to check compression from
+    * @return Option[Compression]
+    */
   def detectCompression(datafile: File): Option[String] = {
     try {
       Some(CompressorStreamFactory.detect(new BufferedInputStream(datafile.newFileInputStream)))
@@ -193,12 +200,29 @@ class DataIdProcessor extends Processor {
     }
   }
 
+  /**
+    * detect archive of a file
+    *
+    * @param datafile file to check archive from
+    * @return Option[Archive]
+    */
   def detectArchive(datafile: File): Option[String] = {
     try {
       Some(ArchiveStreamFactory.detect(new BufferedInputStream(datafile.newFileInputStream)))
     } catch {
       case ce: ArchiveException => None
     }
+  }
+
+  /**
+    * translates a java (signed!) byte into an unsigned byte (emulated via short)
+    *
+    * @param b signed byte to convert to unsigned byte value
+    * @return the unsigned byte value stored as short
+    */
+  def toUnsignedByte(b: Byte): Short = {
+    val aByte: Int = 0xff & b.asInstanceOf[Int]
+    aByte.asInstanceOf[Short]
   }
 
 }

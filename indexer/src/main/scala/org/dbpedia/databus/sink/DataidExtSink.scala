@@ -34,7 +34,7 @@ class DataidExtSink(val resultDir:String) extends Sink {
     println(output)
   }
 
-  override def consume(item: Item, model: Model): Unit = {
+  override def consume(item: Item, model: Model, fileName: String): Unit = {
     val targetDir = File(resultDir)/item.getPath
     targetDir.createDirectoryIfNotExists()
     val targetFile = targetDir/"dataidext.nt"

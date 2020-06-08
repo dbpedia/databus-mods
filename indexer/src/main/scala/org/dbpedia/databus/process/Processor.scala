@@ -24,7 +24,8 @@ import better.files.File
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
-abstract class Processor {
+
+abstract class Processor extends Serializable {
 
   def process(file:File, item:Item, sink:Sink)
 }
