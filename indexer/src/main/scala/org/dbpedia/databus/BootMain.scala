@@ -18,11 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.dbpedia.databus.controller
+package org.dbpedia.databus
 
 import java.util.concurrent.ConcurrentLinkedQueue
 
+import org.dbpedia.databus.controller.Agent
 import org.dbpedia.databus.indexer.Index
+import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.support.ClassPathXmlApplicationContext
 
@@ -31,27 +33,32 @@ import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 @SpringBootApplication
-class ControllerMain
+class BootMain {}
 
-object ControllerMain extends App{
+object BootMain {
 
+  def main(args: Array[String]): Unit = {
 
-    val time = System.currentTimeMillis()
-    // open & read the application context file
-    val ctx = new ClassPathXmlApplicationContext("applicationContext.xml")
-    val i = ctx.getBean("index").asInstanceOf[Index]
-    i.updateIndexes()
+    if (args.nonEmpty && args(0) == "rest") {
+      // TODO boot message ...
+      SpringApplication.run(classOf[BootMain], args: _*)
+    } else {
 
+      val time = System.currentTimeMillis()
+      // open & read the application context file
+      val ctx = new ClassPathXmlApplicationContext("applicationContext.xml")
+      val i = ctx.getBean("index").asInstanceOf[Index]
+      i.updateIndexes()
 
-    // process
-    //Execute the extraction jobs one by one
+      // process
+      //Execute the extraction jobs one by one
 
-    val jobsRunning = new ConcurrentLinkedQueue[Future[java.io.Serializable]]()
-    val maxParallelProcesses = 1
-    val iterItem = i.getNewResultSet
-    while (iterItem.next) {
-        while(jobsRunning.size() >= maxParallelProcesses){
-            Thread.sleep(1000)
+      val jobsRunning = new ConcurrentLinkedQueue[Future[java.io.Serializable]]()
+      val maxParallelProcesses = 1
+      val iterItem = i.getNewResultSet
+      while (iterItem.next) {
+        while (jobsRunning.size() >= maxParallelProcesses) {
+          Thread.sleep(1000)
         }
 
         val item = iterItem.getItem
@@ -60,13 +67,18 @@ object ControllerMain extends App{
         val future = Future(agent.process(item, i))
         jobsRunning.add(future)
         future.onComplete {
-            case Failure(f) => throw f
-            case Success(_) => jobsRunning.remove(future)
+          case Failure(f) => throw f
+          case Success(_) => jobsRunning.remove(future)
         }
-    }
-    printf(
+      }
+      printf(
         s"""
            |maxparallelprocesses ${maxParallelProcesses}
-           |time needed: ${System.currentTimeMillis() - time} ms
+
+           |time needed: ${System.currentTimeMillis() - time}
+                ms
+
            |""".stripMargin)
+    }
+  }
 }
