@@ -1,8 +1,28 @@
+/*-
+ * #%L
+ * Indexing the Databus
+ * %%
+ * Copyright (C) 2018 - 2020 Sebastian Hellmann (on behalf of the DBpedia Association)
+ * %%
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ * #L%
+ */
 package org.dbpedia.databus.controller
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.http.{HttpStatus, ResponseEntity}
-import org.springframework.web.bind.annotation.{GetMapping, PathVariable, PutMapping, RequestMapping, RestController}
+import org.springframework.web.bind.annotation._
 
 
 @RestController
@@ -53,4 +73,9 @@ class ApiController {
     else
       new ResponseEntity[String](s"PUT $id", HttpStatus.NOT_ACCEPTABLE)
   }
+
+//  @GetMapping(value = Array("mod/test"))
+//  def test(): ResponseEntity[Person] = {
+//    new ResponseEntity[Person](Person("a","b",21), HttpStatus.OK)
+//  }
 }

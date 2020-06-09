@@ -26,14 +26,29 @@ import org.dbpedia.databus.controller.Agent
 import org.dbpedia.databus.indexer.Index
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.context.annotation.Bean
 import org.springframework.context.support.ClassPathXmlApplicationContext
+import springfox.documentation.builders.{PathSelectors, RequestHandlerSelectors}
+import springfox.documentation.spi.DocumentationType
+import springfox.documentation.spring.web.plugins.Docket
+import springfox.documentation.swagger2.annotations.EnableSwagger2
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 import scala.util.{Failure, Success}
 
 @SpringBootApplication
-class BootMain {}
+@EnableSwagger2
+class BootMain {
+  @Bean
+  def api(): Docket = {
+    new Docket(DocumentationType.SWAGGER_2)
+      .select()
+      .apis(RequestHandlerSelectors.any())
+      .paths(PathSelectors.any())
+      .build()
+  }
+}
 
 object BootMain {
 
