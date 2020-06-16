@@ -1,8 +1,6 @@
 .idea/
-*.iml
-*/target
+**/*.iml
+**/target
 updates.tsv
-.indexdb
-.downloadtemp
-.resoultdir
 derby.log
+errorLog.log

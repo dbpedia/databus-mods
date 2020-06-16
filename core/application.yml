@@ -1,0 +1,8 @@
+server:
+  port : 8080
+# replaced by using subscription modell
+mods:
+  mime-type:
+    name: Mime-Type
+    links:
+      - localhost:8081
