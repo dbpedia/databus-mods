@@ -41,6 +41,8 @@ import scala.collection.mutable
 @SerialVersionUID(1L)
 class VoIDProcessor extends Processor {
 
+  val modName = "VoIdMod"
+
   /**
     * calculate all void:propertyPartition together with its number of occurrences and the void:classPartition of a processed file
     *
@@ -59,7 +61,7 @@ class VoIDProcessor extends Processor {
 
         val model = writeResultToModel(item, classPartitionsMap, propertyPartitionsMap)
 
-        sink.consume(item, model, s"${file.name}_VoID.ttl")
+        sink.consume(item, model, modName)
       }
     } catch {
       case riotExpection: org.apache.jena.riot.RiotException => println("iterator empty")
@@ -151,26 +153,22 @@ class VoIDProcessor extends Processor {
     val model: Model = ModelFactory.createDefaultModel()
 
     val prefixMap: Map[String, String] = Map(
-      "dataid" -> "http://dataid.dbpedia.org/ns/core#",
+      "myMod" -> "http://myservice.org/mimeType/repo/marvin/wikidata/instance-types/2019.08.01/",
+      "myModVoc" -> "http://myservice.org/mimeType/repo/modvocab.ttl#",
       "void" -> "http://rdfs.org/ns/void#"
     )
     model.setNsPrefixes(prefixMap.asJava)
 
+    val resultURI = s"${prefixMap("myMod")}${item.shaSum}.ttl#result"
 
     model.add(
       ResourceFactory.createStatement(
-        ResourceFactory.createResource(item.distribution.toString),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#file"),
+        ResourceFactory.createResource(resultURI),
+        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom"),
         ResourceFactory.createResource(item.file.toString)))
 
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(item.distribution.toString),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#version"),
-        ResourceFactory.createResource(item.version.toString)))
-
-    addMapToModel(model, classPartitionsMap, item.distribution.toString, false)
-    addMapToModel(model, propertyPartitionsMap, item.distribution.toString)
+    addMapToModel(model, classPartitionsMap, resultURI, false)
+    addMapToModel(model, propertyPartitionsMap, resultURI)
 
     model
   }
@@ -180,16 +178,16 @@ class VoIDProcessor extends Processor {
     *
     * @param model        jena model
     * @param map          propertyPartitionsMap or classPartitionsMap
-    * @param distribution distribution of item
+    * @param resultURI    URI of result
     * @param isPropertyMap
     */
-  def addMapToModel(model: Model, map: mutable.HashMap[String, Int], distribution: String, isPropertyMap: Boolean = true) = {
+  def addMapToModel(model: Model, map: mutable.HashMap[String, Int], resultURI: String, isPropertyMap: Boolean = true) = {
     map.foreach(x => {
       val blankNode = ResourceFactory.createResource()
 
       model.add(
         ResourceFactory.createStatement(
-          ResourceFactory.createResource(distribution),
+          ResourceFactory.createResource(resultURI),
           if (isPropertyMap) ResourceFactory.createProperty("http://rdfs.org/ns/void#propertyPartition")
           else ResourceFactory.createProperty("http://rdfs.org/ns/void#classPartition"),
           blankNode

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * #L%
  */
-package org.dbpedia.databus.sink
+package org.dbpedia.databus.sink.archived
 
 import java.io.FileOutputStream
 
@@ -26,6 +26,7 @@ import better.files.File
 import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus.indexer.Item
+import org.dbpedia.databus.sink.Sink
 
 class RDFFileSink(val resultDir: String) extends Sink {
 
@@ -34,12 +35,12 @@ class RDFFileSink(val resultDir: String) extends Sink {
     println(output)
   }
 
-  override def consume(item: Item, model: Model, fileName: String): Unit = {
+  override def consume(item: Item, model: Model, modName:String): Unit = {
 
     val targetDir = File(resultDir) / item.getPath
     targetDir.createDirectoryIfNotExists()
 
-    val targetFile = targetDir / fileName
+    val targetFile = targetDir / item.file.toString.splitAt(item.file.toString.lastIndexOf("/"))._2
 
     this.synchronized {
       val fos = new FileOutputStream(targetFile.toJava, false)

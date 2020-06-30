@@ -20,6 +20,7 @@
  */
 package org.dbpedia.databus.sink
 
+import com.sun.tracing.dtrace.ModuleName
 import org.apache.jena.rdf.model.Model
 import org.dbpedia.databus.indexer.Item
 
@@ -29,5 +30,5 @@ abstract class Sink {
 
   //  def consume(item:Item, model:Model)
 
-  def consume(item: Item, model: Model, fileName: String)
+  def consume(item: Item, model: Model, modName:String)
 }

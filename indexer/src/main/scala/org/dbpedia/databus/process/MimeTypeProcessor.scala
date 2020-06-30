@@ -24,12 +24,15 @@ import java.nio.file.Files
 
 import better.files.File
 import org.apache.commons.compress.utils.IOUtils
+import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
 import org.dbpedia.databus.indexer.Item
 import org.dbpedia.databus.sink.Sink
 
 
 class MimeTypeProcessor extends Processor {
+
+  val modName = "MimeTypeMod"
 
   /**
     * Probe mimeType and compression type of a file
@@ -40,24 +43,27 @@ class MimeTypeProcessor extends Processor {
     */
   override def process(file:File, item: Item, sink: Sink): Unit = {
 
-    val preparedFile:File = {
-      val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(file.toJava)))
 
-      if(inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
-        val decompressedFile = file.parent/ s"${file.nameWithoutExtension(includeAll = false)}"
-        copyStream(inStream,new FileOutputStream(decompressedFile.toJava))
+    val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(file.toJava)))
 
+    if(inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
+      val decompressedFile = file.parent/ s"${file.nameWithoutExtension(includeAll = false)}"
+      copyStream(inStream,new FileOutputStream(decompressedFile.toJava))
 
-        sink.consume(s"${checkMimeType(file)} compression for file $file ")
-        decompressedFile
-      }
-      else file
+      val compression = checkMimeType(file)
+      val mimetype = checkMimeType(decompressedFile)
+      item.mimetype = mimetype
+
+      sink.consume(item, createModel(item, compression, mimetype),modName)
     }
-
-    val mimetype = checkMimeType(preparedFile)
-    item.mimetype = mimetype
-    sink.consume(s"$mimetype mimetype for file $file")
+    else {
+      val mimetype = checkMimeType(file)
+      sink.consume(item, createModel(item, "",mimetype), modName)
+    }
   }
+
+
+
 
   /**
     * Check mimeType of file
@@ -82,5 +88,45 @@ class MimeTypeProcessor extends Processor {
     finally if (out != null) {
       out.close()
     }
+  }
+
+
+  def createModel(item:Item, compression:String, mimeType:String): Model ={
+    val model: Model = ModelFactory.createDefaultModel()
+
+    val prefixMap: Map[String, String] = Map(
+      "myMod" -> "http://myservice.org/mimeType/repo/",
+      "myModVoc" -> "http://myservice.org/mimeType/repo/modvocab.ttl#",
+      "dcat" -> "http://www.w3.org/ns/dcat#",
+      "dataid-mt" -> "http://dataid.dbpedia.org/ns/mt#"
+    )
+
+    import scala.collection.JavaConverters.mapAsJavaMapConverter
+    model.setNsPrefixes(prefixMap.asJava)
+
+    val resultURI = s"${prefixMap("myMod")}${item.shaSum}.ttl#result"
+
+    model.add(
+      ResourceFactory.createStatement(
+        ResourceFactory.createResource(resultURI),
+        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom"),
+        ResourceFactory.createResource(item.file.toString)))
+
+    model.add(
+      ResourceFactory.createStatement(
+        ResourceFactory.createResource(resultURI),
+        ResourceFactory.createProperty("http://www.w3.org/ns/dcat#mediaType"),
+        ResourceFactory.createResource(s"http://dataid.dbpedia.org/ns/mt#${mimeType}")))
+
+    if (compression.nonEmpty) {
+      model.add(
+        ResourceFactory.createStatement(
+          ResourceFactory.createResource(resultURI),
+          ResourceFactory.createProperty("http://www.w3.org/ns/dcat#compression"),
+          ResourceFactory.createResource(s"http://dataid.dbpedia.org/ns/mt#${compression}")))
+
+    }
+
+    model
   }
 }

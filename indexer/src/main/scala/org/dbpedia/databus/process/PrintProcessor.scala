@@ -34,7 +34,7 @@ class PrintProcessor extends Processor {
     val m = ModelFactory.createDefaultModel()
     val dist = m.createResource(item.distribution.toString)
     dist.addLiteral(m.createProperty("http://shasum.org/sha"), item.shaSum)
-    sink.consume(item, m, file.name)
+    sink.consume(item, m, "")
   }
 
 }
