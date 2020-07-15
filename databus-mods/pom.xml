@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>databus-mods-server</artifactId>
+    <packaging>pom</packaging>
+    <name>Databus-Mods</name>
+
+
+    <parent>
+        <groupId>org.dbpedia.databus-mods</groupId>
+        <artifactId>databus-mods-parent</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <modules>
+        <module>databus-mods-mimetype</module>
+    </modules>
+
+    <dependencies>
+    <!--        <dependency>-->
+    <!--            <groupId>org.dbpedia.databus-mods</groupId>-->
+    <!--            <artifactId>databus-mods-lib</artifactId>-->
+    <!--            <version>1.0-SNAPSHOT</version>-->
+    <!--        </dependency>-->
+
+    <!--        &lt;!&ndash; sping &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.springframework.boot</groupId>-->
+    <!--            <artifactId>spring-boot-autoconfigure</artifactId>-->
+    <!--            <version>2.3.0.RELEASE</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.springframework.boot</groupId>-->
+    <!--            <artifactId>spring-boot-starter-web</artifactId>-->
+    <!--            <version>2.3.0.RELEASE</version>-->
+    <!--&lt;!&ndash;            <exclusions>&ndash;&gt;-->
+    <!--&lt;!&ndash;                <exclusion>&ndash;&gt;-->
+    <!--&lt;!&ndash;                    <groupId>ch.qos.logback</groupId>&ndash;&gt;-->
+    <!--&lt;!&ndash;                    <artifactId>logback-classic</artifactId>&ndash;&gt;-->
+    <!--&lt;!&ndash;                </exclusion>&ndash;&gt;-->
+    <!--&lt;!&ndash;            </exclusions>&ndash;&gt;-->
+    <!--        </dependency>-->
+
+    <!--        &lt;!&ndash; logging &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.slf4j</groupId>-->
+    <!--            <artifactId>slf4j-api</artifactId>-->
+    <!--            <version>1.7.30</version>-->
+    <!--        </dependency>-->
+    <!--        <dependency>-->
+    <!--            <groupId>org.slf4j</groupId>-->
+    <!--            <artifactId>slf4j-log4j12</artifactId>-->
+    <!--            <version>1.7.30</version>-->
+    <!--        </dependency>-->
+
+    <!--        &lt;!&ndash; dep fix &ndash;&gt;-->
+    <!--        <dependency>-->
+    <!--            <groupId>com.google.guava</groupId>-->
+    <!--            <artifactId>guava</artifactId>-->
+    <!--            <version>26.0-jre</version>-->
+    <!--        </dependency>-->
+     </dependencies>
+</project>
+
