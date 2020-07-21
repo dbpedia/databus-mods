@@ -10,16 +10,8 @@
 
     <parent>
         <groupId>org.dbpedia.databus-mods</groupId>
-        <artifactId>databus-mods-parent</artifactId>
+        <artifactId>databus-mods</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.dbpedia.databus-mods</groupId>
-            <artifactId>databus-mods-lib</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
 </project>
 

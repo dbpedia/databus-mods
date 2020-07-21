@@ -1,8 +1,9 @@
-package org.dbpedia.databus_mods.mimetype
+package org.dbpedia.databus_mods.linecount
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}
 import org.springframework.context.ConfigurableApplicationContext
+
 
 @SpringBootApplication
 @EnableAutoConfiguration
@@ -14,4 +15,5 @@ object Boot extends App {
 
   val executor: DatabusModExecutor = app.getBean(classOf[DatabusModExecutor])
   new Thread(executor).run()
+
 }

@@ -65,6 +65,12 @@
             <groupId>com.github.dbpedia</groupId>
             <artifactId>databus-client</artifactId>
             <version>2bf789b786</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.scalactic</groupId>
+                    <artifactId>scalactic_2.11</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- test -->
