@@ -4,7 +4,7 @@
 
     <groupId>org.dbpedia.databus-mods</groupId>
     <artifactId>databus-mods-parent</artifactId>
-    <name>Databus Mod Parent</name>
+    <name>Databus-Mods Parent</name>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 

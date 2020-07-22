@@ -4,8 +4,4 @@ import org.scalatest.funsuite.AnyFunSuite
 
 class DatabusUpdatesTest extends AnyFunSuite {
 
-  test("Databus Update") {
-
-
-  }
 }

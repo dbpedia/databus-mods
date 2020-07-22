@@ -15,6 +15,14 @@ case class Config() {
 
   @BeanProperty
   var volumes: VolumeConfig = new VolumeConfig
+
+  @BeanProperty
+  var database: DatabaseConfig =  new DatabaseConfig
+}
+
+case class DatabaseConfig() {
+  @BeanProperty
+  var databaseUrl: String = _
 }
 
 case class ModConfig() {

@@ -28,7 +28,7 @@ class ApiDocConfig {
     new Docket(DocumentationType.SWAGGER_2)
       .useDefaultResponseMessages(false)
       .select()
-      .apis(RequestHandlerSelectors.basePackage("org.dbpedia.databus.mods.mimetype"))
+      .apis(RequestHandlerSelectors.basePackage("org.dbpedia.databus_mods.mimetype"))
       .paths(PathSelectors.any())
       .build()
       .pathMapping("/")

@@ -16,3 +16,6 @@ Solution
 ```
 mvn clean install
 ```
+```
+curl -v --data-urlencode 'fileUri=file:///local/path/shared/volume/to/' 'http://localhost:9001/a/dbpedia/generic/labels/2020.06.01/labels_lang=de.ttl.bz2'
+```
