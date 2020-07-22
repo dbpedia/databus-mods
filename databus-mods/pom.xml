@@ -18,6 +18,7 @@
     <modules>
         <module>databus-mods-mimetype</module>
         <module>databus-mods-linecount</module>
+        <module>databus-mods-uri-pattern-analyzer</module>
     </modules>
 
 <!--    <dependencies>-->

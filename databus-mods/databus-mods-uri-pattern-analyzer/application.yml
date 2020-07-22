@@ -1,0 +1,6 @@
+server:
+  port: 9003
+name: uri-pattern-anaylyzer-mod
+volumes:
+  localRepo: volume/localRepo
+  fileCache: volume/fileCache
