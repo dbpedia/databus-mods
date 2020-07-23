@@ -21,12 +21,12 @@
         </repository>
     </repositories>
 
-    <!--<dependencies>-->
-        <!--<dependency>-->
-            <!--<groupId>com.github.dice-group</groupId>-->
-            <!--<artifactId>rdfdetector</artifactId>-->
-            <!--<version>master-SNAPSHOT</version>-->
-        <!--</dependency>-->
-    <!--</dependencies>-->
+    <dependencies>
+        <dependency>
+            <groupId>com.github.Vehnem</groupId>
+            <artifactId>rdfdetector</artifactId>
+            <version>master-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
 </project>

@@ -38,7 +38,7 @@ abstract class AbstractDatabusModController(localRepo: String) {
 
     DatabusModInput.apply(publisher,group,artifact,version,fileName,fileUri) match {
       case Some(databusModInput) =>
-        if (databusModInput.modMetadataFile("mod.ttl").exists) {
+        if (databusModInput.modMetadataFile(localRepo).exists) {
           response.setStatus(200)
           response.setContentType("text/turtle")
           IOUtils.copy(

@@ -56,7 +56,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
         }
       }
 
-      addModInformationToModel(resultModel, databusModInput, "MimeTypeMod")
+//      addModInformationToModel(resultModel, databusModInput, "MimeTypeMod")
       val fos = new FileOutputStream(metadataFile.toJava, false)
       RDFDataMgr.write(fos, resultModel, Lang.TTL)
       fos.close()
@@ -127,7 +127,8 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
 
     model.setNsPrefixes(prefixMap.asJava)
 
-    val resultURI = s"${prefixMap("myMod")}${databusModInput.id}/mod.ttl#result"
+    val resultURI = s"file://${databusModInput.modMetadataFile}#this"
+
 
     model.add(
       ResourceFactory.createStatement(
@@ -150,7 +151,6 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
           ResourceFactory.createResource(s"http://dataid.dbpedia.org/ns/mt#$compression")))
 
     }
-
     model
   }
 
