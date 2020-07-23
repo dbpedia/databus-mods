@@ -1,4 +1,4 @@
-package org.dbpedia.databus_mods.linecount
+package org.dbpedia.databus_mods.filemetrics
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}

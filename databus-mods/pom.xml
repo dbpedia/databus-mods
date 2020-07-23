@@ -17,7 +17,7 @@
 
     <modules>
         <module>databus-mods-mimetype</module>
-        <module>databus-mods-linecount</module>
+        <module>databus-mods-filemetrics</module>
         <module>databus-mods-uri-pattern-analyzer</module>
     </modules>
 
@@ -34,6 +34,12 @@
             <groupId>org.apache.any23</groupId>
             <artifactId>apache-any23-mime</artifactId>
             <version>2.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+            <version>1.20</version>
         </dependency>
 
 
