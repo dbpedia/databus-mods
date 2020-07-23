@@ -13,4 +13,20 @@
         <artifactId>databus-mods-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
+    <repositories>
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
+        </repository>
+    </repositories>
+
+    <!--<dependencies>-->
+        <!--<dependency>-->
+            <!--<groupId>com.github.dice-group</groupId>-->
+            <!--<artifactId>rdfdetector</artifactId>-->
+            <!--<version>master-SNAPSHOT</version>-->
+        <!--</dependency>-->
+    <!--</dependencies>-->
+
 </project>
