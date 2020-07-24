@@ -1,6 +1,7 @@
 package org.dbpedia.databus_mods.mimetype
 
 import java.io._
+import java.net.URL
 import java.util.Calendar
 
 import better.files.File
@@ -10,7 +11,9 @@ import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
 import org.apache.jena.rdf.model.{Model, ModelFactory, Resource, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
+import org.dbpedia.databus_mods.lib.util.ModModelHelper
 import org.dbpedia.databus_mods.lib.{AbstractDatabusModExecutor, DatabusModInput}
+import org.glassfish.jersey.server.model.internal.ModelHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -39,7 +42,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
       val inputFile = databusModInput.file
       val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(inputFile.toJava)))
 
-      val resultModel: Model = {
+      val modelHelper: ModModelHelper = {
         if (inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
           val decompressedFile = inputFile.parent / s"${inputFile.nameWithoutExtension(includeAll = false)}"
           copyStream(inStream, new FileOutputStream(decompressedFile.toJava))
@@ -55,11 +58,8 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
           createResultModel(databusModInput, "", mimetype)
         }
       }
-
 //      addModInformationToModel(resultModel, databusModInput, "MimeTypeMod")
-      val fos = new FileOutputStream(metadataFile.toJava, false)
-      RDFDataMgr.write(fos, resultModel, Lang.TTL)
-      fos.close()
+      modelHelper.writeModel()
     }
     catch {
       case e: Exception =>
@@ -93,14 +93,9 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * @return mimetype
     */
   def checkMimeType(file: File): String = {
-
+    //  Files.probeContentType(file.path)
     val detector = new TikaMIMETypeDetector()
     detector.guessMIMEType(file.name, new BufferedInputStream(new FileInputStream(file.toJava)), null).toString
-    //    println("mimetype")
-    //    println(mimetype)
-
-
-    //  Files.probeContentType(file.path)
   }
 
 
@@ -110,52 +105,32 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * @param databusModInput input data on which calculations were carried out
     * @param compression     compression of file
     * @param mimeType        mime type of file
-    * @return model that contains result
+    * @return modModelHelper
     */
-  def createResultModel(databusModInput: DatabusModInput, compression: String, mimeType: String): Model = {
+  def createResultModel(databusModInput: DatabusModInput, compression: String, mimeType: String): ModModelHelper = {
 
-    import scala.collection.JavaConverters.mapAsJavaMapConverter
+    val modelHelper = new org.dbpedia.databus_mods.lib.util.ModModelHelper(databusModInput, config.volumes.localRepo, "MimeTypeMod")
 
-    val model = ModelFactory.createDefaultModel()
+    val resultURI = s"file://${databusModInput.modMetadataFile}#result"
+    modelHelper.generateResultDerivedFrom(resultURI)
 
-    val prefixMap: Map[String, String] = Map(
-      "myMod" -> "http://myservice.org/mimeType/repo/",
-      "myModVoc" -> "http://myservice.org/mimeType/repo/modvocab.ttl#",
-      "dcat" -> "http://www.w3.org/ns/dcat#",
-      "dataid-mt" -> "http://dataid.dbpedia.org/ns/mt#"
-    )
+    modelHelper.addPrefix("dcat", new URL("http://www.w3.org/ns/dcat#"))
+    modelHelper.addPrefix("dataid-mt", new URL("http://dataid.dbpedia.org/ns/mt#"))
 
-    model.setNsPrefixes(prefixMap.asJava)
-
-    val resultURI = s"file://${databusModInput.modMetadataFile}#this"
-
-
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom"),
-        ResourceFactory.createResource(s"https://databus.dbpedia.org/${databusModInput.id}")))
-
-
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://www.w3.org/ns/dcat#mediaType"),
-        getMimeTypeFromIanaOntology(mimeType)))
-
+    modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#mediaType", getMimeTypeFromIanaOntology(mimeType))
     if (compression.nonEmpty) {
-      model.add(
-        ResourceFactory.createStatement(
-          ResourceFactory.createResource(resultURI),
-          ResourceFactory.createProperty("http://www.w3.org/ns/dcat#compression"),
-          ResourceFactory.createResource(s"http://dataid.dbpedia.org/ns/mt#$compression")))
-
+      modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#compression", s"http://dataid.dbpedia.org/ns/mt#$compression")
     }
-    model
+
+
+    //    modelHelper.addStmtsForGeneratedFile("mod.html")
+    //    modelHelper.addStmtsForGeneratedFile("mod.svg")
+
+    modelHelper
   }
 
   /**
-    * get MimeType of IanaOntology with calculated mimeType
+    * get MimeType URI of Iana Ontology that corresponds to calculated mimeType
     *
     * @param mimeType calculated mimeType
     * @return Resource of ianaOntology that matches with the mimeType
