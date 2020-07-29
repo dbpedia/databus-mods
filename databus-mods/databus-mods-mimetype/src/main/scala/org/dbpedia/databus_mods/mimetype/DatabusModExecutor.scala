@@ -11,7 +11,7 @@ import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
 import org.apache.jena.rdf.model.{Model, ModelFactory, Resource, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus_mods.lib.util.ModModelHelper
+import org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper
 import org.dbpedia.databus_mods.lib.{AbstractDatabusModExecutor, DatabusModInput}
 import org.glassfish.jersey.server.model.internal.ModelHelper
 import org.slf4j.LoggerFactory
@@ -42,7 +42,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
       val inputFile = databusModInput.file
       val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(inputFile.toJava)))
 
-      val modelHelper: ModModelHelper = {
+      val modelHelper: DatabusModOutputHelper = {
         if (inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
           val decompressedFile = inputFile.parent / s"${inputFile.nameWithoutExtension(includeAll = false)}"
           copyStream(inStream, new FileOutputStream(decompressedFile.toJava))
@@ -107,9 +107,9 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * @param mimeType        mime type of file
     * @return modModelHelper
     */
-  def createResultModel(databusModInput: DatabusModInput, compression: String, mimeType: String): ModModelHelper = {
+  def createResultModel(databusModInput: DatabusModInput, compression: String, mimeType: String): DatabusModOutputHelper = {
 
-    val modelHelper = new org.dbpedia.databus_mods.lib.util.ModModelHelper(databusModInput, config.volumes.localRepo, "MimeTypeMod")
+    val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(databusModInput, config.volumes.localRepo, "MimeTypeMod")
 
     val resultURI = s"file://${databusModInput.modMetadataFile}#result"
     modelHelper.generateResultDerivedFrom(resultURI)

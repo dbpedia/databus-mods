@@ -9,11 +9,11 @@ import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus_mods.lib.DatabusModInput
 
-class ModModelHelper(databusModInput: DatabusModInput, baseUri: String, modName: String) {
+class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String) {
 
   //  val subject: String = databusModInput.modMetadataFile.pathAsString //  private vocabModel =  private implicit val baseDir: String = baseUri
   private val model = ModelFactory.createDefaultModel()
-  private val modVocabHelper = new ModVocabHelper(modName)
+  private val modVocabHelper = new DatabusModVocabHelper(modName)
 
   object Prefixes {
     val prov = "http://www.w3.org/ns/prov#"
@@ -184,56 +184,4 @@ class ModModelHelper(databusModInput: DatabusModInput, baseUri: String, modName:
   //    //    )
   //  }
 
-}
-
-class ModVocabHelper(modName: String) {
-
-
-  private val modVocabModel = ModelFactory.createDefaultModel()
-
-  object Prefixes {
-    val owl = "http://www.w3.org/2002/07/owl#"
-    val mod = "http://dataid.dbpedia.org/ns/mod.ttl#"
-    val rdfs = "http://www.w3.org/2000/01/rdf-schema#"
-  }
-
-  private val uriByPrefix: Map[String, String] = Map(
-    "rdfs" -> Prefixes.rdfs,
-    "mod" -> Prefixes.mod,
-    "owl" -> Prefixes.owl
-  )
-
-  import scala.collection.JavaConverters.mapAsJavaMapConverter
-
-  modVocabModel.setNsPrefixes(uriByPrefix.asJava)
-
-
-  /**
-    * add statement to mod vocabulary model
-    *
-    * @param s subject
-    * @param p predicate
-    * @param o object
-    */
-  private def addStmtToModVocab(s: String, p: String, o: Object): Unit = {
-    modVocabModel.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(s),
-        ResourceFactory.createProperty(p),
-        try {
-          new URL(o.toString)
-          ResourceFactory.createResource(o.toString)
-        } catch {
-          case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(o)
-        })
-    )
-  }
-
-  addStmtToModVocab(s"#${modName}", "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", s"${Prefixes.owl}Class")
-  addStmtToModVocab(s"#${modName}", s"${Prefixes.rdfs}subClassOf", s"${Prefixes.mod}DatabusMod")
-  addStmtToModVocab(s"#${modName}", s"${Prefixes.rdfs}label", "")
-
-  def getModel(): Model = {
-    modVocabModel
-  }
 }
