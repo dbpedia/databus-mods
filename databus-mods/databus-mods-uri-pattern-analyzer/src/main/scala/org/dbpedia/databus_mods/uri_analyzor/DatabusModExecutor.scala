@@ -34,6 +34,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
       case e: Exception =>
         log.error(s"failed to process ${databusModInput.id}")
         print(databusModInput.modErrorFile.write(
+          e.getMessage+
           Calendar.getInstance().getTime.toString + "\n" +
             e.getStackTrace.mkString("\n")
         ).pathAsString)
@@ -66,9 +67,9 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
 //      if (subj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(subjectMap, subj)
 //      increaseCountIfExistsOrAddToMapIfNotExists(predicateMap, pre)
 //      if (obj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(objectMap, obj)
-      if (subj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(subjectMap, getIriPrefix(subj))
-      increaseCountIfExistsOrAddToMapIfNotExists(predicateMap, getIriPrefix(pre))
-      if (obj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(objectMap, getIriPrefix(obj))
+      if (subj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(subjectMap, getIriPrefixRegex(subj))
+      increaseCountIfExistsOrAddToMapIfNotExists(predicateMap, getIriPrefixRegex(pre))
+      if (obj.nonEmpty) increaseCountIfExistsOrAddToMapIfNotExists(objectMap, getIriPrefixRegex(obj))
 
     }
 
@@ -88,13 +89,21 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     }
   }
 
-  def getIriPrefix(uri : String ) = {
+  def getIriPrefixJena(uri : String ) = {
     val ifactory = IRIFactory.iriImplementation()
     val iri = ifactory.create(uri)
-    ifactory.construct(iri.getScheme,iri.getRawAuthority,"","","")
-    iri.getScheme+iri.getRawAuthority
+    ifactory.create(iri.getScheme,iri.getRawAuthority,"/",null,null).toString
+    //iri.getScheme+iri.getRawAuthority
   }
 
+  def getIriPrefixRegex(uri : String ) = {
+    val regex = """(^https?://)([^/]+)/(.*)""".r("scheme-prefix","hostname","suffix")
+    var prefix = ""
+    for (patternMatch <- regex.findAllMatchIn(uri))
+   // val patternMatch = regex.findFirstMatchIn(uri)
+      prefix = s"${patternMatch.group("scheme-prefix")}${patternMatch.group("hostname")}"
 
+    prefix
+  }
 
 }
