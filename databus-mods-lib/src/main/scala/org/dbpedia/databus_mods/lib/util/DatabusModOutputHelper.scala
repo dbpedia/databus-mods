@@ -52,17 +52,23 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
 
   /**
     * add Statements for mod-generated file to jena model, except external result files!
+    * also add definition to vocabulary
     *
     * @param fileName file name of generated file
+    * @param label    label of propertyObject
+    * @param comment  comment of propertyObject
     */
-  def addStmtsForGeneratedFile(fileName: String): Unit = {
+  def addStmtsForGeneratedFile(fileName: String, label: String = "", comment: String = ""): Unit = {
     addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", s"${modURI}/${fileName}")
 
     if (fileName.contains('.')) {
-      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}${fileName.split('.').last.toLowerCase}DerivedFrom", provFileURI)
+      val fileType = fileName.split('.').last.toLowerCase
+      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}${fileType}DerivedFrom", provFileURI)
+      if (!(fileType matches ("svg|html"))) modVocabHelper.addFileTypeToModVocab(fileType, label, comment)
     } else {
       addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}derivedFrom", provFileURI)
     }
+
   }
 
   /**
