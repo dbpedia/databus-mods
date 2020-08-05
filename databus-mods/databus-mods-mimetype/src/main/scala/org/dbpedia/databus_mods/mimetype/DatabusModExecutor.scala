@@ -1,19 +1,16 @@
 package org.dbpedia.databus_mods.mimetype
 
 import java.io._
-import java.net.URL
 import java.util.Calendar
 
 import better.files.File
 import org.apache.any23.mime.TikaMIMETypeDetector
 import org.apache.commons.io.IOUtils
 import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
-import org.apache.jena.rdf.model.{Model, ModelFactory, Resource, ResourceFactory}
-import org.apache.jena.riot.{Lang, RDFDataMgr}
+import org.apache.jena.rdf.model.Resource
+import org.apache.jena.riot.RDFDataMgr
 import org.dbpedia.databus.client.filehandling.convert.compression.Compressor
-import org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper
 import org.dbpedia.databus_mods.lib.{AbstractDatabusModExecutor, DatabusModInput}
-import org.glassfish.jersey.server.model.internal.ModelHelper
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -42,24 +39,22 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
       val inputFile = databusModInput.file
       val inStream = Compressor.decompress(new BufferedInputStream(new FileInputStream(inputFile.toJava)))
 
-      val modelHelper: DatabusModOutputHelper = {
-        if (inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
-          val decompressedFile = inputFile.parent / s"${inputFile.nameWithoutExtension(includeAll = false)}"
-          copyStream(inStream, new FileOutputStream(decompressedFile.toJava))
+      if (inStream.getClass.getCanonicalName != "java.io.BufferedInputStream") {
+        val decompressedFile = inputFile.parent / s"${inputFile.nameWithoutExtension(includeAll = false)}"
+        copyStream(inStream, new FileOutputStream(decompressedFile.toJava))
 
-          val compression = checkMimeType(inputFile)
-          val mimeType = checkMimeType(decompressedFile)
+        val compression = checkMimeType(inputFile)
+        val mimeType = checkMimeType(decompressedFile)
 
-          decompressedFile.delete()
-          createResultModel(databusModInput, compression, mimeType)
-        }
-        else {
-          val mimetype = checkMimeType(inputFile)
-          createResultModel(databusModInput, "", mimetype)
-        }
+        decompressedFile.delete()
+        writeResultsToFiles(databusModInput, compression, mimeType)
       }
+      else {
+        val mimetype = checkMimeType(inputFile)
+        writeResultsToFiles(databusModInput, "", mimetype)
+      }
+
 //      addModInformationToModel(resultModel, databusModInput, "MimeTypeMod")
-      modelHelper.writeModel()
     }
     catch {
       case e: Exception =>
@@ -107,26 +102,22 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * @param mimeType        mime type of file
     * @return modModelHelper
     */
-  def createResultModel(databusModInput: DatabusModInput, compression: String, mimeType: String): DatabusModOutputHelper = {
+  def writeResultsToFiles(databusModInput: DatabusModInput, compression: String, mimeType: String): Unit = {
 
     val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(databusModInput, config.volumes.localRepo, "MimeTypeMod")
-
-    val resultURI = s"file://${databusModInput.modMetadataFile}#result"
-    modelHelper.generateResultDerivedFrom(resultURI)
-
-    modelHelper.addPrefix("dcat", new URL("http://www.w3.org/ns/dcat#"))
-    modelHelper.addPrefix("dataid-mt", new URL("http://dataid.dbpedia.org/ns/mt#"))
+    val resultURI = modelHelper.getResultURI()
 
     modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#mediaType", getMimeTypeFromIanaOntology(mimeType))
+
     if (compression.nonEmpty) {
       modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#compression", s"http://dataid.dbpedia.org/ns/mt#$compression")
     }
 
+    //        modelHelper.addStmtsForGeneratedFile("mod.png")
+    //        modelHelper.addStmtsForGeneratedFile("mod.svg")
 
-    //    modelHelper.addStmtsForGeneratedFile("mod.html")
-    //    modelHelper.addStmtsForGeneratedFile("mod.svg")
 
-    modelHelper
+    modelHelper.writeMetaDataModels()
   }
 
   /**

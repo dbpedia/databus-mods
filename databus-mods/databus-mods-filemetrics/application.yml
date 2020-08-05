@@ -1,0 +1,6 @@
+server:
+  port: 9001
+name: filemetrics-mod
+volumes:
+  localRepo: volume/localRepo
+  fileCache: volume/fileCache

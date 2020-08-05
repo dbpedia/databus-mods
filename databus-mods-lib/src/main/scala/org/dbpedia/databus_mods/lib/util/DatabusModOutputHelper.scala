@@ -9,33 +9,42 @@ import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus_mods.lib.DatabusModInput
 
-class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String) {
+class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFile: Option[File] = None) {
 
-  //  val subject: String = databusModInput.modMetadataFile.pathAsString //  private vocabModel =  private implicit val baseDir: String = baseUri
   private val model = ModelFactory.createDefaultModel()
   private val modVocabHelper = new DatabusModVocabHelper(modName)
 
   object Prefixes {
     val prov = "http://www.w3.org/ns/prov#"
     val mod = "http://dataid.dbpedia.org/ns/mod.ttl#"
+    val dcat = "http://www.w3.org/ns/dcat#"
+    val dataIdMT = "http://dataid.dbpedia.org/ns/mt#"
   }
 
   private val uriByPrefix: Map[String, String] = Map(
     "mod" -> Prefixes.mod,
-    "prov" -> Prefixes.prov
+    "prov" -> Prefixes.prov,
+    "dataid-mt" -> Prefixes.dataIdMT,
+    "dcat" -> Prefixes.dcat
   )
 
   import scala.collection.JavaConverters.mapAsJavaMapConverter
-
   model.setNsPrefixes(uriByPrefix.asJava)
 
   private val modURI = s"file://${databusModInput.modMetadataFile(baseUri).parent}"
   private val modResourceURI = s"file://${databusModInput.modMetadataFile(baseUri)}#this"
   private val provFileURI = s"https://databus.dbpedia.org/${databusModInput.id}"
+  private val resultURI = externalResultFile match {
+    case Some(file) => s"file://${file}#this"
+    case None => s"file://${databusModInput.modMetadataFile(baseUri)}#result"
+  }
+
 
   addStmtToModel(modResourceURI, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", s"${modURI}/modvocab.ttl#${modName}")
   addStmtToModel(modResourceURI, s"${Prefixes.prov}used", provFileURI)
   addStmtToModel(modResourceURI, s"${Prefixes.prov}endedAtTime", new XSDDateTime(java.util.Calendar.getInstance()))
+  addStmtsResultDerivedFrom(resultURI)
+
 
   /**
     * add statement for result to jena model.
@@ -45,10 +54,11 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param resultURI
     * @return
     */
-  def generateResultDerivedFrom(resultURI: String): Unit = {
+  private def addStmtsResultDerivedFrom(resultURI: String): Unit = {
     addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom", s"https://databus.dbpedia.org/${databusModInput.id}")
     addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", resultURI)
   }
+
 
   /**
     * add Statements for mod-generated file to jena model, except external result files!
@@ -90,7 +100,7 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param p predicate
     * @param o object
     */
-  def addStmtToModel(s: String, p: String, o: Object): Unit = {
+  def addStmtToModel(s: String, p: String, o: Any, model: Model = this.model): Unit = {
     model.add(
       ResourceFactory.createStatement(
         ResourceFactory.createResource(s),
@@ -105,89 +115,35 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   }
 
   /**
-    * write out jena model
+    * write out jena model of vocabulary and mod result
     *
     * @param lang desired rdf language
     */
-  def writeModel(lang: Lang = Lang.TTL): Unit = {
-    val fos = new FileOutputStream(databusModInput.modMetadataFile(baseUri).toJava, false)
-    RDFDataMgr.write(fos, model, lang)
-    fos.close()
+  def writeMetaDataModels(lang: Lang = Lang.TTL): Unit = {
+    writeModel(model, databusModInput.modMetadataFile(baseUri), lang)
+    writeModel(modVocabHelper.getModel(), File(s"${databusModInput.modMetadataFile(baseUri).parent}/modvocab.ttl"), lang)
+  }
 
-    val fosModVocab = new FileOutputStream(File(s"${databusModInput.modMetadataFile(baseUri).parent}/modvocab.ttl").toJava, false)
-    RDFDataMgr.write(fosModVocab, modVocabHelper.getModel(), Lang.TTL)
+  /**
+    * write jena model to file
+    *
+    * @param model jena model
+    * @param file  output file
+    * @param lang  rdf lang
+    */
+  def writeModel(model: Model, file: File, lang: Lang = Lang.TTL): Unit = {
+    val fos = new FileOutputStream(file.toJava, false)
+    RDFDataMgr.write(fos, model, lang)
     fos.close()
   }
 
-  //  def addModInformationToModel(model: Model, databusModInput: DatabusModInput, modName: String): Unit = {
-  //
-  //    import scala.collection.JavaConverters.mapAsJavaMapConverter
-  //
-  //    val prefixMap: Map[String, String] = Map(
-  //      "mod" -> "http://dataid.dbpedia.org/ns/mod.ttl#",
-  //      "prov" -> "http://www.w3.org/ns/prov#",
-  //      "dataid-mt" -> "http://dataid.dbpedia.org/ns/mt#",
-  //      "dcat" -> "http://www.w3.org/ns/dcat#"
-  //    )
-  //
-  //    model.setNsPrefixes(prefixMap.asJava)
-  //
-  //    val provFileResource = ResourceFactory.createResource(s"https://databus.dbpedia.org/${databusModInput.id}")
-  //    val modResource = ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.ttl#this")
-  //
-  //    model.add(
-  //      ResourceFactory.createStatement(
-  //        modResource,
-  //        ResourceFactory.createProperty("http://www.w3.org/1999/02/22-rdf-syntax-ns#type"),
-  //        ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myModVoc")}$modName")))
-  //
-  //    model.add(
-  //      ResourceFactory.createStatement(
-  //        modResource,
-  //        ResourceFactory.createProperty(s"${model.getNsPrefixMap.get("prov")}used"),
-  //        provFileResource))
-  //
-  //    model.add(
-  //      ResourceFactory.createStatement(
-  //        modResource,
-  //        ResourceFactory.createProperty(s"${model.getNsPrefixMap.get("prov")}endedAtTime"),
-  //        ResourceFactory.createTypedLiteral(java.time.ZonedDateTime.now.toString, XSDDatatype.XSDdateTime)))
-  //
-  //    model.add(
-  //      ResourceFactory.createStatement(
-  //        ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.svg"),
-  //        ResourceFactory.createProperty(s"${model.getNsPrefixMap.get("mod")}svgDerivedFrom"),
-  //        provFileResource))
-  //
-  //    model.add(
-  //      ResourceFactory.createStatement(
-  //        ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.html"),
-  //        ResourceFactory.createProperty(s"${model.getNsPrefixMap.get("mod")}htmlDerivedFrom"),
-  //        provFileResource))
-  //
-  //    val stmt = ResourceFactory.createStatement(
-  //      modResource,
-  //      ResourceFactory.createProperty(s"${model.getNsPrefixMap.get("prov")}generated"),
-  //      ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.html"))
-  //
-  //    model.add(stmt)
-  //
-  //    model.add(
-  //      stmt.changeObject(ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.svg")))
-  //
-  //    model.add(
-  //      stmt.changeObject(ResourceFactory.createResource(s"${model.getNsPrefixMap.get("myMod")}${databusModInput.id}/mod.ttl#result")))
-  //  }
-
-
-  //  databusModInput.modResourceFile("") as fileName
-  //
-  //  def generatesProvDerived(fileName: String, property: String): Unit = { //    val stmt = ResourceFactory.createStatement(
-  //    //      ResourceFactory.createResource(subject),
-  //    //      ResourceFactory.createProperty(property),
-  //    //      provFileResource
-  //    //    )
-  //    //    )
-  //  }
+  /**
+    * get URI of result resource
+    *
+    * @return
+    */
+  def getResultURI(): String = {
+    resultURI
+  }
 
 }

@@ -6,8 +6,7 @@ import java.util.Calendar
 import better.files.File
 import org.apache.commons.compress.archivers.{ArchiveException, ArchiveInputStream, ArchiveStreamFactory}
 import org.apache.commons.compress.compressors.{CompressorException, CompressorInputStream, CompressorStreamFactory}
-import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
-import org.apache.jena.riot.{Lang, RDFDataMgr}
+import org.apache.jena.rdf.model.ModelFactory
 import org.dbpedia.databus_mods.lib.{AbstractDatabusModExecutor, DatabusModInput}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,6 +17,7 @@ import scala.io.{Codec, Source}
 @Service
 class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusModExecutor {
 
+  private val modName = "FileMetricsMod"
   private val log = LoggerFactory.getLogger(classOf[DatabusModExecutor])
 
   private implicit val basePath: String = config.volumes.localRepo
@@ -108,11 +108,8 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
         }
       }
 
-      val resultModel = createResultModel(databusModInput, nonEmptyLines, duplicates, sorted, uncompressedByteSize)
-      addModInformationToModel(resultModel, databusModInput, "DataIdMod")
-      val fos = new FileOutputStream(metadataFile.toJava, false)
-      RDFDataMgr.write(fos, resultModel, Lang.TTL)
-      fos.close()
+      writeResultsToFiles(databusModInput, nonEmptyLines, duplicates, sorted, uncompressedByteSize)
+
     } catch {
       case e: Exception =>
         log.error(s"failed to process ${databusModInput.id}")
@@ -170,7 +167,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
 
     val mLength = scala.math.min(ab.length, bb.length)
 
-    for (i <- 0 to mLength - 1) {
+    for (i <- 0 until mLength) {
       if (ab(i) == bb(i)) {}
       else
         return toUnsignedByte(ab(i)).compareTo(toUnsignedByte(bb(i)))
@@ -222,59 +219,34 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * write result into jena model
     *
     * @param databusModInput      input data on which calculations were carried out
-    * @param nonEmptyLines        number of non empty lines of file
+    * @param nonEmptyLines        number of non empty lines in file
     * @param duplicates           number of duplicates in file
-    * @param sorted               file is sorted
+    * @param sorted               is file sorted?
     * @param uncompressedByteSize uncompressed byte size of file
-    * @return model that contains result
+    * @return modModelHelper
     */
-  def createResultModel(databusModInput: DatabusModInput, nonEmptyLines: Long, duplicates: Long, sorted: Boolean, uncompressedByteSize: Long): Model = {
+  def writeResultsToFiles(databusModInput: DatabusModInput, nonEmptyLines: Long, duplicates: Long, sorted: Boolean, uncompressedByteSize: Long): Unit = {
 
-    import scala.collection.JavaConverters.mapAsJavaMapConverter
+    val externalResultFile = databusModInput.modMetadataFile(basePath).parent / "externalResult.ttl"
 
-    val model = ModelFactory.createDefaultModel()
-
-    val prefixMap: Map[String, String] = Map(
-      "myMod" -> "http://myservice.org/mimeType/repo/",
-      "myModVoc" -> "http://myservice.org/mimeType/repo/modvocab.ttl#",
-      "dcat" -> "http://www.w3.org/ns/dcat#",
-      "dataid-mt" -> "http://dataid.dbpedia.org/ns/mt#"
+    val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(
+      databusModInput,
+      config.volumes.localRepo, modName,
+      Some(externalResultFile)
     )
+    val resultURI = modelHelper.getResultURI()
 
-    model.setNsPrefixes(prefixMap.asJava)
+    //create, feed, and write out external result model
+    val externalResultModel = ModelFactory.createDefaultModel()
+    externalResultModel.setNsPrefix("dataIdNsCore", "http://dataid.dbpedia.org/ns/core#")
+    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#sorted", sorted, externalResultModel)
+    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#duplicates", duplicates, externalResultModel)
+    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#uncompressedByteSize", uncompressedByteSize, externalResultModel)
+    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#nonEmptyLines", nonEmptyLines, externalResultModel)
+    modelHelper.writeModel(externalResultModel, externalResultFile)
 
-    val resultURI = s"${prefixMap("myMod")}${databusModInput.id}/mod.ttl#result"
-
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom"),
-        ResourceFactory.createResource(s"https://databus.dbpedia.org/${databusModInput.id}")))
-
-
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#sorted"),
-        ResourceFactory.createTypedLiteral(sorted)))
-
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#duplicates"),
-        ResourceFactory.createTypedLiteral(duplicates)))
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#uncompressedByteSize"),
-        ResourceFactory.createTypedLiteral(uncompressedByteSize)))
-    model.add(
-      ResourceFactory.createStatement(
-        ResourceFactory.createResource(resultURI),
-        ResourceFactory.createProperty("http://dataid.dbpedia.org/ns/core#nonEmptyLines"),
-        ResourceFactory.createTypedLiteral(nonEmptyLines)))
-
-    model
+    //write out meta data
+    modelHelper.writeMetaDataModels()
   }
 
 }
