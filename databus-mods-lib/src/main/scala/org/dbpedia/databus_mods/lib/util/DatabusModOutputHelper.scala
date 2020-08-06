@@ -5,7 +5,7 @@ import java.net.{MalformedURLException, URL}
 
 import better.files.File
 import org.apache.jena.datatypes.xsd.XSDDateTime
-import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
+import org.apache.jena.rdf.model.{Model, ModelFactory, Resource, ResourceFactory}
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus_mods.lib.DatabusModInput
 
@@ -40,9 +40,9 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   }
 
 
-  addStmtToModel(modResourceURI, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", s"${modURI}/modvocab.ttl#${modName}")
-  addStmtToModel(modResourceURI, s"${Prefixes.prov}used", provFileURI)
-  addStmtToModel(modResourceURI, s"${Prefixes.prov}endedAtTime", new XSDDateTime(java.util.Calendar.getInstance()))
+  addStmtToModel(Left(modResourceURI), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", Left(s"${modURI}/modvocab.ttl#${modName}"))
+  addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}used", Left(provFileURI))
+  addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}endedAtTime", Left(new XSDDateTime(java.util.Calendar.getInstance())))
   addStmtsResultDerivedFrom(resultURI)
 
 
@@ -55,8 +55,8 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @return
     */
   private def addStmtsResultDerivedFrom(resultURI: String): Unit = {
-    addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom", s"https://databus.dbpedia.org/${databusModInput.id}")
-    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", resultURI)
+    addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom", Left(s"https://databus.dbpedia.org/${databusModInput.id}"))
+    addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}generated", Left(resultURI))
   }
 
 
@@ -69,14 +69,14 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param comment  comment of propertyObject
     */
   def addStmtsForGeneratedFile(fileName: String, label: String = "", comment: String = ""): Unit = {
-    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", s"${modURI}/${fileName}")
+    addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}generated", Left(s"${modURI}/${fileName}"))
 
     if (fileName.contains('.')) {
       val fileType = fileName.split('.').last.toLowerCase
-      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}${fileType}DerivedFrom", provFileURI)
+      addStmtToModel(Left(s"${modURI}/${fileName}"), s"${Prefixes.mod}${fileType}DerivedFrom", Left(provFileURI))
       if (!(fileType matches ("svg|html"))) modVocabHelper.addFileTypeToModVocab(fileType, label, comment)
     } else {
-      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}derivedFrom", provFileURI)
+      addStmtToModel(Left(s"${modURI}/${fileName}"), s"${Prefixes.mod}derivedFrom", Left(provFileURI))
     }
 
   }
@@ -96,20 +96,27 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   /**
     * add statement to jena model
     *
-    * @param s subject
+    * Right for Jena.Resource and Left for Strings for Subject and any object for Object
+    * example: addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}used", Left(provFileURI))
+    *
+    * @param s subject as resource
     * @param p predicate
     * @param o object
     */
-  def addStmtToModel(s: String, p: String, o: Any, model: Model = this.model): Unit = {
+  def addStmtToModel(s: Either[String, Resource], p: String, o: Either[Any, Resource], model: Model = this.model): Unit = {
     model.add(
       ResourceFactory.createStatement(
-        ResourceFactory.createResource(s),
+        if (s.isRight) s.right.get
+        else ResourceFactory.createResource(s.left.get),
         ResourceFactory.createProperty(p),
-        try {
-          new URL(o.toString)
-          ResourceFactory.createResource(o.toString)
-        } catch {
-          case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(o)
+        if (o.isRight) o.right.get
+        else {
+          try {
+            new URL(o.toString)
+            ResourceFactory.createResource(o.left.get.toString)
+          } catch {
+            case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(o.left.get)
+          }
         })
     )
   }
@@ -132,6 +139,7 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param lang  rdf lang
     */
   def writeModel(model: Model, file: File, lang: Lang = Lang.TTL): Unit = {
+    file.parent.createDirectoryIfNotExists()
     val fos = new FileOutputStream(file.toJava, false)
     RDFDataMgr.write(fos, model, lang)
     fos.close()

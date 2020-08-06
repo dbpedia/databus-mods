@@ -239,10 +239,10 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     //create, feed, and write out external result model
     val externalResultModel = ModelFactory.createDefaultModel()
     externalResultModel.setNsPrefix("dataIdNsCore", "http://dataid.dbpedia.org/ns/core#")
-    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#sorted", sorted, externalResultModel)
-    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#duplicates", duplicates, externalResultModel)
-    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#uncompressedByteSize", uncompressedByteSize, externalResultModel)
-    modelHelper.addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/core#nonEmptyLines", nonEmptyLines, externalResultModel)
+    modelHelper.addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/core#sorted", Left(sorted), externalResultModel)
+    modelHelper.addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/core#duplicates", Left(duplicates), externalResultModel)
+    modelHelper.addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/core#uncompressedByteSize", Left(uncompressedByteSize), externalResultModel)
+    modelHelper.addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/core#nonEmptyLines", Left(nonEmptyLines), externalResultModel)
     modelHelper.writeModel(externalResultModel, externalResultFile)
 
     //write out meta data

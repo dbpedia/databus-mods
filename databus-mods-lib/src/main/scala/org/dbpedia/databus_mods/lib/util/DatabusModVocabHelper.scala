@@ -2,7 +2,6 @@ package org.dbpedia.databus_mods.lib.util
 
 import java.net.{MalformedURLException, URL}
 
-import com.sun.xml.internal.bind.v2.TODO
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 
 class DatabusModVocabHelper(modName: String) {

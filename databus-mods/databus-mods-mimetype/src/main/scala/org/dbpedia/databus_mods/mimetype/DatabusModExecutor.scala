@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service
 @Service
 class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusModExecutor {
 
+  private val modName = "MimeTypeMod"
   private val log = LoggerFactory.getLogger(classOf[DatabusModExecutor])
 
   private implicit val basePath: String = config.volumes.localRepo
@@ -104,13 +105,13 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     */
   def writeResultsToFiles(databusModInput: DatabusModInput, compression: String, mimeType: String): Unit = {
 
-    val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(databusModInput, config.volumes.localRepo, "MimeTypeMod")
+    val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(databusModInput, config.volumes.localRepo, modName)
     val resultURI = modelHelper.getResultURI()
 
-    modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#mediaType", getMimeTypeFromIanaOntology(mimeType))
+    modelHelper.addStmtToModel(Left(resultURI), "http://www.w3.org/ns/dcat#mediaType", Left(getMimeTypeFromIanaOntology(mimeType)))
 
     if (compression.nonEmpty) {
-      modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#compression", s"http://dataid.dbpedia.org/ns/mt#$compression")
+      modelHelper.addStmtToModel(Left(resultURI), "http://www.w3.org/ns/dcat#compression", Left(s"http://dataid.dbpedia.org/ns/mt#$compression"))
     }
 
     //        modelHelper.addStmtsForGeneratedFile("mod.png")
