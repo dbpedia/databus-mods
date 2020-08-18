@@ -10,7 +10,7 @@ class SchedulerConfig extends SchedulingConfigurer {
   /**
    * The pool size.
    */
-  final private val POOL_SIZE = 2
+  final private val POOL_SIZE = 9
 
   /**
    * Configures the scheduler to allow multiple pools.

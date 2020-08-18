@@ -21,7 +21,7 @@ class DatabusUpdates @Autowired()(config: Config) {
 
   private val log = LoggerFactory.getLogger(classOf[DatabusUpdates])
 
-  @Scheduled(fixedRate = 15 * 60 * 1000)
+  @Scheduled(fixedDelay = 5 * 60 * 1000)
   def cronjob(): Unit = {
 
     config.mods.asScala.foreach({

@@ -16,9 +16,10 @@
     </parent>
 
     <modules>
-        <module>databus-mods-mimetype</module>
+<!--        <module>databus-mods-mimetype</module>-->
         <module>databus-mods-filemetrics</module>
-        <module>databus-mods-uri-pattern-analyzer</module>
+        <module>databus-mods-void</module>
+<!--        <module>databus-mods-uri-pattern-analyzer</module>-->
     </modules>
 
 <!--    <dependencies>-->

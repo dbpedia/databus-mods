@@ -20,5 +20,7 @@ abstract class AbstractDbHandler {
   def addJob(modName: String, id: String, status: JobStatus.Value = JobStatus.OPEN): Boolean
 
   def updateJobStatus(modName: String, id: String, status: JobStatus.Value)
+
+  def checkOverallStatus(id: String, modNames: Array[String]): Array[Int]
 }
 

@@ -29,6 +29,12 @@
             <version>10.14.2.0</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.dbpedia.databus-mods</groupId>
+            <artifactId>databus-mods-lib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
     </dependencies>
 
 </project>

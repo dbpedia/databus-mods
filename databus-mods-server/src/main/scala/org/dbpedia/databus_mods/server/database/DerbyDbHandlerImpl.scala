@@ -5,6 +5,8 @@ import java.sql.{Date, DriverManager, ResultSet, SQLException, Timestamp}
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
 import org.slf4j.LoggerFactory
 
+import scala.collection.mutable.ArrayBuffer
+
 class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
 
   private val log = LoggerFactory.getLogger(classOf[DerbyDbHandlerImpl])
@@ -23,7 +25,8 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
           |version     varchar(2000),
           |fileName    varchar(2000),
           |sha256sum   varchar(128),
-          |downloadUrl varchar(2000)
+          |downloadUrl varchar(2000),
+          |timestamp   timestamp
           |)""".stripMargin
       statement.execute(sql)
     } catch {
@@ -64,7 +67,8 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
          |'${databusFile.version}',
          |'${databusFile.fileName}',
          |'${databusFile.sha256sum}',
-         |'${databusFile.downloadUrl}'
+         |'${databusFile.downloadUrl}',
+         |'${new Timestamp(System.currentTimeMillis())}'
          |)""".stripMargin
     try {
       statement.execute(sql)
@@ -130,7 +134,7 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
     val sql =
       s"""
          |UPDATE ${modName}
-         |SET status = ${status.id}
+         |SET status = ${status.id}, timestamp = '${new Timestamp(System.currentTimeMillis())}'
          |WHERE id = '$id'""".stripMargin
     try {
       statement.executeUpdate(sql)
@@ -139,5 +143,23 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
         log.error(e.getMessage)
     }
     conn.close()
+  }
+
+  override def checkOverallStatus(id: String, modNames: Array[String]): Array[Int] = {
+    val conn = DriverManager.getConnection(databaseUrl + ";create=true")
+    val statement = conn.createStatement
+    val buffer = new ArrayBuffer[Int]
+    val sql = modNames.map(modName => s"SELECT status FROM $modName WHERE id = '$id'").mkString(" UNION ")
+    try {
+      val qs = statement.executeQuery(sql)
+      while(qs.next()) {
+        buffer.append(qs.getInt("status"))
+      }
+    } catch {
+      case e: Exception =>
+        log.error(e.getMessage)
+    }
+    conn.close()
+    buffer.toArray
   }
 }

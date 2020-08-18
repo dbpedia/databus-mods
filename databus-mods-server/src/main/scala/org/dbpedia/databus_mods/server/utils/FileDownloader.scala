@@ -14,11 +14,12 @@ object FileDownloader {
 
   def getLocalFile(baseDir: File, databusFile: DatabusFile): File = {
     val file =
-      baseDir / databusFile.publisher / databusFile.group / databusFile.artifact / databusFile.version / databusFile.fileName
+      baseDir / databusFile.publisher / databusFile.group / databusFile.artifact / databusFile.version / databusFile.fileName / databusFile.sha256sum
     file.parent.createDirectories()
     file
   }
 
+  // TODO smooth
   def toFileIfNotExits(url: URL, file: File): Option[File] = {
     if (!file.exists) {
       log.info(s"download - $url")

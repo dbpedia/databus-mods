@@ -5,10 +5,12 @@ volumes:
 database:
   databaseUrl: 'jdbc:derby:./derbyDB'
 mods:
-  - name: 'MimeType'
+  - name: 'FileMetric'
     accepts: 'file'
     links:
-      - 'localhost:9001'
+      - api: 'http://localhost:9001/a'
+        source: '/home/marvin/src/github.com/dbpedia/mods/databus-mods-server/localRepo'
+        destination: '/home/marvin/src/github.com/dbpedia/mods/databus-mods/databus-mods-filemetrics/volume/localRepo'
     query: '
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
@@ -23,21 +25,26 @@ SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
 	?distribution dcat:downloadURL ?downloadURL .
 }
     '
-#  - name: 'LineCount'
-#    accepts: 'file'
-#    links:
-#      - 'localhost:9002'
-#    query: '
-#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-#PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-#PREFIX dct: <http://purl.org/dc/terms/>
-#PREFIX dcat:  <http://www.w3.org/ns/dcat#>
-#
-#SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
-# 	?dataset dataid:group <https://databus.dbpedia.org/dbpedia/databus> .
-#	?dataset dcat:distribution ?distribution .
-#    ?distribution dataid:file ?file .
-#    ?distribution dataid:sha256sum ?sha256sum .
-#	?distribution dcat:downloadURL ?downloadURL .
-#}
-#      '
+  - name: 'VoidVocab'
+    accepts: file
+    links:
+      - api: 'http://localhost:9002/a'
+        source: '/home/marvin/src/github.com/dbpedia/mods/databus-mods-server/localRepo2'
+        destination: '/home/marvin/src/github.com/dbpedia/mods/databus-mods/databus-mods-void/volume/localRepo'
+    query: '
+    PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+    PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+    PREFIX dct: <http://purl.org/dc/terms/>
+    PREFIX dcat:  <http://www.w3.org/ns/dcat#>
+
+    SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+    {
+    SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+     	?dataset dataid:group <https://databus.dbpedia.org/dbpedia/databus> .
+    	?dataset dcat:distribution ?distribution .
+        ?distribution dataid:file ?file .
+        ?distribution dataid:sha256sum ?sha256sum .
+    	?distribution dcat:downloadURL ?downloadURL .
+    } LIMIT 10 }
+    }
+        '

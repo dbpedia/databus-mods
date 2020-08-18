@@ -78,7 +78,6 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     } else {
       addStmtToModel(Left(s"${modURI}/${fileName}"), s"${Prefixes.mod}derivedFrom", Left(provFileURI))
     }
-
   }
 
   /**
@@ -153,5 +152,4 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   def getResultURI(): String = {
     resultURI
   }
-
 }

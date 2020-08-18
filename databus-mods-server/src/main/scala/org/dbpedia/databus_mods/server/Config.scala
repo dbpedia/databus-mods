@@ -33,10 +33,21 @@ case class ModConfig() {
   var accepts: String = _
 
   @BeanProperty
-  var links: JArrayList[String] = new JArrayList[String]()
+  var links: JArrayList[LinkConfig] = new JArrayList[LinkConfig]()
 
   @BeanProperty
   var query: String = _
+}
+
+case class LinkConfig () {
+  @BeanProperty
+  var api: String = _
+
+  @BeanProperty
+  var source: String = _
+
+  @BeanProperty
+  var destination: String = _
 }
 
 case class VolumeConfig () {
