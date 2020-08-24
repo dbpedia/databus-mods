@@ -35,7 +35,10 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   private val modResourceURI = s"file://${databusModInput.modMetadataFile(baseUri)}#this"
   private val provFileURI = s"https://databus.dbpedia.org/${databusModInput.id}"
   private val resultURI = externalResultFile match {
-    case Some(file) => s"file://${file}#this"
+    case Some(file) => {
+      if (externalResultFile.get.extension(false) == "ttl") s"file://$file#this"
+      else s"file://$file"
+    }
     case None => s"file://${databusModInput.modMetadataFile(baseUri)}#result"
   }
 

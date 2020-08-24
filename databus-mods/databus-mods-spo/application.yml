@@ -1,6 +1,6 @@
 server:
   port: 9002
-name: void-mod
+name: spo-mod
 volumes:
   localRepo: volume/localRepo
   fileCache: volume/fileCache
