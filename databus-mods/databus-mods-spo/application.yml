@@ -1,0 +1,6 @@
+server:
+  port: 9002
+name: spo-mod
+volumes:
+  localRepo: volume/localRepo
+  fileCache: volume/fileCache
