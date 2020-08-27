@@ -12,6 +12,7 @@
         <groupId>org.dbpedia.databus-mods</groupId>
         <artifactId>databus-mods-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <dependencies>
