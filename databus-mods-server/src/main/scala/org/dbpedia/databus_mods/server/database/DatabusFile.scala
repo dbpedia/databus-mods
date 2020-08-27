@@ -3,6 +3,8 @@ package org.dbpedia.databus_mods.server.database
 import java.sql.ResultSet
 
 import org.apache.jena.riot.RDFDataMgr
+import org.dbpedia.databus_mods.server.DatabusFileStatus
+import org.dbpedia.databus_mods.server.DatabusFileStatus.DatabusFileStatus
 
 object DatabusFile {
 
@@ -15,6 +17,7 @@ object DatabusFile {
       rs.getString("version"),
       rs.getString("fileName"),
       rs.getString("sha256sum"),
+      DatabusFileStatus(rs.getInt("status")),
       rs.getString("downloadUrl")
     )
   }
@@ -36,6 +39,7 @@ object DatabusFile {
       version,
       fileName,
       sha256sum,
+      DatabusFileStatus.WAIT,
       downloadUrl
     )
   }
@@ -50,16 +54,18 @@ case class DatabusFile
   version: String,
   fileName: String,
   sha256sum: String,
+  status: DatabusFileStatus.Value,
   downloadUrl: String
 ) {
   override def toString: String =
     s"""
        |@id         : $id
-       |publiher    : $publisher
+       |publisher   : $publisher
        |group       : $group
        |artifact    : $artifact
        |version     : $version
        |fileName    : $fileName
        |sha256sum   : $sha256sum
+       |status      : $status
        |downloadUrl : $downloadUrl""".stripMargin
 }

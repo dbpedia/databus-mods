@@ -46,6 +46,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     catch {
       case e: Exception =>
         log.error(s"failed to process ${databusModInput.id}")
+        databusModInput.modErrorFile.parent.createDirectories()
         databusModInput.modErrorFile.write(
           Calendar.getInstance().getTime.toString + "\n" +
             e.getStackTrace.mkString("\n")
@@ -132,5 +133,4 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     //write out meta data
     modelHelper.writeMetaDataModels()
   }
-
 }

@@ -1,6 +1,6 @@
 server:
   port: 9002
-name: mimetype-mod
+name: void-mod
 volumes:
-  localRepo: volume/localRepo
-  fileCache: volume/fileCache
+  localRepo: volumes/localRepo
+  fileCache: volumes/fileCache

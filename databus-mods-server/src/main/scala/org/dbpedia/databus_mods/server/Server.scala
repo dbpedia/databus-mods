@@ -11,7 +11,8 @@ class Server {}
 
 object Server extends App {
 
-  val app = new SpringApplication(classOf[Server])
-  app.run(args: _*)
+  val app = new SpringApplication(classOf[Server]).run(args: _*)
 
+  val executor: DatabusFileHandler = app.getBean(classOf[DatabusFileHandler])
+  new Thread(executor).run()
 }

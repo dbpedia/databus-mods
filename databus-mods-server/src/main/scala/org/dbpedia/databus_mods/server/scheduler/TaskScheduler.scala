@@ -14,7 +14,7 @@ import org.apache.jena.rdf.model.ModelFactory
 import org.apache.jena.riot.Lang
 import org.dbpedia.databus_mods.server.database.{DatabusFile, DbFactory, JobStatus}
 import org.dbpedia.databus_mods.server.utils.FileDownloader
-import org.dbpedia.databus_mods.server.{Config, LinkConfig, ModConfig}
+import org.dbpedia.databus_mods.server.{Config, DatabusFileStatus, LinkConfig, ModConfig}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
@@ -31,12 +31,12 @@ class TaskScheduler @Autowired()(config: Config) {
     config.getMods.asScala.map(_.name).toList
   )
 
-  private val log = LoggerFactory.getLogger(classOf[DatabusUpdates])
+  private val log = LoggerFactory.getLogger(classOf[TaskScheduler])
 
   //  @Scheduled(fixedRate = 5 * 60 * 1000)
   @Scheduled(fixedDelay = 1000)
   def cronjob(): Unit = {
-
+    // TODO parallel mods
     config.mods.asScala.foreach({
       case conf: ModConfig =>
         handleJobs(conf.name, conf.accepts, conf.links.asScala.toList)
@@ -55,14 +55,20 @@ class TaskScheduler @Autowired()(config: Config) {
     } else {
       val openDatabusFiles = dbConnection.databusFilesByModNameAndStatus(modName, JobStatus.OPEN)
       if (openDatabusFiles.nonEmpty) {
-        log.info(s"Mod '$modName' - send Job <${openDatabusFiles.head.id}>")
-        val databusFile = openDatabusFiles.head
-        val targetFile = FileDownloader.getLocalFile(File(config.volumes.localRepo), databusFile)
-        FileDownloader.toFileIfNotExits(new URL(openDatabusFiles.head.downloadUrl), targetFile) match {
-          case Some(file: File) =>
-            sendNewJob(databusFile,modName,links.head.api, file.uri.toString)
-          case None =>
-            dbConnection.updateJobStatus(modName,databusFile.id,JobStatus.FAILED)
+
+        val databusFile = openDatabusFiles.head // TODO possibility to bulk
+
+        // TODO condition is not good enough
+        if(databusFile.status == DatabusFileStatus.ACTIVE) {
+          log.info(s"Mod '$modName' - send Job <${openDatabusFiles.head.id}>")
+          val file = File(File(config.getVolumes.localRepo), databusFile.id)
+          sendNewJob(databusFile,modName,links.head.api, file.uri.toString)
+        } else {
+          log.info(s"Mod '$modName' - wait for download <${openDatabusFiles.head.id}>")
+          /*
+          only if all downloaded files relate to different
+          Thread.sleep(10*1000)
+           */
         }
       } else {
         log.info(s"Mod '$modName' - waiting for new Jobs")

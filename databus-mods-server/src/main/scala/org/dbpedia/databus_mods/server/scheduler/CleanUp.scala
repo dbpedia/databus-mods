@@ -3,7 +3,7 @@ package org.dbpedia.databus_mods.server.scheduler
 import java.nio.file.{Files, Path, Paths}
 
 import better.files.File
-import org.dbpedia.databus_mods.server.Config
+import org.dbpedia.databus_mods.server.{Config, DatabusFileHandlerQueue, DatabusFileStatus}
 import org.dbpedia.databus_mods.server.database.DbFactory
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -24,12 +24,17 @@ class CleanUp  @Autowired()(config: Config) {
     modNames.toList
   )
 
-  @Scheduled(fixedDelay = 1 * 60 * 1000)
+//  @Scheduled(fixedDelay = 1 * 60 * 1000)
+  @Scheduled(fixedDelay = 10 * 1000)
   def fileCache(): Unit = {
+    //TODO delete empty folders if older then (because of download step only the older ones)
     getDatafileIdsByDir(config.volumes.localRepo).foreach( id => {
       if(! dbConnection.checkOverallStatus(id, modNames).exists(i => i != 2)) {
         log.info(s"delete local file - $id")
+        dbConnection.updateDatabusFileStatus(id,DatabusFileStatus.DONE)
         File(File(config.volumes.localRepo),id).delete()
+        // TODO Bulk decrement?
+        DatabusFileHandlerQueue.decrementCurrentTakes()
       }
     })
   }

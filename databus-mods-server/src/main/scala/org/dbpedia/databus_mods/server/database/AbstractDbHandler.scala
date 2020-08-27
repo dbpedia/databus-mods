@@ -1,5 +1,7 @@
 package org.dbpedia.databus_mods.server.database
 
+import org.dbpedia.databus_mods.server.DatabusFileStatus.DatabusFileStatus
+
 abstract class AbstractDbHandler {
 
   def tableNameHash(name: String): String = {
@@ -22,5 +24,8 @@ abstract class AbstractDbHandler {
   def updateJobStatus(modName: String, id: String, status: JobStatus.Value)
 
   def checkOverallStatus(id: String, modNames: Array[String]): Array[Int]
+
+  def updateDatabusFileStatus(id: String, status: DatabusFileStatus)
+
 }
 

@@ -3,6 +3,7 @@ package org.dbpedia.databus_mods.server.database
 import java.sql.{Date, DriverManager, ResultSet, SQLException, Timestamp}
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
+import org.dbpedia.databus_mods.server.DatabusFileStatus.DatabusFileStatus
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
@@ -11,13 +12,15 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
 
   private val log = LoggerFactory.getLogger(classOf[DerbyDbHandlerImpl])
 
+  private val databusFileTableName = "databusFiles"
+
   def createDatabusFilesTable(): Unit = {
     Class.forName("org.apache.derby.jdbc.EmbeddedDriver")
     val conn = DriverManager.getConnection(databaseUrl + ";create=true")
     val statement = conn.createStatement
     try {
       val sql: String =
-        """CREATE TABLE databusFiles (
+        s"""CREATE TABLE $databusFileTableName (
           |id          varchar(2000) primary key,
           |publisher   varchar(2000),
           |grp         varchar(2000),
@@ -26,6 +29,7 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
           |fileName    varchar(2000),
           |sha256sum   varchar(128),
           |downloadUrl varchar(2000),
+          |status      integer,
           |timestamp   timestamp
           |)""".stripMargin
       statement.execute(sql)
@@ -59,7 +63,7 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
     var notExists = true
     val sql =
       s"""
-         |INSERT INTO databusFiles VALUES (
+         |INSERT INTO $databusFileTableName VALUES (
          |'${databusFile.id}',
          |'${databusFile.publisher}',
          |'${databusFile.group}',
@@ -68,6 +72,7 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
          |'${databusFile.fileName}',
          |'${databusFile.sha256sum}',
          |'${databusFile.downloadUrl}',
+         |${databusFile.status.id},
          |'${new Timestamp(System.currentTimeMillis())}'
          |)""".stripMargin
     try {
@@ -84,10 +89,32 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
     notExists
   }
 
+  /*
+
+  table for all files
+  update: a,b,c,d,e -> db
+
+  download max 2
+  downloaded: a,b
+  downlaoded: c,d
+
+  mod1 needs a,c,e
+  query job tab: a,b,c,d
+
+  mod2 needs d,c
+  query job tab: c,d
+
+
+
+
+
+
+   */
+
   override def getDatabusFileById(id: String): Option[DatabusFile] = {
     val conn = DriverManager.getConnection(databaseUrl + ";create=true")
     val statement = conn.createStatement
-    val query = s"SELECT * FROM databusFiles WHERE id = '$id'"
+    val query = s"SELECT * FROM $databusFileTableName WHERE id = '$id'"
     val databusFile = new DatabusFileIterator(statement.executeQuery(query)).toList.headOption
     conn.close()
     databusFile
@@ -97,7 +124,7 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
     val conn = DriverManager.getConnection(databaseUrl + ";create=true")
     val statement = conn.createStatement
     val modTable = modName
-    val query = s"SELECT databusFiles.* FROM databusFiles, $modTable WHERE $modTable.id = databusFiles.id AND $modTable.status = ${status.id}"
+    val query = s"SELECT databusFiles.* FROM $databusFileTableName, $modTable WHERE $modTable.id = databusFiles.id AND $modTable.status = ${status.id}"
     val databusFiles = new DatabusFileIterator(statement.executeQuery(query)).toList
     conn.close()
     databusFiles
@@ -161,5 +188,28 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
     }
     conn.close()
     buffer.toArray
+  }
+
+  /**
+   * combine to one query
+   * @param id
+   * @param status
+   */
+  override def updateDatabusFileStatus(id: String, status: DatabusFileStatus): Unit = {
+
+    val conn = DriverManager.getConnection(databaseUrl + ";create=true")
+    val statement = conn.createStatement
+    val sql =
+      s"""
+         |UPDATE $databusFileTableName
+         |SET status = ${status.id}, timestamp = '${new Timestamp(System.currentTimeMillis())}'
+         |WHERE id = '$id'""".stripMargin
+    try {
+      statement.executeUpdate(sql)
+    } catch {
+      case e: Exception =>
+        log.error(e.getMessage)
+    }
+    conn.close()
   }
 }

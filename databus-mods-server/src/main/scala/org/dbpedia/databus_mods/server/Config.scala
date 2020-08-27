@@ -11,13 +11,13 @@ import scala.beans.BeanProperty
 @ConfigurationProperties
 case class Config() {
   @BeanProperty
-  var mods : JArrayList[ModConfig] = new JArrayList[ModConfig]()
+  var mods: JArrayList[ModConfig] = new JArrayList[ModConfig]()
 
   @BeanProperty
   var volumes: VolumeConfig = new VolumeConfig
 
   @BeanProperty
-  var database: DatabaseConfig =  new DatabaseConfig
+  var database: DatabaseConfig = new DatabaseConfig
 }
 
 case class DatabaseConfig() {
@@ -39,7 +39,7 @@ case class ModConfig() {
   var query: String = _
 }
 
-case class LinkConfig () {
+case class LinkConfig() {
   @BeanProperty
   var api: String = _
 
@@ -50,7 +50,8 @@ case class LinkConfig () {
   var destination: String = _
 }
 
-case class VolumeConfig () {
+case class VolumeConfig()
+{
   @BeanProperty
   var localRepo: String = _
 }

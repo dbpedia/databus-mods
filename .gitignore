@@ -4,3 +4,5 @@ target/
 updates.tsv
 derby.log
 errorLog.log
+derbyDB/
+localRepo/

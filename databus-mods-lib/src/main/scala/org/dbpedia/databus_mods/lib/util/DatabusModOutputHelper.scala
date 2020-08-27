@@ -120,6 +120,7 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     )
   }
 
+
   /**
     * write out jena model of vocabulary and mod result
     *
