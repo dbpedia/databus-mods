@@ -30,12 +30,34 @@
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.aksw.jena-sparql-api/jena-sparql-api-sparql-ext -->
-<!--        <dependency>-->
-<!--            <groupId>org.aksw.jena-sparql-api</groupId>-->
-<!--            <artifactId>jena-sparql-api-virtuoso</artifactId>-->
-<!--            <version>3.15.0-1</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.aksw.jena-sparql-api</groupId>
+            <artifactId>jena-sparql-api-virtuoso</artifactId>
+            <version>3.15.0-1</version>
+        </dependency>
 
+        <dependency>
+            <groupId>com.openlink</groupId>
+            <artifactId>virt-jdbc</artifactId>
+            <scope>system</scope>
+            <version>4.1</version>
+            <systemPath>${pom.basedir}/virtjdbc4_1.jar</systemPath>
+        </dependency>
+
+        <dependency>
+            <groupId>com.openlink</groupId>
+            <artifactId>virt-jena</artifactId>
+            <scope>system</scope>
+            <version>3.0</version>
+            <systemPath>${pom.basedir}/virt_jena3.jar</systemPath>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
+        </dependency>
 
     </dependencies>
 

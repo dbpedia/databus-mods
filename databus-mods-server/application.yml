@@ -4,6 +4,13 @@ volumes:
   localRepo: 'target/localRepo'
 database:
   databaseUrl: 'jdbc:derby:./derbyDB'
+fileCache:
+  maxNumberOfFiles: 20
+rdfServer:
+  isql:
+  endpoint:
+fileServer:
+  base:
 mods:
   - name: 'FileMetric'
     accepts: 'file'
@@ -12,22 +19,36 @@ mods:
         source: '/home/marvin/src/github.com/dbpedia/mods/databus-mods-server/localRepo'
         destination: '/home/marvin/src/github.com/dbpedia/mods/databus-mods/databus-mods-filemetrics/volume/localRepo'
     query: '
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?file ?sha256sum ?downloadURL WHERE {
-  ?s dataid:account <https://databus.dbpedia.org/ontologies> .
-  ?s dcat:distribution ?distribution .
-  ?distribution dataid:file ?file .
-  ?distribution dataid:sha256sum ?sha256sum .
-  ?distribution dcat:downloadURL ?downloadURL .
+SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+	?dataset dcat:distribution ?distribution .
+	?distribution dcat:downloadURL ?file .
+	?distribution dataid:sha256sum ?sha256sum .
+    ?distribution dcat:downloadURL ?downloadURL .
+	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
 }
-    '
+'
+#PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+#PREFIX dct:    <http://purl.org/dc/terms/>
+#PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+#PREFIX db:     <https://databus.dbpedia.org/>
+#PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+#
+#SELECT ?file ?sha256sum ?downloadURL WHERE {
+#  ?s dataid:account <https://databus.dbpedia.org/ontologies> .
+#  ?s dcat:distribution ?distribution .
+#  ?distribution dataid:file ?file .
+#  ?distribution dataid:sha256sum ?sha256sum .
+#  ?distribution dcat:downloadURL ?downloadURL .
+#}
+#    '
   - name: 'VoidVocab'
     accepts: 'file'
     links:
@@ -35,19 +56,33 @@ SELECT ?file ?sha256sum ?downloadURL WHERE {
         source: '/home/marvin/src/github.com/dbpedia/mods/databus-mods-server/localRepo2'
         destination: '/home/marvin/src/github.com/dbpedia/mods/databus-mods/databus-mods-void/volume/localRepo'
     query: '
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT ?file ?sha256sum ?downloadURL WHERE {
-  ?s dataid:account <https://databus.dbpedia.org/ontologies> .
-  ?s dcat:distribution ?distribution .
-  ?distribution dataid:file ?file .
-  ?distribution dataid:sha256sum ?sha256sum .
-  ?distribution dcat:downloadURL ?downloadURL .
+SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+	?dataset dcat:distribution ?distribution .
+	?distribution dcat:downloadURL ?file .
+	?distribution dataid:sha256sum ?sha256sum .
+    ?distribution dcat:downloadURL ?downloadURL .
+	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
 }
-        '
+'
+#PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+#PREFIX dct:    <http://purl.org/dc/terms/>
+#PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+#PREFIX db:     <https://databus.dbpedia.org/>
+#PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+#PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+#
+#SELECT ?file ?sha256sum ?downloadURL WHERE {
+#  ?s dataid:account <https://databus.dbpedia.org/ontologies> .
+#  ?s dcat:distribution ?distribution .
+#  ?distribution dataid:file ?file .
+#  ?distribution dataid:sha256sum ?sha256sum .
+#  ?distribution dcat:downloadURL ?downloadURL .
+#}
+#        '

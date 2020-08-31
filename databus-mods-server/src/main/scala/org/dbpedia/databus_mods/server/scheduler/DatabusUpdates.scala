@@ -2,7 +2,7 @@ package org.dbpedia.databus_mods.server.scheduler
 
 import org.apache.jena.query.QueryExecutionFactory
 import org.dbpedia.databus_mods.server.database.{DatabusFile, DbFactory}
-import org.dbpedia.databus_mods.server.{Config, DatabusFileHandlerQueue, ModConfig}
+import org.dbpedia.databus_mods.server.{Config, DatabusFileHandlerQueue}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.scheduling.annotation.Scheduled
@@ -22,32 +22,65 @@ class DatabusUpdates @Autowired()(config: Config) {
 
   private val log = LoggerFactory.getLogger(classOf[DatabusUpdates])
 
-    @Scheduled(fixedDelay = 5 * 60 * 1000)
-//  @Scheduled(fixedDelay = 10 * 1000)
+  @Scheduled(fixedDelay = 5 * 60 * 1000)
   def cronjob(): Unit = {
-    // TODO parallel or join before insert
-    config.mods.asScala.foreach({
-      case conf: ModConfig =>
-        updateDatabase(conf.name, conf.query)
-      case _ => log.warn("incorrect mod config")
+
+    // TODO parallelize queries
+
+    var addedDatabusFiles, addedJobs = 0
+    val updatesBuffer = new ArrayBuffer[(DatabusFile, Array[String])]()
+
+    config.mods.asScala.foreach(mod => {
+      val name = mod.name
+      val query = mod.query
+
+      val updates = getUpdates(query)
+      updates.foreach(databusFile => {
+        updatesBuffer.append((databusFile, Array(name)))
+      })
     })
+
+    updatesBuffer.groupBy({
+      case (databusFile, _) => databusFile.id
+    }).map({ group =>
+      group._2.reduce(
+        (A,B) => (A._1,A._2++B._2)
+//        case ((databusFileA, modNamesA), (_, modNamesB)) => (databusFileA, modNamesA ++ modNamesB)
+      )
+    }).foreach({
+      case (databusFile, modNames) =>
+        var isOld = false
+        if (dbConnection.insertDatabusFile(databusFile)) {
+          addedDatabusFiles += 1
+          DatabusFileHandlerQueue.put(databusFile)
+        } else {
+          isOld = true
+        }
+        modNames.foreach({ modName =>
+          if (dbConnection.addJob(modName, databusFile.id)) {
+            addedJobs += 1
+            // TODO addedJobs per modName
+            if (isOld) {
+              // TODO update databusFileTable.status
+            }
+          }
+        })
+    })
+    log.info(s"added $addedDatabusFiles DatabusFiles & added $addedJobs Jobs")
   }
 
-  def updateDatabase(modName: String, query: String): Unit = {
-    log.info(s"Mod '$modName' - update database")
-
-    var addedDatabusFiles, addedJobs, responseSize, offset = 0
+  def getUpdates(query: String): Array[DatabusFile] = {
     val limit = 10000
+    var responseSize, offset = 0
+    val databusFilesBuffer = new ArrayBuffer[DatabusFile]()
+
     do {
-      log.info(s"${modName} - query offset $offset")
       responseSize = 0
       val sparql = query + s" LIMIT $limit OFFSET $offset"
       val queryExec = QueryExecutionFactory.sparqlService(
         "https://databus.dbpedia.org/repo/sparql", sparql
       )
       val resultSet = queryExec.execSelect()
-
-      val databusFilesBuffer = new ArrayBuffer[DatabusFile]
 
       while (resultSet.hasNext) {
         responseSize += 1
@@ -61,17 +94,8 @@ class DatabusUpdates @Autowired()(config: Config) {
         )
       }
       queryExec.close()
-      databusFilesBuffer.foreach(databusFile => {
-        if (dbConnection.insertDatabusFile(databusFile)) {
-          addedDatabusFiles += 1
-          // add to download
-          DatabusFileHandlerQueue.put(databusFile)
-        }
-        if (dbConnection.addJob(modName, databusFile.id))
-          addedJobs += 1
-      })
       offset += limit
     } while (responseSize != 0)
-    log.info(s"Mod '$modName' - added $addedDatabusFiles DatabusFiles & added $addedJobs Jobs")
+    databusFilesBuffer.toArray
   }
 }

@@ -1,17 +1,14 @@
 package org.dbpedia.databus_mods.server.scheduler
 
-import java.io.{ByteArrayInputStream, ByteArrayOutputStream}
-import java.net.URL
 import java.util
 
 import better.files.File
-import org.apache.commons.io.IOUtils
-import org.apache.hadoop.io.file.tfile.ByteArray
 import org.apache.http.NameValuePair
 import org.apache.http.client.methods.HttpPost
 import org.apache.http.impl.client.DefaultHttpClient
-import org.apache.jena.rdf.model.ModelFactory
-import org.apache.jena.riot.Lang
+import org.apache.jena.query.LabelExistsException
+import org.apache.jena.rdf.model.{Model, ModelFactory}
+import org.apache.jena.vocabulary.RDF
 import org.dbpedia.databus_mods.server.database.{DatabusFile, DbFactory, JobStatus}
 import org.dbpedia.databus_mods.server.utils.FileDownloader
 import org.dbpedia.databus_mods.server.{Config, DatabusFileStatus, LinkConfig, ModConfig}
@@ -137,15 +134,32 @@ class TaskScheduler @Autowired()(config: Config) {
 
     response.getStatusLine.getStatusCode match {
       case 400 | 201 =>
-        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.FAILED)
         log.warn(s"Mod '$modName' - failed ${databusFile.id}")
+        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.FAILED)
       case 202 =>
 //        log.info(s"Mod '$modName' - active ${databusFile.id}")
       case 200 =>
+        log.info(s"Mod '$modName' - done ${databusFile.id}")
         val jenaModel = ModelFactory.createDefaultModel()
         jenaModel.read(response.getEntity.getContent,null,"TTL")
+        submitToEndpoint(modName+"/"+databusFile.id,jenaModel)
         dbConnection.updateJobStatus(modName,databusFile.id,JobStatus.DONE)
-        log.info(s"Mod '$modName' - done ${databusFile.id}")
     }
+  }
+
+  def submitToEndpoint(graphName: String, model:Model): Unit = {
+    import virtuoso.jena.driver.VirtDataset
+    val dataSet = new VirtDataset("jdbc:virtuoso://localhost:1111/charset=UTF-8/", "dba", "myDbaPassword")
+    try {
+      dataSet.addNamedModel(graphName,model)
+      dataSet.commit()
+    } catch {
+      case lee: LabelExistsException =>
+        // TODO overwrite?
+        log.warn(s"Graph exists - $graphName")
+      case e: Throwable => e.printStackTrace()
+    }
+
+    dataSet.close()
   }
 }

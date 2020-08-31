@@ -18,6 +18,15 @@ case class Config() {
 
   @BeanProperty
   var database: DatabaseConfig = new DatabaseConfig
+
+  @BeanProperty
+  var fileCache: FileCacheConfig = new FileCacheConfig
+}
+
+case class FileCacheConfig() {
+
+  @BeanProperty
+  var maxNumberOfFiles: Int =  _
 }
 
 case class DatabaseConfig() {

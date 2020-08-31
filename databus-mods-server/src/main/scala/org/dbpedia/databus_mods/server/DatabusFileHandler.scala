@@ -22,6 +22,8 @@ class DatabusFileHandler @Autowired()(config: Config) extends Runnable {
 
   override def run(): Unit = {
 
+    DatabusFileHandlerQueue.setAllowedTakes(config.fileCache.maxNumberOfFiles)
+
     while (true) {
       val databusFile: DatabusFile = DatabusFileHandlerQueue.take()
 
@@ -30,17 +32,17 @@ class DatabusFileHandler @Autowired()(config: Config) extends Runnable {
 
       val url = new URL(databusFile.downloadUrl)
 
-      log.info(s"start download - ${databusFile.downloadUrl}")
+      log.info(s"Download start - ${databusFile.downloadUrl}")
       val exitCode =
         sys.process.Process(url)
           /* .#>(Seq("pv", "-f", "-s", url.openConnection.getContentLength.toString, "-N", databusFile.id)) */
           .#>(file).!
 
       if (exitCode != 0) {
-        log.debug(s"failed download - ${databusFile.downloadUrl}")
+        log.debug(s"Download fail - ${databusFile.downloadUrl}")
         dbConnection.updateDatabusFileStatus(databusFile.id, DatabusFileStatus.FAILED)
       } else {
-        log.info(s"finished download - ${databusFile.downloadUrl}")
+        log.info(s"Download done  - ${databusFile.downloadUrl}")
         // TODO check checksum of downloaded file
         dbConnection.updateDatabusFileStatus(databusFile.id, DatabusFileStatus.ACTIVE)
       }

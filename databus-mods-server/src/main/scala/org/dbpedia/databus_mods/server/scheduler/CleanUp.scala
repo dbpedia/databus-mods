@@ -29,7 +29,7 @@ class CleanUp  @Autowired()(config: Config) {
   def fileCache(): Unit = {
     //TODO delete empty folders if older then (because of download step only the older ones)
     getDatafileIdsByDir(config.volumes.localRepo).foreach( id => {
-      if(! dbConnection.checkOverallStatus(id, modNames).exists(i => i != 2)) {
+      if(! dbConnection.checkOverallStatus(id, modNames).exists(i => i < 2)) {
         log.info(s"delete local file - $id")
         dbConnection.updateDatabusFileStatus(id,DatabusFileStatus.DONE)
         File(File(config.volumes.localRepo),id).delete()
