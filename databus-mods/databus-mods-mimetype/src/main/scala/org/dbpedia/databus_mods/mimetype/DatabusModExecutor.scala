@@ -108,10 +108,13 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(databusModInput, config.volumes.localRepo, modName)
     val resultURI = modelHelper.getResultURI()
 
-    modelHelper.addStmtToModel(Left(resultURI), "http://www.w3.org/ns/dcat#mediaType", Left(getMimeTypeFromIanaOntology(mimeType)))
+    // enable all SimpleNodeWrapper implicit conversions
+    import org.dbpedia.databus_mods.lib.util.SimpleNodeWrapper.implicits._
+
+    modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#mediaType", getMimeTypeFromIanaOntology(mimeType))
 
     if (compression.nonEmpty) {
-      modelHelper.addStmtToModel(Left(resultURI), "http://www.w3.org/ns/dcat#compression", Left(s"http://dataid.dbpedia.org/ns/mt#$compression"))
+      modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#compression", s"http://dataid.dbpedia.org/ns/mt#$compression")
     }
 
     //        modelHelper.addStmtsForGeneratedFile("mod.png")

@@ -9,7 +9,28 @@ import org.apache.jena.rdf.model.{Model, ModelFactory, Resource, ResourceFactory
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.dbpedia.databus_mods.lib.DatabusModInput
 
+sealed trait SimpleNodeWrapper
+
+final case class SimpleResourceWrapper(resource: Resource) extends SimpleNodeWrapper
+
+final case class SimpleStringWrapper(str: String) extends SimpleNodeWrapper
+
+final case class SimpleAnyWrapper(any: Any) extends SimpleNodeWrapper
+
+object SimpleNodeWrapper {
+
+  object implicits {
+    implicit def stringToSimpleString(str: String): SimpleStringWrapper = SimpleStringWrapper(str)
+
+    implicit def resourceToSimpleResource(resource: Resource): SimpleResourceWrapper = SimpleResourceWrapper(resource)
+
+    implicit def anyToSimpleAny(any: Any): SimpleAnyWrapper = SimpleAnyWrapper(any)
+  }
+
+}
+
 class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFile: Option[File] = None) {
+
 
   private val model = ModelFactory.createDefaultModel()
   private val modVocabHelper = new DatabusModVocabHelper(modName)
@@ -42,10 +63,11 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     case None => s"file://${databusModInput.modMetadataFile(baseUri)}#result"
   }
 
+  import SimpleNodeWrapper.implicits._
 
-  addStmtToModel(Left(modResourceURI), "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", Left(s"${modURI}/modvocab.ttl#${modName}"))
-  addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}used", Left(provFileURI))
-  addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}endedAtTime", Left(new XSDDateTime(java.util.Calendar.getInstance())))
+  addStmtToModel(modResourceURI, "http://www.w3.org/1999/02/22-rdf-syntax-ns#type", s"${modURI}/modvocab.ttl#${modName}")
+  addStmtToModel(modResourceURI, s"${Prefixes.prov}used", provFileURI)
+  addStmtToModel(modResourceURI, s"${Prefixes.prov}endedAtTime", new XSDDateTime(java.util.Calendar.getInstance()))
   addStmtsResultDerivedFrom(resultURI)
 
 
@@ -58,8 +80,8 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @return
     */
   private def addStmtsResultDerivedFrom(resultURI: String): Unit = {
-    addStmtToModel(Left(resultURI), "http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom", Left(s"https://databus.dbpedia.org/${databusModInput.id}"))
-    addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}generated", Left(resultURI))
+    addStmtToModel(resultURI, "http://dataid.dbpedia.org/ns/mod.ttl#resultDerivedFrom", s"https://databus.dbpedia.org/${databusModInput.id}")
+    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", resultURI)
   }
 
 
@@ -72,14 +94,14 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param comment  comment of propertyObject
     */
   def addStmtsForGeneratedFile(fileName: String, label: String = "", comment: String = ""): Unit = {
-    addStmtToModel(Left(modResourceURI), s"${Prefixes.prov}generated", Left(s"${modURI}/${fileName}"))
+    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", s"${modURI}/${fileName}")
 
     if (fileName.contains('.')) {
       val fileType = fileName.split('.').last.toLowerCase
-      addStmtToModel(Left(s"${modURI}/${fileName}"), s"${Prefixes.mod}${fileType}DerivedFrom", Left(provFileURI))
+      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}${fileType}DerivedFrom", provFileURI)
       if (!(fileType matches ("svg|html"))) modVocabHelper.addFileTypeToModVocab(fileType, label, comment)
     } else {
-      addStmtToModel(Left(s"${modURI}/${fileName}"), s"${Prefixes.mod}derivedFrom", Left(provFileURI))
+      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}derivedFrom", provFileURI)
     }
   }
 
@@ -105,24 +127,33 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param p predicate
     * @param o object
     */
-  def addStmtToModel(s: Either[String, Resource], p: String, o: Either[Any, Resource], model: Model = this.model): Unit = {
+  def addStmtToModel(s: SimpleNodeWrapper, p: String, o: SimpleNodeWrapper, model: Model = this.model): Unit = {
     model.add(
       ResourceFactory.createStatement(
-        if (s.isRight) s.right.get
-        else ResourceFactory.createResource(s.left.get),
+        s match {
+          case SimpleResourceWrapper(resource) => resource
+          case SimpleStringWrapper(str) => ResourceFactory.createResource(str.toString)
+        },
         ResourceFactory.createProperty(p),
-        if (o.isRight) o.right.get
-        else {
-          try {
-            new URL(o.toString)
-            ResourceFactory.createResource(o.left.get.toString)
+        o match {
+          case SimpleResourceWrapper(resource) => resource
+          case SimpleStringWrapper(str) => try {
+            new URL(str)
+            ResourceFactory.createResource(str)
           } catch {
-            case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(o.left.get)
+            case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(str)
           }
-        })
+          case SimpleAnyWrapper(any) =>
+            try {
+              new URL(any.toString)
+              ResourceFactory.createResource(any.toString)
+            } catch {
+              case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(any)
+            }
+        }
+      )
     )
   }
-
 
   /**
     * write out jena model of vocabulary and mod result

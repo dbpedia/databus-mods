@@ -114,18 +114,21 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     //feed and write out external result model
     externalResultModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
 
+    // enable all SimpleNodeWrapper implicit conversions
+    import org.dbpedia.databus_mods.lib.util.SimpleNodeWrapper.implicits._
+
     classPartitionsMap.foreach(x => {
       val blankNode = ResourceFactory.createResource()
-      modelHelper.addStmtToModel(Left(resultURI), "http://rdfs.org/ns/void#classPartition", Right(blankNode), externalResultModel)
-      modelHelper.addStmtToModel(Right(blankNode), "http://rdfs.org/ns/void#class", Left(x._1), externalResultModel)
-      modelHelper.addStmtToModel(Right(blankNode), "http://rdfs.org/ns/void#triples", Left(x._2), externalResultModel)
+      modelHelper.addStmtToModel(resultURI, "http://rdfs.org/ns/void#classPartition", blankNode, externalResultModel)
+      modelHelper.addStmtToModel(blankNode, "http://rdfs.org/ns/void#class", x._1, externalResultModel)
+      modelHelper.addStmtToModel(blankNode, "http://rdfs.org/ns/void#triples", x._2, externalResultModel)
     })
 
     propertyPartitionsMap.foreach(x => {
       val blankNode = ResourceFactory.createResource()
-      modelHelper.addStmtToModel(Left(resultURI), "http://rdfs.org/ns/void#propertyPartition", Right(blankNode), externalResultModel)
-      modelHelper.addStmtToModel(Right(blankNode), "http://rdfs.org/ns/void#property", Left(x._1), externalResultModel)
-      modelHelper.addStmtToModel(Right(blankNode), "http://rdfs.org/ns/void#triples", Left(x._2), externalResultModel)
+      modelHelper.addStmtToModel(resultURI, "http://rdfs.org/ns/void#propertyPartition", blankNode, externalResultModel)
+      modelHelper.addStmtToModel(blankNode, "http://rdfs.org/ns/void#property", x._1, externalResultModel)
+      modelHelper.addStmtToModel(blankNode, "http://rdfs.org/ns/void#triples", x._2, externalResultModel)
     })
 
     modelHelper.writeModel(externalResultModel, externalResultFile)
