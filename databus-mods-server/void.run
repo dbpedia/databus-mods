@@ -1,0 +1,6 @@
+docker run --name voidvocab-mod \
+	-p 9002:9000 \
+	-v DMFileCache:/workspace/fileCache \
+	-v VoidVocabLR:/workspace/localRepo \
+	docker.io/library/databus-mods-void:1.0-SNAPSHOT
+

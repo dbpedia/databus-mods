@@ -14,19 +14,55 @@ case class Config() {
   var mods: JArrayList[ModConfig] = new JArrayList[ModConfig]()
 
   @BeanProperty
-  var volumes: VolumeConfig = new VolumeConfig
-
-  @BeanProperty
   var database: DatabaseConfig = new DatabaseConfig
 
   @BeanProperty
   var fileCache: FileCacheConfig = new FileCacheConfig
+
+  @BeanProperty
+  var extServer: ExtServerConfig = new ExtServerConfig
+}
+
+case class ExtServerConfig() {
+
+  @BeanProperty
+  var sparql: ExtServerSparqlConfig = new ExtServerSparqlConfig
+
+  @BeanProperty
+  var http: ExtServerHttpConfig = new ExtServerHttpConfig
+}
+
+case class ExtServerSparqlConfig() {
+
+  @BeanProperty
+  var databaseUrl: String = _
+
+  @BeanProperty
+  var databaseUsr: String = _
+
+  @BeanProperty
+  var databasePsw: String = _
+
+  @BeanProperty
+  var endpoint: String = _
+}
+
+case class ExtServerHttpConfig() {
+
+  @BeanProperty
+  var baseUrl: String = _
+
+  @BeanProperty
+  var volume: String = _
 }
 
 case class FileCacheConfig() {
 
   @BeanProperty
   var maxNumberOfFiles: Int =  _
+
+  @BeanProperty
+  var volume: String = _
 }
 
 case class DatabaseConfig() {
@@ -53,14 +89,11 @@ case class LinkConfig() {
   var api: String = _
 
   @BeanProperty
-  var source: String = _
+  var fileCache: String = _
 
-  @BeanProperty
-  var destination: String = _
-}
-
-case class VolumeConfig()
-{
   @BeanProperty
   var localRepo: String = _
+
+  @BeanProperty
+  var mountRepo: String = _
 }

@@ -1,7 +1,7 @@
 # Databus Mod application.yml
 server:
   port: 9000
-name: 'VoidVocab'
+name: filemetrics-mod
 volumes:
   localRepo: /workspace/localRepo/
   fileCache: /workspace/fileCache/

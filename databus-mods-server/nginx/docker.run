@@ -1,0 +1,9 @@
+
+docker run -d \
+	--name some-nginx2 \
+	-p 8901:80 \
+	-v /home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro \
+	-v /home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/nginx/www:/var/www/html \
+	nginx
+
+

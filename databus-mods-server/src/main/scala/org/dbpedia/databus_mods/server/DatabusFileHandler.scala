@@ -27,7 +27,7 @@ class DatabusFileHandler @Autowired()(config: Config) extends Runnable {
     while (true) {
       val databusFile: DatabusFile = DatabusFileHandlerQueue.take()
 
-      val file = getFile(new File(config.getVolumes.getLocalRepo), databusFile)
+      val file = getFile(new File(config.fileCache.volume), databusFile)
       file.getParentFile.mkdirs()
 
       val url = new URL(databusFile.downloadUrl)

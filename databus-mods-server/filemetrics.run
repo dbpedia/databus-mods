@@ -1,0 +1,6 @@
+docker run --name filemetrics-mod \
+	-p 9001:9000 \
+	-v DMFileCache:/workspace/fileCache \
+	-v FileMetricsLR:/workspace/localRepo \
+	docker.io/library/databus-mods-filemetrics:1.0-SNAPSHOT
+
