@@ -38,6 +38,12 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
           val classPartitionsMap = result._1
           val propertyPartitionsMap = result._2
           writeResultsToFiles(databusModInput, classPartitionsMap, propertyPartitionsMap)
+        } else {
+          databusModInput.modErrorFile.parent.createDirectories()
+          databusModInput.modErrorFile.write(
+            Calendar.getInstance().getTime.toString + "\n" +
+              "empty triple iterator"
+          )
         }
       } catch {
         case riotExpection: org.apache.jena.riot.RiotException => println("iterator empty")

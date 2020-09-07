@@ -118,6 +118,8 @@ class TaskScheduler @Autowired()(config: Config) {
       case 200 => log.info(s"Mod '$modName' - recovered ${databusFile.id}")
         dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.ACTIVE)
       // TODO
+      case 400 => log.error(s"Mod' $modName - failed ${databusFile.id}")
+        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.FAILED)
       case code => log.warn(s"Mod '$modName' - $code failed to send ${databusFile.id}")
     }
   }
@@ -199,7 +201,7 @@ class TaskScheduler @Autowired()(config: Config) {
     val modName = modConfig.name
     val newBase = config.extServer.http.baseUrl + modName
 
-    val newFile = File(config.extServer.http.volume) / modName / databusFile.id / "mod.ttl"
+    val newFile = File(config.extServer.http.volume) / modName / databusFile.id.split("/").dropRight(1).mkString("/") / "mod.ttl"
     newFile.parent.createDirectories()
 
     val outputStream = new FileOutputStream(newFile.toJava)
