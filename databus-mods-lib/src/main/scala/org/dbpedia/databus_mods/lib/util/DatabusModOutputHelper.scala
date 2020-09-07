@@ -29,8 +29,7 @@ object SimpleNodeWrapper {
 
 }
 
-class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFile: Option[File] = None) {
-
+class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFileName: Option[String] = None) {
 
   private val model = ModelFactory.createDefaultModel()
   private val modVocabHelper = new DatabusModVocabHelper(modName)
@@ -55,11 +54,8 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   private val modURI = s"file://${databusModInput.modMetadataFile(baseUri).parent}"
   private val modResourceURI = s"file://${databusModInput.modMetadataFile(baseUri)}#this"
   private val provFileURI = s"https://databus.dbpedia.org/${databusModInput.id}"
-  private val resultURI = externalResultFile match {
-    case Some(file) => {
-      if (externalResultFile.get.extension(false) == "ttl") s"file://$file#this"
-      else s"file://$file"
-    }
+  private val resultURI = externalResultFileName match {
+    case Some(file) => s"#${externalResultFileName.get}"
     case None => s"file://${databusModInput.modMetadataFile(baseUri)}#result"
   }
 
@@ -94,14 +90,14 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
     * @param comment  comment of propertyObject
     */
   def addStmtsForGeneratedFile(fileName: String, label: String = "", comment: String = ""): Unit = {
-    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", s"${modURI}/${fileName}")
+    addStmtToModel(modResourceURI, s"${Prefixes.prov}generated", s"$modURI/$fileName")
 
     if (fileName.contains('.')) {
       val fileType = fileName.split('.').last.toLowerCase
-      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}${fileType}DerivedFrom", provFileURI)
-      if (!(fileType matches ("svg|html"))) modVocabHelper.addFileTypeToModVocab(fileType, label, comment)
+      addStmtToModel(s"$modURI/$fileName", s"${Prefixes.mod}${fileType}DerivedFrom", provFileURI)
+      if (!(fileType matches "svg|html")) modVocabHelper.addFileTypeToModVocab(fileType, label, comment)
     } else {
-      addStmtToModel(s"${modURI}/${fileName}", s"${Prefixes.mod}derivedFrom", provFileURI)
+      addStmtToModel(s"$modURI/$fileName", s"${Prefixes.mod}derivedFrom", provFileURI)
     }
   }
 

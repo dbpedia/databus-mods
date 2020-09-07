@@ -227,12 +227,12 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     */
   def writeResultsToFiles(databusModInput: DatabusModInput, nonEmptyLines: Long, duplicates: Long, sorted: Boolean, uncompressedByteSize: Long): Unit = {
 
-    val externalResultFile = databusModInput.modMetadataFile(basePath).parent / "externalResult.ttl"
+    val externalResultFile = databusModInput.modResourceFile("filemetrics.ttl")
 
     val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(
       databusModInput,
       config.volumes.localRepo, modName,
-      Some(externalResultFile)
+      Some(externalResultFile.name)
     )
     val resultURI = modelHelper.getResultURI()
 

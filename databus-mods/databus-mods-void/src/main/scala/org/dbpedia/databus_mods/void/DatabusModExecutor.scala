@@ -101,13 +101,13 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     */
   def writeResultsToFiles(databusModInput: DatabusModInput, classPartitionsMap: mutable.HashMap[String, Int], propertyPartitionsMap: mutable.HashMap[String, Int]): Unit = {
 
-    val externalResultFile = databusModInput.modMetadataFile(basePath).parent / "externalResult.ttl"
+    val externalResultFile = databusModInput.modResourceFile("voidVocab.ttl")
     val externalResultModel = ModelFactory.createDefaultModel()
 
     val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(
       databusModInput,
       config.volumes.localRepo, modName,
-      Some(externalResultFile)
+      Some(externalResultFile.name)
     )
     val resultURI = modelHelper.getResultURI()
 
