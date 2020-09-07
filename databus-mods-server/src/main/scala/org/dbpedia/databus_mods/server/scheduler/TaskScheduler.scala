@@ -118,6 +118,8 @@ class TaskScheduler @Autowired()(config: Config) {
       case 200 => log.info(s"Mod '$modName' - recovered ${databusFile.id}")
         dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.ACTIVE)
       // TODO
+      case 400 => log.error(s"Mod' $modName - failed ${databusFile.id}")
+        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.FAILED)
       case code => log.warn(s"Mod '$modName' - $code failed to send ${databusFile.id}")
     }
   }
