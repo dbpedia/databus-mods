@@ -5,7 +5,7 @@ database:
   databaseUrl: 'jdbc:derby:./derbyDB'
 fileCache:
   maxNumberOfFiles: 20
-  volume: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods/databus-mods-void/volumes/fileCache'
+  volume: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/fileCache'
 extServer:
   sparql:
     databaseUrl: 'jdbc:virtuoso://localhost:1111/charset=UTF-8/'
@@ -16,52 +16,47 @@ extServer:
     volume: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/www'
     baseUrl: 'http://localhost:8900/'
 mods:
-#  - name: 'FileMetrics'
-#    accepts: 'file'
-#    links:
-#      - api: 'http://localhost:9001/a'
-#        fileCache: '/workspace/fileCache'
-#        localRepo: '/workspace/localRepo'
-#        mountRepo: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/FileMetrics'
-#    query: '
-#PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-#PREFIX dct:    <http://purl.org/dc/terms/>
-#PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-#PREFIX db:     <https://databus.dbpedia.org/>
-#PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-#PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-#
-#SELECT DISTINCT ?file ?sha256sum ?downloadURL {
-#  ?s dcat:distribution ?distribution .
-#  ?distribution dataid:file ?file .
-#  ?distribution dataid:sha256sum ?sha256sum .
-#  ?distribution dcat:downloadURL ?downloadURL .
-#} ORDER BY DESC(?file)
-#'
-  - name: 'VoidVocab'
+  - name: 'FileMetrics'
     accepts: 'file'
-    load:
-      - "voidVocab.ttl"
     links:
-      - api: 'http://localhost:9003/a'
-        fileCache: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods/databus-mods-void/volumes/fileCache'
-        localRepo: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods/databus-mods-void/volumes/localRepo'
-        mountRepo: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods/databus-mods-void/volumes/localRepo'
+      - api: 'http://localhost:9001/a'
+        fileCache: '/workspace/fileCache'
+        localRepo: '/workspace/localRepo'
+        mountRepo: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/FileMetrics'
     query: '
-PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
 PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-
-SELECT DISTINCT ?file ?sha256sum ?downloadURL {
-  ?s dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
-  ?s dcat:distribution ?distribution .
-  ?distribution dataid:file ?file .
-  ?distribution dataid:sha256sum ?sha256sum .
-  ?distribution dcat:downloadURL ?downloadURL .
+SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+	?dataset dcat:distribution ?distribution .
+	?distribution dataid:file ?file .
+	?distribution dataid:sha256sum ?sha256sum .
+    ?distribution dcat:downloadURL ?downloadURL .
+	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
+}
+'
+  - name: 'VoidVocab'
+    accepts: 'file'
+    links:
+      - api: 'http://localhost:9002/a'
+        fileCache: '/workspace/fileCache'
+        localRepo: '/workspace/localRepo'
+        mountRepo: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/VoidVocab'
+    query: '
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?file ?sha256sum ?downloadURL WHERE {
+	?dataset dcat:distribution ?distribution .
+	?distribution dataid:file ?file .
+	?distribution dataid:sha256sum ?sha256sum .
+    ?distribution dcat:downloadURL ?downloadURL .
+	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
 }
 '
