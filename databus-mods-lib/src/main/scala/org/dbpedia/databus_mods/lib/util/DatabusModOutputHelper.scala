@@ -29,7 +29,7 @@ object SimpleNodeWrapper {
 
 }
 
-class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFileName: Option[String] = None) {
+class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, modName: String, externalResultFile: Option[File] = None) {
 
   private val model = ModelFactory.createDefaultModel()
   private val modVocabHelper = new DatabusModVocabHelper(modName)
@@ -54,8 +54,11 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   private val modURI = s"file://${databusModInput.modMetadataFile(baseUri).parent}"
   private val modResourceURI = s"file://${databusModInput.modMetadataFile(baseUri)}#this"
   private val provFileURI = s"https://databus.dbpedia.org/${databusModInput.id}"
-  private val resultURI = externalResultFileName match {
-    case Some(file) => s"#${externalResultFileName.get}"
+  private val resultURI = externalResultFile match {
+    case Some(file) => {
+      if (externalResultFile.get.extension(false) == "ttl") s"file://$file#this"
+      else s"file://$file"
+    }
     case None => s"file://${databusModInput.modMetadataFile(baseUri)}#result"
   }
 
@@ -126,19 +129,17 @@ class DatabusModOutputHelper(databusModInput: DatabusModInput, baseUri: String, 
   def addStmtToModel(s: SimpleNodeWrapper, p: String, o: SimpleNodeWrapper, model: Model = this.model): Unit = {
     model.add(
       ResourceFactory.createStatement(
+        // subject
         s match {
           case SimpleResourceWrapper(resource) => resource
-          case SimpleStringWrapper(str) => ResourceFactory.createResource(str.toString)
+          case SimpleStringWrapper(str) => ResourceFactory.createResource(str)
         },
+        // property
         ResourceFactory.createProperty(p),
+        // object
         o match {
           case SimpleResourceWrapper(resource) => resource
-          case SimpleStringWrapper(str) => try {
-            new URL(str)
-            ResourceFactory.createResource(str)
-          } catch {
-            case malformedURL: MalformedURLException => ResourceFactory.createTypedLiteral(str)
-          }
+          case SimpleStringWrapper(str) => ResourceFactory.createResource(str)
           case SimpleAnyWrapper(any) =>
             try {
               new URL(any.toString)

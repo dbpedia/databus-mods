@@ -3,5 +3,4 @@ docker run --name my-virtuoso \
     -e DBA_PASSWORD=myDbaPassword \
     -e SPARQL_UPDATE=true \
     -e DEFAULT_GRAPH=http://www.example.com/my-graph \
-    -v /my/path/to/the/virtuoso/db:/data \
     -d tenforce/virtuoso

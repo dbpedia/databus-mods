@@ -75,6 +75,9 @@ case class ModConfig() {
   var name: String = _
 
   @BeanProperty
+  val load: JArrayList[String] = new JArrayList[String]()
+
+  @BeanProperty
   var accepts: String = _
 
   @BeanProperty

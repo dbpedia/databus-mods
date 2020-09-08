@@ -16,7 +16,7 @@ import org.apache.jena.graph.NodeFactory
 import org.apache.jena.riot.{Lang, RDFDataMgr}
 import org.apache.jena.riot.system.{StreamRDF, StreamRDFLib, StreamRDFWrapper}
 import org.dbpedia.databus_mods.server.database.{DatabusFile, DbFactory, JobStatus}
-import org.dbpedia.databus_mods.server.utils.FileDownloader
+import org.dbpedia.databus_mods.server.utils.{FileDownloader, VOSUtil}
 import org.dbpedia.databus_mods.server.{Config, DatabusFileStatus, LinkConfig, ModConfig}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
@@ -74,7 +74,7 @@ class TaskScheduler @Autowired()(config: Config) {
           val file = File(File(config.fileCache.volume), databusFile.id)
           val uri = file.uri.toString.replace(config.fileCache.volume, link.fileCache)
 
-          sendNewJob(databusFile, modName, link.api, uri)
+          sendNewJob(databusFile, modConfig, link, uri)
         } else {
           log.info(s"Mod '$modName' - wait for download <${openDatabusFiles.head.id}>")
           /*
@@ -83,16 +83,16 @@ class TaskScheduler @Autowired()(config: Config) {
            */
         }
       } else {
-        log.info(s"Mod '$modName' - waiting for new Jobs")
+        log.debug(s"Mod '$modName' - waiting for new Jobs")
       }
     }
   }
 
-  def sendNewJob(databusFile: DatabusFile, modName: String, modUri: String, fileUri: String): Unit = {
+  def sendNewJob(databusFile: DatabusFile, modConfig: ModConfig, linkConfig: LinkConfig, fileUri: String): Unit = {
     val client = new DefaultHttpClient()
 
     val finalUriPath = Array(
-      modUri,
+      linkConfig.api,
       databusFile.publisher,
       databusFile.group,
       databusFile.artifact,
@@ -100,7 +100,7 @@ class TaskScheduler @Autowired()(config: Config) {
       databusFile.fileName
     ).mkString("/")
 
-    log.info(s"Mod '$modName' - send $finalUriPath")
+    log.info(s"Mod '${modConfig.name}' - send $finalUriPath")
     val post = new HttpPost(finalUriPath)
 
     import org.apache.http.client.entity.UrlEncodedFormEntity
@@ -113,14 +113,14 @@ class TaskScheduler @Autowired()(config: Config) {
 
     response.getStatusLine.getStatusCode match {
       // 201 CREATED
-      case 201 => log.info(s"Mod '$modName' - successfully send ${databusFile.id}")
-        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.ACTIVE)
-      case 200 => log.info(s"Mod '$modName' - recovered ${databusFile.id}")
-        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.ACTIVE)
-      // TODO
-      case 400 => log.error(s"Mod' $modName - failed ${databusFile.id}")
-        dbConnection.updateJobStatus(modName, databusFile.id, JobStatus.FAILED)
-      case code => log.warn(s"Mod '$modName' - $code failed to send ${databusFile.id}")
+      case 201 => log.info(s"Mod '${modConfig.name}' - successfully send ${databusFile.id}")
+        dbConnection.updateJobStatus(modConfig.name, databusFile.id, JobStatus.ACTIVE)
+      case 200 => log.info(s"Mod '${modConfig.name} - recovered ${databusFile.id}")
+        handleModTTL(modConfig, linkConfig, response, databusFile)
+        dbConnection.updateJobStatus(modConfig.name, databusFile.id, JobStatus.DONE)
+      case 400 => log.error(s"Mod '${modConfig.name}' - failed ${databusFile.id}")
+        dbConnection.updateJobStatus(modConfig.name, databusFile.id, JobStatus.FAILED)
+      case code => log.warn(s"Mod '${modConfig.name}' - $code failed to send ${databusFile.id}")
     }
   }
 
@@ -174,27 +174,6 @@ class TaskScheduler @Autowired()(config: Config) {
     }
   }
 
-  def submitToEndpoint(graphName: String, model: Model): Unit = {
-    import virtuoso.jena.driver.VirtDataset
-    // TODO conf parameter
-    val dataSet = new VirtDataset(
-      config.extServer.sparql.databaseUrl,
-      config.extServer.sparql.databaseUsr,
-      config.extServer.sparql.databasePsw
-    )
-    try {
-      dataSet.addNamedModel(graphName, model)
-      dataSet.commit()
-    } catch {
-      case lee: LabelExistsException =>
-        // TODO overwrite?
-        log.warn(s"Graph exists - $graphName")
-      case e: Throwable => e.printStackTrace()
-    }
-
-    dataSet.close()
-  }
-
   def handleModTTL(modConfig: ModConfig, linkConfig: LinkConfig, response: CloseableHttpResponse, databusFile: DatabusFile): Unit = {
 
     val oldBase = s"file://${linkConfig.localRepo}"
@@ -205,23 +184,28 @@ class TaskScheduler @Autowired()(config: Config) {
     newFile.parent.createDirectories()
 
     val outputStream = new FileOutputStream(newFile.toJava)
-    val rewritten = new BaseRewriteStreamWrapper(StreamRDFLib.writer(outputStream), oldBase, newBase, config, modName, linkConfig)
-    println(response)
+    val rewritten = new BaseRewriteStreamWrapper(StreamRDFLib.writer(outputStream), databusFile.id, oldBase, newBase, config, modConfig, linkConfig, true)
     RDFDataMgr.parse(rewritten, response.getEntity.getContent, oldBase, Lang.TURTLE)
     response.close()
 
     val jenaModel = ModelFactory.createDefaultModel()
     jenaModel.read(new FileInputStream(newFile.toJava), null, "TTL")
-    submitToEndpoint(modConfig.name + "/" + databusFile.id, jenaModel)
+    VOSUtil.submitToEndpoint(modConfig.name + "/" + databusFile.id, jenaModel,
+      config.extServer.sparql.databaseUrl,
+      config.extServer.sparql.databaseUsr,
+      config.extServer.sparql.databasePsw
+    )
   }
 }
 
 class BaseRewriteStreamWrapper(streamRDF: StreamRDF,
+                               id: String,
                                oldBase: String,
                                newBase: String,
                                config: Config,
-                              modName: String,
-                               linkConfig: LinkConfig
+                               modConfig: ModConfig,
+                               linkConfig: LinkConfig,
+                               recursive: Boolean = false
                               ) extends StreamRDFWrapper(streamRDF) {
 
   override def triple(triple: graph.Triple): Unit = {
@@ -236,13 +220,28 @@ class BaseRewriteStreamWrapper(streamRDF: StreamRDF,
           triple.getSubject,
         triple.getPredicate,
         if (triple.getObject.isURI && triple.getObject.getURI.startsWith(oldBase)) {
-          if (isUsed) {
+          if (isUsed && recursive) {
             val oldUri = triple.getObject.getURI
-            val link = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, config.extServer.http.volume+s"/$modName")))
+            val link = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, config.extServer.http.volume+s"/${modConfig.name}")))
             val target = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, linkConfig.mountRepo)))
             Files.createDirectories(link.getParent)
-            if (!Files.exists(link))
-              Files.copy(target, link)
+            if (!Files.exists(link)) {
+              if(modConfig.load.contains(target.toFile.getName)) {
+                val outputStream = new FileOutputStream(link.toFile)
+                val rewritten = new BaseRewriteStreamWrapper(StreamRDFLib.writer(outputStream), id, oldBase, newBase, config, modConfig, linkConfig)
+                RDFDataMgr.parse(rewritten, new FileInputStream(target.toFile), oldUri.replace(oldBase, config.extServer.http.volume+s"/${modConfig.name}"), Lang.TURTLE)
+
+                val jenaModel = ModelFactory.createDefaultModel()
+                jenaModel.read(new FileInputStream(link.toFile), null, "TTL")
+                VOSUtil.submitToEndpoint(modConfig.name + "/" + id + "/" +target.toFile.getName, jenaModel,
+                  config.extServer.sparql.databaseUrl,
+                  config.extServer.sparql.databaseUsr,
+                  config.extServer.sparql.databasePsw
+                )
+              } else {
+                Files.copy(target, link)
+              }
+            }
             // TODO
             //  Files.createSymbolicLink(link,target)
           }

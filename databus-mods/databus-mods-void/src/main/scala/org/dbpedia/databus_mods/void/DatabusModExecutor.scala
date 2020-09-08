@@ -113,7 +113,7 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     val modelHelper = new org.dbpedia.databus_mods.lib.util.DatabusModOutputHelper(
       databusModInput,
       config.volumes.localRepo, modName,
-      Some(externalResultFile.name)
+      Some(externalResultFile)
     )
     val resultURI = modelHelper.getResultURI()
 
