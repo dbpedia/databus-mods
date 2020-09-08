@@ -1,5 +1,5 @@
 server:
-  port: 9002
+  port: 9004
 name: spo-mod
 volumes:
   localRepo: volume/localRepo

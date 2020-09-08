@@ -34,6 +34,7 @@
         <module>databus-mods-server</module>
         <module>databus-mods/databus-mods-void</module>
         <module>databus-mods/databus-mods-filemetrics</module>
+        <module>databus-mods/databus-mods-spo</module>
     </modules>
 
     <dependencies>

@@ -36,13 +36,11 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
 
       val iter = RdfFileHelpers.readAsTriplesIterator(databusModInput.file)
 
-      try {
-        if (iter.hasNext) {
-          val spo = calculateSPO(iter)
-          writeResultsToFiles(databusModInput, spo._1, spo._2, spo._3)
-        }
-      } catch {
-        case riotExpection: org.apache.jena.riot.RiotException => println("iterator empty")
+      if (iter.hasNext) {
+        val spo = calculateSPO(iter)
+        writeResultsToFiles(databusModInput, spo._1, spo._2, spo._3)
+      } else {
+        throw new Exception("iterator empty")
       }
     }
     catch {

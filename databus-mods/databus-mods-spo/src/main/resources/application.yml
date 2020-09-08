@@ -1,0 +1,7 @@
+# Databus Mod application.yml
+server:
+  port: 9000
+name: spo-mod
+volumes:
+  localRepo: /workspace/localRepo/
+  fileCache: /workspace/fileCache/
