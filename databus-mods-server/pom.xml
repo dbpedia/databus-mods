@@ -14,7 +14,23 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
+    <properties>
+        <vaadin.version>14.4.2</vaadin.version>
+    </properties>
     <dependencies>
+
+<!--        <dependency>-->
+<!--            <groupId>com.vaadin</groupId>-->
+<!--            <artifactId>vaadin-spring-boot-starter</artifactId>-->
+<!--            <version>${vaadin.version}</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.dbpedia.databus-mods</groupId>
+            <artifactId>databus-mods-lib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
@@ -37,19 +53,15 @@
         </dependency>
 
         <dependency>
-            <groupId>com.openlink</groupId>
-            <artifactId>virt-jdbc</artifactId>
-            <scope>system</scope>
-            <version>4.1</version>
-            <systemPath>${pom.basedir}/virtjdbc4_1.jar</systemPath>
+            <groupId>com.openlink.virtuoso</groupId>
+            <artifactId>virtjdbc4-1</artifactId>
+            <version>7.1.0</version>
         </dependency>
 
         <dependency>
-            <groupId>com.openlink</groupId>
-            <artifactId>virt-jena</artifactId>
-            <scope>system</scope>
-            <version>3.0</version>
-            <systemPath>${pom.basedir}/virt_jena3.jar</systemPath>
+            <groupId>com.openlink.virtuoso</groupId>
+            <artifactId>virtjena3</artifactId>
+            <version>7.1.0</version>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
@@ -58,7 +70,45 @@
             <artifactId>guava</artifactId>
             <version>29.0-jre</version>
         </dependency>
-
     </dependencies>
 
+    <repositories>
+        <repository>
+            <id>maven.aksw.snapshots</id>
+            <name>AKSW Snapshot Repository</name>
+            <url>http://maven.aksw.org/archiva/repository/internal</url>
+        </repository>
+    </repositories>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-bom</artifactId>
+                <!-- declare the latest Vaadin version
+                     as a property or directly here -->
+                <version>${vaadin.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>com.vaadin</groupId>
+                <artifactId>vaadin-maven-plugin</artifactId>
+                <version>${vaadin.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>prepare-frontend</goal>
+                            <goal>build-frontend</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>
