@@ -1,31 +1,37 @@
 package org.dbpedia.databus_mods.lib
 
 import java.util.concurrent
+import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingQueue}
 
 import scala.collection.immutable.HashMap
 
-object DatabusModInputQueue {
+class DatabusModInputQueue {
 
-  private val q = new concurrent.LinkedBlockingQueue[DatabusModInput]()
-
-  private val current = new concurrent.ConcurrentHashMap[String, DatabusModInput]()
+  private val queue = new LinkedBlockingQueue[DatabusModInput]()
+  private val currentTakes = new ConcurrentHashMap[String,DatabusModInput]()
 
   def take(): DatabusModInput = {
-    val databusModInput = q.take()
-    current.put(databusModInput.id, databusModInput)
+    val databusModInput = queue.take()
+    currentTakes.put(databusModInput.id, databusModInput)
     databusModInput
   }
 
   def put(task: DatabusModInput): Unit = {
-    q.put(task)
+    queue.put(task)
+  }
+
+  def contains(id: String): Boolean = {
+    // TODO
+    import scala.collection.JavaConversions._
+    (queue.map(_.id).toSet++getCurrent.keySet).contains(id)
   }
 
   def removeCurrent(id: String): Unit = {
-    current.remove(id)
+    currentTakes.remove(id)
   }
 
   def getCurrent: HashMap[String, DatabusModInput] = {
     import scala.collection.JavaConversions._
-    HashMap(current.toList: _*)
+    HashMap(currentTakes.toList: _*)
   }
 }

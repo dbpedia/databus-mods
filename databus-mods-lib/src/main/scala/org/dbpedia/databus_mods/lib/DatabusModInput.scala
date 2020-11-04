@@ -57,10 +57,6 @@ case class DatabusModInput
     File(basePath) / publisher / group / artifact / version / fileName / resourceName
   }
 
-  def isRunning: Boolean = {
-    DatabusModInputQueue.getCurrent.contains(id)
-  }
-
   override def toString: String =
     s"""$publisher
        |$group

@@ -4,26 +4,22 @@ import java.io.{BufferedWriter, FileWriter}
 import java.util.Calendar
 
 import better.files.File
-import org.apache.jena.graph.{NodeFactory, Triple}
-import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory}
+import org.apache.jena.graph.Triple
 import org.apache.jena.riot.lang.PipedRDFIterator
 import org.dbpedia.databus_mods.lib.util.RdfFileHelpers
-import org.dbpedia.databus_mods.lib.{AbstractDatabusModExecutor, DatabusModInput}
+import org.dbpedia.databus_mods.lib.{AbcDatabusModConfig, DatabusModInput}
 import org.slf4j.LoggerFactory
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.Service
 
 import scala.collection.mutable
 
 /**
 * calculate the number of occurrences of each subject, predicate, and object of rdf file
 */
-@Service
-class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusModExecutor {
+class SPOProcessor(config: AbcDatabusModConfig) {
 
-  private val log = LoggerFactory.getLogger(classOf[DatabusModExecutor])
+  private val log = LoggerFactory.getLogger(classOf[SPOProcessor])
   private implicit val basePath: String = config.volumes.localRepo
-  private val modName = "SPOMod"
+  private val modName = config.name
 
   /**
     * calculate number of occurrences of each subject, predicate, and object of rdf iterator
@@ -46,6 +42,8 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     catch {
       case e: Exception =>
         log.error(s"failed to process ${databusModInput.id}")
+        e.printStackTrace()
+        databusModInput.modErrorFile.parent.createDirectories()
         databusModInput.modErrorFile.write(
           Calendar.getInstance().getTime.toString + "\n" +
             e.getStackTrace.mkString("\n")
@@ -106,7 +104,8 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
     * @param objectMap
     */
   def writeExternalResult(resultFile:File, subjectMap:mutable.HashMap[String,Int], predicateMap:mutable.HashMap[String,Int], objectMap:mutable.HashMap[String,Int]):Unit={
-    val bw = new BufferedWriter(new FileWriter(resultFile.toJava, true))
+    resultFile.parent.createDirectories()
+    val bw = new BufferedWriter(new FileWriter(resultFile.toJava,false))
 
     write(subjectMap, "subject")
     write(predicateMap, "predicate")
@@ -146,10 +145,11 @@ class DatabusModExecutor @Autowired()(config: Config) extends AbstractDatabusMod
       config.volumes.localRepo, modName,
       Some(externalResultFile)
     )
-    //write out meta data
-    modelHelper.writeMetaDataModels()
 
     writeExternalResult(externalResultFile, subjectMap, predicateMap, objectMap)
+
+    //write out meta data
+    modelHelper.writeMetaDataModels()
   }
 
 }
