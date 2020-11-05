@@ -6,6 +6,17 @@
 2. change working directory to Mod subdirectory
 3. set MainClass (e.g., Boot.scala)
 
+## Core Mods
+
+| Mod Name | Description | Phase |
+|----------|-------------|-------|
+| file-metrics | simple file metrics as of size, lines, sorted | staging |
+| mimetype     | checks the mimetype  | unit testing |
+| uptime       | checks online status | implementation
+| spo          | counts s p o in RDF  | staging |
+| uri-pat-ana  | TODO                 | implementation |
+| void         | RDF void statistics  | staging |
+
 ## Mod ReST Api
 
 Example [DemoMod](http://akswnc7.informatik.uni-leipzig.de:9010/swagger-ui/) documentation.
