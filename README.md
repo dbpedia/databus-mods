@@ -3,6 +3,10 @@ Description and Demo for Databus Mods (incl/ Ontology and Process)
 Contains a working mod to check whether all download links are working.
 Please post ideas and endeavours to mod in the [DBpedia Forum](https://forum.dbpedia.org) 
 
+## Build Your Mod
+
+See [databus-mods/README.md](https://github.com/dbpedia/databus-mods/blob/master/databus-mods/README.md).
+
 ## Motivation
 Data providers on the bus publish their files on their own servers with a core set of metadata descriptions like where to download them, filesize, license. 
 These are captured in the `dataid.ttl` and hosted in the [Databus SPARQL API](https://dev.dbpedia.org/Download_Data).
@@ -84,6 +88,8 @@ mymod:28bf5ba354072b99bca31e59294755a0dbfa392566044943b2e881a5a9370a73.ttl#this
 ```
 and an example of the modvocab:
 http://88.99.242.78/online/repo/modvocab.ttl
+
+# Deprecated
 
 ## Databus SPARQL API
 We will load the above descriptions of your mod into https://databus.dbpedia.org/repo/sparql .
