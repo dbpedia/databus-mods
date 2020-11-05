@@ -78,7 +78,11 @@ object Boot {
   class DatabusModProcessor @Autowired()(config: DatabusModConfig, queue: DatabusModInputQueue)
     extends AbcDatabusModProcessor(config, queue) {
     override def process(input: DatabusModInput): Unit = {
-      /* TODO */
+      // TODO
+      // Success write mod.ttl
+      val succFile = input.modMetadataFile(config.volumes.localRepo)
+      // Failure write
+      val failFile = input.modErrorFile(config.volumes.localRepo)
     }
   }
 
