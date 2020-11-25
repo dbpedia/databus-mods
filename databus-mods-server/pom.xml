@@ -5,8 +5,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>databus-mods-server</artifactId>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
     <name>Databus-Mods Server</name>
+    <modules>
+        <module>databus-mods-server-core</module>
+        <module>databus-mods-server-web-ui</module>
+    </modules>
 
     <parent>
         <groupId>org.dbpedia.databus-mods</groupId>
@@ -31,6 +35,14 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-data-jpa -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <version>2.3.0.RELEASE</version>
+        </dependency>
+
+
         <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
@@ -44,6 +56,14 @@
             <artifactId>derby</artifactId>
             <version>10.14.2.0</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>javax.persistence-api</artifactId>
+            <version>2.2</version>
+        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/org.aksw.jena-sparql-api/jena-sparql-api-sparql-ext -->
         <dependency>
@@ -83,14 +103,19 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>com.vaadin</groupId>
-                <artifactId>vaadin-bom</artifactId>
-                <!-- declare the latest Vaadin version
-                     as a property or directly here -->
-                <version>${vaadin.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.dbpedia.databus_mods</groupId>
+                <artifactId>databus-mods-server-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
+<!--            <dependency>-->
+<!--                <groupId>com.vaadin</groupId>-->
+<!--                <artifactId>vaadin-bom</artifactId>-->
+<!--                &lt;!&ndash; declare the latest Vaadin version-->
+<!--                     as a property or directly here &ndash;&gt;-->
+<!--                <version>${vaadin.version}</version>-->
+<!--                <type>pom</type>-->
+<!--                <scope>import</scope>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
