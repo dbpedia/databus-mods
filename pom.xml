@@ -8,17 +8,11 @@
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
-
     <properties>
         <encoding>UTF-8</encoding>
         <file.encoding>UTF-8</file.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <spring.version>2.3.7.RELEASE</spring.version>
         <scala.version>2.11.12</scala.version>
         <scala.compat.version>2.11</scala.compat.version>
         <!-- maven license plugin-->
@@ -27,7 +21,16 @@
         <!--        <license.licenseName>agpl_v3</license.licenseName>-->
         <!--        &lt;!&ndash; github server corresponds to entry in ~/.m2/settings.xml &ndash;&gt;-->
         <!--        <maven.plugin.tools.version>3.6.0</maven.plugin.tools.version>-->
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.7.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
 
     <modules>
         <module>databus-mods-lib</module>
@@ -35,6 +38,8 @@
 <!--        <module>databus-mods/databus-mods-void</module>-->
 <!--        <module>databus-mods/databus-mods-filemetrics</module>-->
         <module>databus-mods/databus-mods-spo</module>
+        <module>databus-mods/databus-mods-oslc-demo</module>
+        <module>databus-mods/databus-mods-demo-simple</module>
     </modules>
 
     <dependencies>
@@ -58,10 +63,18 @@
         END This is from mods pom.xml
         -->
 
+        <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
+        <dependency>
+            <groupId>com.github.pathikrit</groupId>
+            <artifactId>better-files_2.11</artifactId>
+            <version>3.9.1</version>
+        </dependency>
+
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
-            <version>2.3.0.RELEASE</version>
+            <version>${spring.version}</version>
 <!--            <exclusions>-->
 <!--                <exclusion>-->
 <!--                    <groupId>org.springframework.boot</groupId>-->
@@ -122,6 +135,18 @@
                     <groupId>org.scalactic</groupId>
                     <artifactId>scalactic_2.11</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>com.github.tarql</groupId>
+                    <artifactId>tarql</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>jena-core</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>org.apache.jena</groupId>
+                    <artifactId>jena-arq</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
@@ -129,16 +154,26 @@
         <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_${scala.compat.version}</artifactId>
-            <version>3.1.2</version>
+            <version>3.2.3</version>
             <scope>test</scope>
         </dependency>
 
     </dependencies>
 
     <repositories>
+<!--        <repository>-->
+<!--            <id>com.springsource.repository.bundles.release</id>-->
+<!--            <name>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</name>-->
+<!--            <url>http://repository.springsource.com/maven/bundles/release</url>-->
+<!--        </repository>-->
+<!--        <repository>-->
+<!--            <id>com.springsource.repository.bundles.external</id>-->
+<!--            <name>SpringSource Enterprise Bundle Repository - External Bundle Releases</name>-->
+<!--            <url>http://repository.springsource.com/maven/bundles/external</url>-->
+<!--        </repository>-->
         <repository>
             <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
+            <url>https://www.jitpack.io</url>
         </repository>
         <repository>
             <id>sonatype-releases</id>
@@ -178,15 +213,15 @@
         <sourceDirectory>src/main/scala</sourceDirectory>
         <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
-            <plugin>
-                <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <!--altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo
-                    </altDeploymentRepository-->
-                    <pomFile>pom.xml</pomFile>
-                </configuration>
-            </plugin>
+<!--            <plugin>-->
+<!--                <artifactId>maven-deploy-plugin</artifactId>-->
+<!--                <version>2.8.1</version>-->
+<!--                <configuration>-->
+<!--                    &lt;!&ndash;altDeploymentRepository>internal.repo::default::file://${project.build.directory}/mvn-repo-->
+<!--                    </altDeploymentRepository&ndash;&gt;-->
+<!--                    <pomFile>pom.xml</pomFile>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
@@ -204,6 +239,7 @@
                                 <arg>${project.build.directory}/.scala_dependencies</arg>
                                 <arg>-deprecation</arg>
                                 <arg>-feature</arg>
+                                <arg>-target:jvm-1.8</arg>
                             </args>
                         </configuration>
                     </execution>

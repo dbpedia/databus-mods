@@ -13,15 +13,27 @@ case class Config() {
   var name: String = _
 
   @BeanProperty
-  var volumes = new VolumesConfig
+  var worker: WorkerConfig = new WorkerConfig
 }
 
-case class VolumesConfig() {
+case class WorkerConfig() {
 
   @BeanProperty
-  var fileCache: String = _
+  var volume: String = _
 
   @BeanProperty
-  var localRepo: String = _
+  var api: ApiConfig = new ApiConfig
+}
+
+case class ApiConfig() {
+
+  @BeanProperty
+  var base: String = _
+
+  @BeanProperty
+  var create: String = _
+
+  @BeanProperty
+  var query: String = _
 }
 
