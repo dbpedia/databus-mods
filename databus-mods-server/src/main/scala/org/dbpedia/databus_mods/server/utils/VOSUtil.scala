@@ -8,14 +8,13 @@ class VOSUtil
 
 object VOSUtil {
 
-  private val log  = LoggerFactory.getLogger(classOf[VOSUtil])
+  private val log = LoggerFactory.getLogger(classOf[VOSUtil])
 
   def submitToEndpoint(graphName: String, model: Model, databaseUrl: String, databaseUsr: String, databasePsw: String): Unit = {
     import virtuoso.jena.driver.VirtDataset
     // TODO conf parameter
     val dataSet = new VirtDataset(
-      databaseUrl,databaseUsr,databasePsw
-    )
+      databaseUrl, databaseUsr, databasePsw)
     try {
       dataSet.addNamedModel(graphName, model)
       dataSet.commit()

@@ -7,9 +7,9 @@ import org.dbpedia.databus_mods.server.database.DatabusFile
 
 object DatabusFileHandlerQueue {
 
-  // redundant to have a LinkedBlockingQueue here?
   private val q = new concurrent.LinkedBlockingQueue[DatabusFile]()
 
+  // both are sync
   private val allowedTakes = new AtomicInteger(20)
   private val currentTakes = new AtomicInteger(0)
 
@@ -20,10 +20,9 @@ object DatabusFileHandlerQueue {
   def decrementCurrentTakes(): Unit = {
     this.synchronized {
       if(currentTakes.get() > 0) {
-//        System.err.println("decremented currentTakes")
         currentTakes.decrementAndGet()
       }
-      notify
+      notify()
     }
   }
 
@@ -32,7 +31,7 @@ object DatabusFileHandlerQueue {
 //      System.err.println(s"cur: ${currentTakes.get()} all: ${allowedTakes}")
       while(currentTakes.get() >= allowedTakes.get()) {
 //        System.err.println("currentTakes > allowedTakes")
-        wait
+        wait()
       }
       // TODO check before or after q.take() (because q.take blocks)
       val t=q.take()

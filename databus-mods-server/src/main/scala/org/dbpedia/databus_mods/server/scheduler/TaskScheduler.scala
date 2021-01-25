@@ -178,22 +178,23 @@ class TaskScheduler @Autowired()(config: Config) {
 
     val oldBase = s"file://${linkConfig.localRepo}"
     val modName = modConfig.name
-    val newBase = config.extServer.http.baseUrl + modName
+    val newBase = config.provider.http.baseUrl + modName
 
-    val newFile = File(config.extServer.http.volume) / modName / databusFile.id.split("/").dropRight(1).mkString("/") / "mod.ttl"
+    val newFile = File(config.provider.http.volume) / modName / databusFile.id.split("/").dropRight(1).mkString("/") / "mod.ttl"
     newFile.parent.createDirectories()
 
     val outputStream = new FileOutputStream(newFile.toJava)
     val rewritten = new BaseRewriteStreamWrapper(StreamRDFLib.writer(outputStream), databusFile.id, oldBase, newBase, config, modConfig, linkConfig, true)
     RDFDataMgr.parse(rewritten, response.getEntity.getContent, oldBase, Lang.TURTLE)
+
     response.close()
 
     val jenaModel = ModelFactory.createDefaultModel()
     jenaModel.read(new FileInputStream(newFile.toJava), null, "TTL")
     VOSUtil.submitToEndpoint(modConfig.name + "/" + databusFile.id, jenaModel,
-      config.extServer.sparql.databaseUrl,
-      config.extServer.sparql.databaseUsr,
-      config.extServer.sparql.databasePsw
+      config.provider.sparql.databaseUrl,
+      config.provider.sparql.databaseUsr,
+      config.provider.sparql.databasePsw
     )
   }
 }
@@ -222,21 +223,22 @@ class BaseRewriteStreamWrapper(streamRDF: StreamRDF,
         if (triple.getObject.isURI && triple.getObject.getURI.startsWith(oldBase)) {
           if (isUsed && recursive) {
             val oldUri = triple.getObject.getURI
-            val link = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, config.extServer.http.volume+s"/${modConfig.name}")))
+            val link = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, config.provider.http.volume+s"/${modConfig.name}")))
             val target = Paths.get(new URI(oldUri.replace(linkConfig.localRepo, linkConfig.mountRepo)))
             Files.createDirectories(link.getParent)
             if (!Files.exists(link)) {
               if(modConfig.load.contains(target.toFile.getName)) {
                 val outputStream = new FileOutputStream(link.toFile)
                 val rewritten = new BaseRewriteStreamWrapper(StreamRDFLib.writer(outputStream), id, oldBase, newBase, config, modConfig, linkConfig)
-                RDFDataMgr.parse(rewritten, new FileInputStream(target.toFile), oldUri.replace(oldBase, config.extServer.http.volume+s"/${modConfig.name}"), Lang.TURTLE)
+                RDFDataMgr.parse(rewritten, new FileInputStream(target.toFile), oldUri.replace(oldBase, config.provider.http.volume+s"/${modConfig.name}"), Lang.TURTLE)
+
 
                 val jenaModel = ModelFactory.createDefaultModel()
                 jenaModel.read(new FileInputStream(link.toFile), null, "TTL")
                 VOSUtil.submitToEndpoint(modConfig.name + "/" + id + "/" +target.toFile.getName, jenaModel,
-                  config.extServer.sparql.databaseUrl,
-                  config.extServer.sparql.databaseUsr,
-                  config.extServer.sparql.databasePsw
+                  config.provider.sparql.databaseUrl,
+                  config.provider.sparql.databaseUsr,
+                  config.provider.sparql.databasePsw
                 )
               } else {
                 Files.copy(target, link)

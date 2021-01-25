@@ -6,4 +6,7 @@ import org.springframework.stereotype.Repository
 
 @Repository
 @Transactional
-trait ModRepository extends CrudRepository[Mod,Long]
+trait ModRepository extends CrudRepository[Mod,Long] {
+
+  def findByName(name: String): Mod
+}

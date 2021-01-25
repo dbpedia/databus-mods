@@ -1,9 +1,10 @@
-package org.dbpedia.databus_mods.server.database
+package org.dbpedia.databus_mods.server.database.derby
 
-import java.sql.{Date, DriverManager, ResultSet, SQLException, Timestamp}
+import java.sql.{DriverManager, SQLException, Timestamp}
 
 import org.apache.derby.shared.common.error.DerbySQLIntegrityConstraintViolationException
 import org.dbpedia.databus_mods.server.DatabusFileStatus.DatabusFileStatus
+import org.dbpedia.databus_mods.server.database.{AbstractDbHandler, DatabusFile, DatabusFileIterator, JobStatus}
 import org.slf4j.LoggerFactory
 
 import scala.collection.mutable.ArrayBuffer
@@ -103,11 +104,6 @@ class DerbyDbHandlerImpl(databaseUrl: String) extends AbstractDbHandler {
 
   mod2 needs d,c
   query job tab: c,d
-
-
-
-
-
 
    */
 

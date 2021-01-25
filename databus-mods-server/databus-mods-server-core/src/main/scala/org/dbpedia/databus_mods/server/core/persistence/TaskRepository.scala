@@ -9,4 +9,8 @@ import org.springframework.transaction.annotation.Transactional
 trait TaskRepository extends CrudRepository[Task,Long] {
 
   def findTop10ByModNameOrderByDatabusFileIssuedDesc(modName: String): Task
+
+  def findByModNameOrderByDatabusFileIssuedDesc(modName: String): java.util.List[Task]
+
+  def findByModNameAndStateOrderByDatabusFileIssuedDesc(modName: String, state: Int): java.util.List[Task]
 }

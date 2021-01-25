@@ -20,10 +20,10 @@ case class Config() {
   var fileCache: FileCacheConfig = new FileCacheConfig
 
   @BeanProperty
-  var extServer: ExtServerConfig = new ExtServerConfig
+  var provider: ProviderConfig = new ProviderConfig
 }
 
-case class ExtServerConfig() {
+case class ProviderConfig() {
 
   @BeanProperty
   var sparql: ExtServerSparqlConfig = new ExtServerSparqlConfig

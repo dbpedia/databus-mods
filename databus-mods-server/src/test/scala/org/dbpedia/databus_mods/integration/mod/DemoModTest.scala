@@ -16,15 +16,15 @@
 //  @Autowired
 //  private var config: DemoModConfig = _
 //
-////  @Test
-////  def status200(): Unit = {
-////
-////    println(config.localRepo)
-////
-////    mvc.perform(post("/demo/publisher/group/artifact/version/file")
-////      .contentType(MediaType.APPLICATION_JSON))
-////      .andExpect(status().is(202))
-////  }
+//  @Test
+//  def status200(): Unit = {
+//
+//    println(config.localRepo)
+//
+//    mvc.perform(post("/demo/publisher/group/artifact/version/file")
+//      .contentType(MediaType.APPLICATION_JSON))
+//      .andExpect(status().is(202))
+//  }
 //
 //  //TODO 200
 //  //TODO 400

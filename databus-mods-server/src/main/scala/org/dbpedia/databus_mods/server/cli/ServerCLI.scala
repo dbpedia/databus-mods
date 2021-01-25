@@ -6,7 +6,6 @@ import java.{util => ju}
 import java.util.concurrent.LinkedBlockingDeque
 
 import org.dbpedia.databus_mods.server.database.DatabusFile
-import org.dbpedia.databus_mods.server.utils.DatabusQueryUtil
 import org.slf4j.LoggerFactory
 
 import sys.process._
@@ -38,7 +37,7 @@ object ServerCLI extends App {
   querySource.close()
 
   log.info("start query databus")
-  DatabusQueryUtil.getUpdates(queryString).foreach(downloadQueue.add)
+//  DatabusQueryUtil.getUpdates(queryString).foreach(downloadQueue.add)
   log.info(s"finished query databus ${downloadQueue.size}")
 
   new Thread(new DownloadThread(downloadQueue,new File(hostCachePath),processQueue)).start()
