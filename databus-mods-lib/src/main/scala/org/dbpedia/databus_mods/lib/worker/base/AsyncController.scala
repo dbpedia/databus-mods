@@ -46,7 +46,12 @@ class AsyncController {
       response.setStatus(202)
       response.setHeader("Location", request.getRequestURL.toString)
     } else {
-      val possibleFile = repo.findFile(s"$account/$group/$artifact/$version/$distribution")
+      val possibleFile = {
+        if(result.isPresent)
+          repo.findFile(s"$account/$group/$artifact/$version/$distribution",result.get())
+        else
+          repo.findFile(s"$account/$group/$artifact/$version/$distribution")
+      }
       if (possibleFile.isDefined) {
         // exists
         response.setStatus(200)
@@ -84,7 +89,7 @@ class AsyncController {
          ): Unit = {
     response.setStatus(202)
     val task = WorkerTask(account, group, artifact, version, distribution, new URI(source))
-    queue.put(task)
     response.setHeader("Location", request.getRequestURL.toString)
+    if(! queue.contains(task)) queue.put(task)
   }
 }
