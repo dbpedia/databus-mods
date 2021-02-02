@@ -8,9 +8,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 
 
 @SpringBootApplication
-@ComponentScan(basePackages = Array("org.dbpedia.databus_mods.server.core", "package org.dbpedia.databus_mods.server.web_ui"))
-@EnableJpaRepositories(basePackages = Array("org.dbpedia.databus_mods.server.core.persistence"))
-@EntityScan(basePackages =  Array("org.dbpedia.databus_mods.server.core.persistence"))
+//@ComponentScan(basePackages = Array("org.dbpedia.databus_mods.server.core", "package org.dbpedia.databus_mods.server.web_ui"))
+//@EnableJpaRepositories(basePackages = Array("org.dbpedia.databus_mods.server.core.persistence"))
+//@EntityScan(basePackages =  Array("org.dbpedia.databus_mods.server.core.persistence"))
 class Boot {
 
 }

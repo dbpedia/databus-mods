@@ -61,6 +61,13 @@
         END This is from mods pom.xml
         -->
 
+        <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-java8-compat -->
+        <dependency>
+            <groupId>org.scala-lang.modules</groupId>
+            <artifactId>scala-java8-compat_2.11</artifactId>
+            <version>0.9.1</version>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
