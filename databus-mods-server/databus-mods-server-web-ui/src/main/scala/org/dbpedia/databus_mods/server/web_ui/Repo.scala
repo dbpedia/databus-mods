@@ -18,7 +18,6 @@ class Repo(@Value("${tmp.volume}") volume: String) {
   }
 
   def listFiles(segment: String): Array[File] = {
-    println(new File(baseDir, segment).getAbsolutePath)
     new File(baseDir, segment).listFiles()
   }
 

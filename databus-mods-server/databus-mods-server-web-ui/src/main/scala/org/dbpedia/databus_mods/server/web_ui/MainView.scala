@@ -100,7 +100,7 @@ case class MainView(@Value("${tmp.base}") baseUrl : String) extends VerticalLayo
       vos.loadModel(graphName,_modMetadata,true)
 
       val _modResult = ModelFactory.createDefaultModel()
-      _modResult.read(new FileInputStream(repo.getFile(databusIdPath,"result.ttl").get),graphName+"/","TURTLE")
+      _modResult.read(new FileInputStream(repo.getFile(databusIdPath,"result.ttl").get),graphName+"/" ,"TURTLE")
       vos.loadModel(graphName,_modResult)
 
       println("submitted data")
