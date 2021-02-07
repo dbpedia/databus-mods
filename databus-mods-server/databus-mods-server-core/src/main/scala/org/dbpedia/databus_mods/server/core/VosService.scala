@@ -1,28 +1,32 @@
 package org.dbpedia.databus_mods.server.core
 
 import org.apache.jena.rdf.model.Model
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.stereotype.{Component, Service}
+import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
 import virtuoso.jena.driver.VirtDataset
 
 @Service
-class VosService(config: Config){
+class VosService(
+                  @Value("${tmp.db.url}") url: String,
+                  @Value("${tmp.db.usr}") usr: String,
+                  @Value("${tmp.db.psw}") psw: String) {
 
-  private val dataset = new VirtDataset(
-    config.getProvider.getSparql.getDatabaseUrl,
-    config.getProvider.getSparql.getDatabaseUsr,
-    config.getProvider.getSparql.getDatabasePsw)
+  private val log = LoggerFactory.getLogger(classOf[VosService])
 
-  def addNamedModel(name: String, model: Model, `override`: Boolean = false): Unit = {
-    synchronized {
-      if(`override`){
-        dataset.removeNamedModel(name)
-      }
-      dataset.addNamedModel(name,model)
-      dataset.commit()
-      println(s"added $name to ${config.getProvider.getSparql.getDatabaseUrl}")
-    }
+  def addNamedModel(
+                     name: String,
+                     model: Model,
+                     replace: Boolean = false)
+  : Unit = synchronized {
+    val vds = new VirtDataset(url, usr, psw)
+    if (replace) vds.replaceNamedModel(name, model)
+    else vds.addNamedModel(name, model, false)
+    vds.commit()
+    vds.close()
   }
+}
 
+object VosService extends App {
 
 }

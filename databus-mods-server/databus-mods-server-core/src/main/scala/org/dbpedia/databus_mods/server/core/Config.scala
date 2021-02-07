@@ -84,7 +84,7 @@ case class ModConfig() {
   var links: JArrayList[LinkConfig] = new JArrayList[LinkConfig]()
 
   @BeanProperty
-  var serviceApis: JArrayList[String] = new JArrayList[String]()
+  var worker: JArrayList[String] = new JArrayList[String]()
 
   @BeanProperty
   var query: String = _

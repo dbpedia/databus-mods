@@ -1,5 +1,9 @@
 tmp:
   volume: ./target/repo
+  db:
+    url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
+    usr: 'dba'
+    psw: 'DasIstDasHausVomNikolaus'
 vaadin:
   urlMapping: '/demo/*'
 spring:
@@ -26,7 +30,7 @@ mods:
   - name: 'DEMO'
     accepts: 'file'
     select:
-    service-apis:
+    worker:
       - 'http://localhost:9000/demo/'
     query: '
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
@@ -49,7 +53,7 @@ SELECT DISTINCT ?file ?sha256sum ?downloadURL ?issued WHERE {
   - name: 'FileMetrics'
     accepts: 'file'
     select: ''
-    service-apis:
+    worker:
       - 'FM1'
       - 'FM2'
     query: '

@@ -8,7 +8,7 @@ import org.apache.jena.rdf.model.Model
 import org.apache.jena.riot.Lang
 import org.apache.spark.sql.catalyst.expressions.Rand
 import org.apache.tomcat.util.threads.ThreadPoolExecutor
-import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Status, Task, TaskRepository}
+import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, TaskStatus, Task, TaskRepository}
 
 import scala.util.Random
 
@@ -22,10 +22,10 @@ class ModDispatcher(taskRepository: TaskRepository,vosService: VosService) exten
 
   def update(): Unit = {
     synchronized {
-      val newTasks = taskRepository.findByModNameAndStateOrderByDatabusFileIssuedDesc(mod.name,Status.Open.id)
+      val newTasks = taskRepository.findByModNameAndStateOrderByDatabusFileIssuedDesc(mod.name,TaskStatus.Open.id)
       newTasks.forEach(new Consumer[Task] {
         override def accept(t: Task): Unit = {
-          t.setState(Status.Wait.id)
+          t.setState(TaskStatus.Wait.id)
           taskRepository.save(t)
           tasks.add(t)
         }
@@ -33,10 +33,13 @@ class ModDispatcher(taskRepository: TaskRepository,vosService: VosService) exten
     }
   }
 
+  import scala.collection.JavaConversions._
+  import scala.collection.JavaConverters._
+
   def this(mod: Mod, taskRepository: TaskRepository,vosService: VosService) {
     this(taskRepository,vosService)
     this.mod = mod
-    this.balanceQueue.addAll(mod.getServices)
+    this.balanceQueue.addAll(mod.worker.map(_.addr))
   }
 
   val connectionPool = new ThreadPoolExecutor(1,10,0,TimeUnit.MILLISECONDS,new LinkedBlockingQueue[Runnable]())

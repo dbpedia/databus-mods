@@ -1,6 +1,6 @@
 package org.dbpedia.databus_mods.server.core
 
-import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, TaskRepository}
+import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, TaskRepository, Worker}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
@@ -28,7 +28,8 @@ class InitRunner extends CommandLineRunner {
     config.mods.foreach( modConfig => {
       // TODO saveAndUpdate
       val mod = new Mod(modConfig.name,modConfig.query)
-      mod.getServices.addAll(modConfig.getServiceApis)
+      mod.setWorker(modConfig.worker.map({
+        addr => new Worker(mod,addr)}))
       modRepository.save(mod)
       modService.addModDispatcher(mod)
     })

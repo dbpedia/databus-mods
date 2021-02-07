@@ -9,7 +9,7 @@
     <name>Databus-Mods Server</name>
     <modules>
         <module>databus-mods-server-core</module>
-        <module>databus-mods-server-web-ui</module>
+<!--        <module>databus-mods-server-web-ui</module>-->
     </modules>
 
     <parent>

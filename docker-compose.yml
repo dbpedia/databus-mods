@@ -1,0 +1,31 @@
+#
+# main docker-compose file
+#
+version: "3"
+services:
+  db:
+    image: tenforce/virtuoso
+    ports:
+      - "18890:8890"
+      - "11111:1111"
+    environment:
+      - DBA_PASSWORD=DasIstDasHausVomNikolaus
+      - SPARQL_UPDATE=true
+      - DEFAULT_GRAPH=http://mods.tools.dbpedia.org
+    volumes:
+      - ${DB_DUMPS_VOLUME}:/data/dumps
+  void:
+    image: docker.io/library/databus-mods-void:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "9000"
+    volumes:
+      - ${WORKER_VOLUME}/void/:/workspace/worker-data
+
+#volumes:
+#  dbdumps:
+#    driver: local
+#    driver_opts:
+#      type: "none"
+#      o: "bind"
+#      device: ${DB_DUMPS_VOLUME}

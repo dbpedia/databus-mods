@@ -39,12 +39,12 @@ class Updates {
 
         if (df == null) {
           val task = new Task(databusFile, mod)
-          task.setState(Status.Open.id)
+          task.setState(TaskStatus.Open.id)
           databusFile.getTasks.add(task)
           databusFileRepository.save(databusFile)
         } else if (!df.getTasks.exists(_.mod.name == mod.name)) {
           val task = new Task(df, mod)
-          task.setState(Status.Open.id)
+          task.setState(TaskStatus.Open.id)
           df.getTasks.add(task)
           databusFileRepository.save(df)
         }
