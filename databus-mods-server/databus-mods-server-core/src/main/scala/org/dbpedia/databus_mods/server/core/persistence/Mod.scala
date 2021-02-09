@@ -14,7 +14,7 @@ import scala.beans.BeanProperty
 class Mod
 (
   @BeanProperty
-  @(JsonView@field)(value = Array(classOf[Views.PublicModView], classOf[Views.PublicWorkerView]))
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var name: String,
   @BeanProperty
   @(Column@field)(length = 10000)
@@ -23,11 +23,11 @@ class Mod
 ) {
   @(Id@field)
   @(GeneratedValue@field)(strategy = GenerationType.TABLE)
-  @(JsonView@field)(value = Array(classOf[Views.PublicModView], classOf[Views.PublicWorkerView]))
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   @BeanProperty
   var id: Long = _
 
-  @(OneToMany@field)(mappedBy = "mod", cascade = Array(CascadeType.ALL), fetch = FetchType.LAZY, orphanRemoval = true)
+  @(OneToMany@field)(mappedBy = "mod", fetch = FetchType.EAGER)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.PublicModView]))
   var worker: java.util.List[Worker] = new util.ArrayList[Worker]()

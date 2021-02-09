@@ -1,7 +1,7 @@
 server:
   port: 9000
 worker:
-  volume: ./target/volume
+  volume: /workspace/worker-data
   api:
     base: api
     query:

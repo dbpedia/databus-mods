@@ -2,7 +2,9 @@ package org.dbpedia.databus_mods.server.core.persistence
 
 import java.util
 
+import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence._
+import org.dbpedia.databus_mods.server.core.views.Views
 
 import scala.annotation.meta.field
 import scala.beans.BeanProperty
@@ -11,12 +13,12 @@ import scala.beans.BeanProperty
 @Table(
   name = "databus_file",
   uniqueConstraints = Array(
-    new UniqueConstraint(columnNames = Array("dataIdSingleFile", "checkSum"))
-  )
-)
+    new UniqueConstraint(columnNames = Array("dataIdSingleFile", "checkSum"))))
 class DatabusFile
 (
+  // TODO rename to databusFileID or fileID
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var dataIdSingleFile: String,
   @BeanProperty
   var publisher: String,
@@ -29,6 +31,7 @@ class DatabusFile
   @BeanProperty
   var downloadUrl: String,
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var checksum: String,
   @BeanProperty
   @Temporal(TemporalType.TIMESTAMP)
@@ -38,8 +41,10 @@ class DatabusFile
   @(Id@field)
   @(GeneratedValue@field)(strategy = GenerationType.TABLE)
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _
 
+  @(JsonView@field)(value = Array(classOf[Views.DatabusFileView]))
   @(OneToMany@field)(mappedBy = "databusFile", cascade = Array(CascadeType.ALL), fetch = FetchType.EAGER, orphanRemoval = true)
   @BeanProperty
   var tasks: java.util.List[Task] = new util.ArrayList[Task]()

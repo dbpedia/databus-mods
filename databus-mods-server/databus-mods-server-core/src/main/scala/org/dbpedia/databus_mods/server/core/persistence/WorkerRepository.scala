@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository
 @Repository
 trait WorkerRepository extends CrudRepository[Worker,Long] {
 
-
+  def findByAddr(addr: String): Worker
 }

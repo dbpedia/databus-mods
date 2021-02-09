@@ -1,13 +1,11 @@
 package org.dbpedia.databus_mods.server.core.controller
 
-import java.util
-import java.util.function.Consumer
-
-import org.apache.commons.collections.IteratorUtils
-import org.dbpedia.databus_mods.server.core.Config
-import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskRepository}
+import com.fasterxml.jackson.annotation.JsonView
+import org.dbpedia.databus_mods.lib.databus.DatabusIdentifier
+import org.dbpedia.databus_mods.server.core.service.TaskService
+import org.dbpedia.databus_mods.server.core.views.Views
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, RestController}
+import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, RequestParam, RestController}
 
 
 @RestController
@@ -15,24 +13,18 @@ import org.springframework.web.bind.annotation.{GetMapping, RequestMapping, Rest
 class TaskController {
 
   @Autowired
-  private var config: Config = _
+  private var taskService: TaskService = _
 
-  @Autowired
-  private var taskRepository: TaskRepository = _
-
-  @GetMapping(value = Array(""))
-  def listTasks(): java.util.List[String] = {
-    val response = new util.ArrayList[String]()
-    taskRepository.findAll().forEach(new Consumer[Task] {
-      override def accept(t: Task): Unit = {
-        response.add(s"${t.getId},${t.databusFile.getDataIdSingleFile},${t.mod.getName},${t.getState}")
-      }
-    })
-    response
+  @JsonView(value = Array(classOf[Views.PublicTaskView]))
+  @RequestMapping(value = Array(""), method = Array(RequestMethod.GET))
+  def getTasks() = {
+    taskService.getTasks
   }
 
-  @GetMapping(value = Array("config"))
-  def getConfig(): Config = {
-    config
+  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
+  def addTask(
+               @RequestParam databusID: String,
+               @RequestParam modName: String) = {
+    taskService.addTask(modName, DatabusIdentifier(databusID).get)
   }
 }

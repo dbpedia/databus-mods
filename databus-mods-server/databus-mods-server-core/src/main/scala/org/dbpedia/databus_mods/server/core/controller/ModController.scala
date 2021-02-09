@@ -1,16 +1,19 @@
 package org.dbpedia.databus_mods.server.core.controller
 
+import java.util
+
 import com.fasterxml.jackson.annotation.JsonView
 import javax.servlet.http.HttpServletResponse
 import org.apache.commons.collections.IteratorUtils
-import org.dbpedia.databus_mods.server.core.ModService
 import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker}
+import org.dbpedia.databus_mods.server.core.service.ModService
 import org.dbpedia.databus_mods.server.core.views.Views
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.{GetMapping, PathVariable, PostMapping, RequestMapping, RequestMethod, RequestParam, RestController}
 
 import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 @RestController
 @RequestMapping(value = Array("mods"))
@@ -28,23 +31,43 @@ class ModController {
     modRepository.findAll()
   }
 
-  @RequestMapping(value = Array("{modName}/addWorker"), method = Array(RequestMethod.POST))
-  def addWorker(
-               @PathVariable modName: String,
-               @RequestParam addr: String,
-               response: HttpServletResponse) = {
-
-    val mod = modRepository.findByName(modName)
-    if( null != mod ) {
-      val currentWorker = mod.getWorker
-      currentWorker.add(new Worker(mod,addr))
-      mod.setWorker(currentWorker)
-      modRepository.save(mod)
-      response.setStatus(201)
-    } else {
-      response.setStatus(404)
-    }
+  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
+  def addMod(
+            @RequestParam name: String,
+            @RequestParam query: String,
+            @RequestParam workerApis: java.util.ArrayList[String] = new util.ArrayList[String]()): Unit = {
+    modService.addMod(name,query,workerApis)
   }
+
+  @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
+  def deleteMod(
+               @RequestParam name: String): Unit = {
+
+    modService.deleteMod(name)
+  }
+
+  @RequestMapping(value = Array("deleteAll"), method = Array(RequestMethod.DELETE))
+  def deleteAll(): Unit = {
+    modService.deleteAll()
+  }
+
+//  @RequestMapping(value = Array("{modName}/addWorker"), method = Array(RequestMethod.POST))
+//  def addWorker(
+//               @PathVariable modName: String,
+//               @RequestParam addr: String,
+//               response: HttpServletResponse) = {
+//
+//    val mod = modRepository.findByName(modName)
+//    if( null != mod ) {
+//      val currentWorker = mod.getWorker
+//      currentWorker.add(new Worker(mod,addr))
+//      mod.setWorker(currentWorker)
+//      modRepository.save(mod)
+//      response.setStatus(201)
+//    } else {
+//      response.setStatus(404)
+//    }
+//  }
 
 //  @GetMapping(value = Array(""))
 //  def modsList(): java.util.List[Mod] = {

@@ -1,6 +1,8 @@
 package org.dbpedia.databus_mods.server.core.persistence
 
+import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence._
+import org.dbpedia.databus_mods.server.core.views.Views
 import org.hibernate.annotations.{Generated, GenerationTime}
 
 import scala.annotation.meta.field
@@ -17,18 +19,21 @@ class Task
 (
   @(ManyToOne@field)(fetch = FetchType.EAGER)
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.PublicTaskView]))
   var databusFile: DatabusFile,
   @(ManyToOne@field)(fetch = FetchType.EAGER)
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.PublicTaskView],classOf[Views.DatabusFileView]))
   var mod: Mod
 ) {
   @Id
   @GeneratedValue(strategy = GenerationType.TABLE)
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _
 
-  @BeanProperty
-  var uri: String = _
+//  @BeanProperty
+//  var uri: String = _
 
   @BeanProperty
   var state: Int = _
