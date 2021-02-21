@@ -36,7 +36,8 @@ class ModController {
             @RequestParam name: String,
             @RequestParam query: String,
             @RequestParam workerApis: java.util.ArrayList[String] = new util.ArrayList[String]()): Unit = {
-    modService.addMod(name,query,workerApis)
+
+    throw new UnsupportedOperationException("not implemented yet")
   }
 
   @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))

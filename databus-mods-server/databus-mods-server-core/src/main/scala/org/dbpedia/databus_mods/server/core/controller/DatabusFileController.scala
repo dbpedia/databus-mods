@@ -16,6 +16,6 @@ class DatabusFileController {
   @JsonView(value = Array(classOf[Views.DatabusFileView]))
   @RequestMapping(value = Array(""), method = Array(RequestMethod.GET))
   def getDatabusFiles() = {
-    databusFileService.getDatabusFiles()
+    databusFileService.getAll
   }
 }

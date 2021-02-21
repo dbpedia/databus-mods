@@ -25,12 +25,12 @@ class WorkerController {
   }
 
   @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
-  def deleteWorker(@RequestParam addr: String) = {
+  def deleteWorker(@RequestParam url: String) = {
     log.info("delete")
-    val worker = workerRepository.findByAddr(addr)
-    if(null != worker) {
+    val worker = workerRepository.findByUrl(url)
+    if(worker.isPresent) {
       log.info("if")
-      workerRepository.delete(worker)
+      workerRepository.delete(worker.get())
     } else
       log.info("else")
   }

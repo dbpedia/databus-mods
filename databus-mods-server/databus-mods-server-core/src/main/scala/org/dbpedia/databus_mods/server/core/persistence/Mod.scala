@@ -10,7 +10,10 @@ import scala.annotation.meta.field
 import scala.beans.BeanProperty
 
 @Entity
-@Table(name = "mod")
+@Table(
+  name = "mod",
+  uniqueConstraints = Array(
+    new UniqueConstraint(columnNames = Array("name"))))
 class Mod
 (
   @BeanProperty
@@ -30,18 +33,24 @@ class Mod
   @(OneToMany@field)(mappedBy = "mod", fetch = FetchType.EAGER)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.PublicModView]))
-  var worker: java.util.List[Worker] = new util.ArrayList[Worker]()
+  var workers: java.util.List[Worker] = new util.ArrayList[Worker]()
 
   def this() {
     this(null, null)
   }
-
-  def info: String = {
-
+  override def toString: String = {
     import scala.collection.JavaConversions._
-    s"""Mod$id
-       |+ services : ${worker.mkString(", ")}
+    s"""MOD#$id
+       |+ name: $name
+       |+ services : ${workers.mkString(", ")}
        |+ query : $query
        |""".stripMargin
+  }
+
+  def copyOf(m: Mod): Unit = {
+    setId(m.getId)
+    setName(m.getName)
+    setQuery(m.getQuery)
+    setWorkers(m.getWorkers)
   }
 }

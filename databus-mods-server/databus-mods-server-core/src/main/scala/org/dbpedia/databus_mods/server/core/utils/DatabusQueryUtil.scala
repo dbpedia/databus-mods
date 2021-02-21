@@ -37,4 +37,33 @@ object DatabusQueryUtil {
     } while (responseSize != 0)
     databusFilesBuffer.toArray
   }
+
+  def queryDatabusFileByURI(uri: String): Option[DatabusFile] = {
+    val query =
+      s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+         |PREFIX dct:    <http://purl.org/dc/terms/>
+         |PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+         |SELECT DISTINCT ?sha256sum ?issued ?downloadURL WHERE {
+         |  ?dataid a dataid:Dataset .
+         |  ?dataid dcat:distribution ?distribution .
+         |  ?distribution dataid:file <${uri}> .
+         |  ?distribution dataid:sha256sum ?sha256sum .
+         |  ?distribution dct:issued ?issued .
+         |  ?distribution dcat:downloadURL ?downloadURL .
+         |}""".stripMargin
+    val sparql = QueryFactory.create(query)
+    val queryExec = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", sparql)
+    val resultSet = queryExec.execSelect()
+    if (resultSet.hasNext) {
+      val qs = resultSet.next()
+      Some(new DatabusFile(
+        uri,
+        qs.getResource("downloadURL").getURI,
+        qs.getLiteral("sha256sum").getLexicalForm,
+        DateUtil.parseToTimestamp(qs.get("issued").asLiteral().getLexicalForm)
+      ))
+    } else {
+      None
+    }
+  }
 }

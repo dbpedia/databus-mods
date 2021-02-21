@@ -1,4 +1,4 @@
-package org.dbpedia.databus_mods.server.core
+package org.dbpedia.databus_mods.server.core.service
 
 import org.apache.jena.rdf.model.Model
 import org.slf4j.LoggerFactory

@@ -1,4 +1,4 @@
-package org.dbpedia.databus_mods.server.core
+package org.dbpedia.databus_mods.server.core.service
 
 import org.springframework.stereotype.Service
 

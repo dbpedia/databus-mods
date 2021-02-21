@@ -1,5 +1,0 @@
-# Impl Notes
-
-## ModSchedulerService
-
-## TaskDispatcher

@@ -10,14 +10,13 @@ import scala.beans.BeanProperty
 
 @Entity
 @Table(
-  name = "task"
-//  uniqueConstraints = Array(
-//    new UniqueConstraint(columnNames = Array("databusFileId", "modId"))
-//  ))
-)
+  name = "task",
+  uniqueConstraints = Array(
+    new UniqueConstraint(columnNames = Array("databusFile_id", "mod_id"))))
 class Task
 (
   @(ManyToOne@field)(fetch = FetchType.EAGER)
+  @(JoinColumn@field)(name = "databusFile_id")
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.PublicTaskView]))
   var databusFile: DatabusFile,
@@ -32,10 +31,16 @@ class Task
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _
 
+  @PreRemove
+  def removeTaskFromDatabusFile(): Unit = {
+    databusFile.getTasks.remove(this)
+  }
+
 //  @BeanProperty
 //  var uri: String = _
 
   @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.Default]))
   var state: Int = _
 
   //  @Transient
@@ -53,16 +58,23 @@ class Task
 //    this.statusValue = state.id
 //  }
 
+  def copyOf(t: Task): Unit = {
+    setId(t.getId)
+    setState(t.getState)
+    setDatabusFile(t.getDatabusFile)
+    setMod(t.getMod)
+  }
+
   def this() {
     this(null, null)
   }
 
-  //  override def toString: String = {
-  //    s"""TASK#$id
-  //       |+ databusFile.id : ${databusFile.getId}
-  //       |+ databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile}
-  //       |+ mod.id : ${mod.getId}
-  //       |+ mod.name : ${mod.getName}
-  //       |""".stripMargin
-  //  }
+    override def toString: String = {
+      s"""TASK#$id
+         |+ databusFile.id : ${databusFile.getId}
+         |+ databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile}
+         |+ mod.id : ${mod.getId}
+         |+ mod.name : ${mod.getName}
+         |""".stripMargin
+    }
 }

@@ -4,6 +4,7 @@ import java.util
 
 import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence.{CascadeType, Entity, FetchType, GeneratedValue, GenerationType, Id, JoinColumn, ManyToOne, OneToMany, Table, UniqueConstraint}
+import org.apache.commons.lang.SerializationUtils
 import org.dbpedia.databus_mods.server.core.views.Views
 
 import scala.annotation.meta.field
@@ -13,7 +14,7 @@ import scala.beans.BeanProperty
 @Table(
   name = "worker",
   uniqueConstraints = Array(
-    new UniqueConstraint(columnNames = Array("addr"))))
+    new UniqueConstraint(columnNames = Array("url"))))
 class Worker
 (
   @(ManyToOne@field)
@@ -23,7 +24,7 @@ class Worker
   var mod: Mod,
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
-  var addr: String
+  var url: String
 ) {
   @(Id@field)
   @(GeneratedValue@field)(strategy = GenerationType.TABLE)
@@ -35,5 +36,11 @@ class Worker
     this(null, null)
   }
 
-  def info: String = s"WORKER($addr,${mod.name})"
+  def info: String = s"WORKER($url,${mod.name})"
+
+  def copyOf(w: Worker) : Unit = {
+    setId(w.getId)
+    setUrl(w.getUrl)
+    setMod(w.getMod)
+  }
 }
