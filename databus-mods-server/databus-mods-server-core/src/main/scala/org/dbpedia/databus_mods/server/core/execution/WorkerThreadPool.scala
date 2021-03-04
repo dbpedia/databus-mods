@@ -3,7 +3,7 @@ package org.dbpedia.databus_mods.server.core.execution
 import java.util.concurrent.ConcurrentHashMap
 
 import org.dbpedia.databus_mods.server.core.persistence.Worker
-import org.dbpedia.databus_mods.server.core.service.{TaskService, WorkerService}
+import org.dbpedia.databus_mods.server.core.service.{MetadataService, TaskService, WorkerService}
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Component
 
@@ -15,7 +15,10 @@ import org.springframework.stereotype.Component
  * @param
  */
 @Component
-class WorkerThreadPool(taskService: TaskService) {
+class WorkerThreadPool(taskService: TaskService, metadataService: MetadataService) {
+
+  Singleton.taskService = taskService
+  Singleton.metadataService = metadataService
 
   private val pool = new ConcurrentHashMap[String,WorkerThread]()
 

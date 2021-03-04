@@ -21,4 +21,8 @@ object Views {
   class DatabusFileView extends Default {
 
   }
+
+  class PublicOnlineCheck extends Default {
+
+  }
 }

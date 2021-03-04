@@ -1,7 +1,7 @@
 server:
   port: 9000
 worker:
-  volume: /workspace/worker-data
+  volume: ./target/mod-data
   api:
     base: api
     query:

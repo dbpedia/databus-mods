@@ -8,9 +8,9 @@ import virtuoso.jena.driver.VirtDataset
 
 @Service
 class VosService(
-                  @Value("${tmp.db.url}") url: String,
-                  @Value("${tmp.db.usr}") usr: String,
-                  @Value("${tmp.db.psw}") psw: String) {
+                  @Value("${mod-server.triple-store.db-url}") url: String,
+                  @Value("${mod-server.triple-store.db-user}") usr: String,
+                  @Value("${mod-server.triple-store.db-password}") psw: String) {
 
   private val log = LoggerFactory.getLogger(classOf[VosService])
 
@@ -24,6 +24,7 @@ class VosService(
     else vds.addNamedModel(name, model, false)
     vds.commit()
     vds.close()
+    log.info(s"loaded $name")
   }
 }
 

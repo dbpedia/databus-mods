@@ -11,10 +11,10 @@ case class ModConfig() {
   var query: String = _
 
   @BeanProperty
-  val select: JArrayList[String] = new JArrayList[String]()
+  val selects: JArrayList[String] = new JArrayList[String]()
 
   @BeanProperty
-  var accept: String = _
+  var accepts: JArrayList[String] = new JArrayList[String]()
 
   @BeanProperty
   var workers: JArrayList[String] = new JArrayList[String]()

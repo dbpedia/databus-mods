@@ -8,58 +8,78 @@ spring:
     url: 'jdbc:derby:derby;create=true'
   jpa:
     hibernate:
-#      ddl-auto: 'update'
       ddl-auto: 'create-drop'
-vaadin:
-  urlMapping: '/demo/*'
+#      ddl-auto: 'update'
+
 
 mod-server:
+  volume: ./target/repo
+  web-base: "https://mods.tools.dbpedia.org/main/"
   triple-store:
     db-url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
     db-user: 'dba'
     db-password: 'DasIstDasHausVomNikolaus'
     endpoint: 'http://localhost:8890/sparql'
+  schedule:
+    online-check: 3600000
+    task-updates: 3600000
 
-tmp:
-  volume: ./target/repo
-  db:
-    url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
-    usr: 'dba'
-    psw: 'DasIstDasHausVomNikolaus'
-
-#provider:
-#  sparql:
-#    databaseUrl: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
-#    databaseUsr: 'dba'
-#    databasePsw: 'DasIstDasHausVomNikolaus'
-#    endpoint: 'http://localhost:8890/sparql'
-#  http:
-#    volume: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/www'
-#    baseUrl: 'http://localhost:8900/'
 mods:
-  - name: 'DEMO'
-    accept: 'file'
-    select:
+  - name: 'void'
+    accepts:
+      - 'file'
+    selects:
+      - 'rdfVoid.ttl'
     workers:
-      - 'http://localhost:32771/api/'
-      - 'http://localhost:32772/api/'
-      - 'http://localhost:32773/api/'
+      - 'http://localhost:14010/modApi'
+      - 'http://localhost:14011/modApi'
+      - 'http://localhost:14012/modApi'
+      - 'http://localhost:14013/modApi'
+      - 'http://localhost:14014/modApi'
     query: '
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
 PREFIX dct:    <http://purl.org/dc/terms/>
 PREFIX dcat:   <http://www.w3.org/ns/dcat#>
 PREFIX db:     <https://databus.dbpedia.org/>
-PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
-SELECT DISTINCT ?file ?sha256sum ?downloadURL ?issued WHERE {
-{ SELECT DISTINCT ?file ?sha256sum ?downloadURL ?issued WHERE {
-	?dataset dcat:distribution ?distribution .
-    ?distribution dct:issued ?issued .
-	?distribution dataid:file ?file .
-	?distribution dataid:sha256sum ?sha256sum .
-    ?distribution dcat:downloadURL ?downloadURL .
-    ?distribution dcat:byteSize ?size .
-	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
-    } ORDER BY ?size OFFSET 5 LIMIT 10 }
-}
-'
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+
+SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+ { SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+  ?s dataid:file ?file .
+  ?s dct:issued ?issued .
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dcat:downloadURL ?downloadURL .
+  ?s dataid-cv:type ?cv .
+  FILTER( str(?cv) = "parsed")
+  ?s dataid:formatExtension ?ext .
+  FILTER( str(?ext) = "nt" )
+  } LIMIT 10 }
+}'
+#  - name: 'filemetric'
+#    accept: 'file'
+#    select: 'rdfVoid.ttl'
+#    workers:
+#      - 'http://localhost:32798/modApi'
+#      - 'http://localhost:32799/modApi'
+#      - 'http://localhost:32800/modApi'
+#    query: '
+#PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+#PREFIX dct:    <http://purl.org/dc/terms/>
+#PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+#PREFIX db:     <https://databus.dbpedia.org/>
+#PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+#
+#SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+#  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+#  ?s dataid:file ?file .
+#  ?s dct:issued ?issued .
+#  ?s dataid:sha256sum ?sha256sum .
+#  ?s dcat:downloadURL ?downloadURL .
+#  ?s dataid-cv:type ?cv .
+#  FILTER( str(?cv) = "parsed")
+#  ?s dataid:formatExtension ?ext .
+#  FILTER( str(?ext) = "nt" )
+#}'

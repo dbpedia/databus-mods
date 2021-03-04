@@ -3,8 +3,9 @@
 resource=$1
 source=$2
 
-putResponse=$(curl -s -X PUT --data-urlencode "source=$source" -w %{http_code} $resource)
+putResponse=$(curl -s -X PUT --data-urlencode "source=$source" -w %{http_code} "$resource")
 
+echo $putResponse
 if [ $putResponse -eq "202" ]; then
 	echo -e ">PUT $resource\n>\   source=$source <202" 1>&2
 	GET_COUNT=0

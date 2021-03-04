@@ -14,13 +14,39 @@ services:
       - DEFAULT_GRAPH=http://mods.tools.dbpedia.org
     volumes:
       - ${DB_DUMPS_VOLUME}:/data/dumps
+  filemetric:
+    image: docker.io/library/databus-mods-filemetrics:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14000-14002:9000"
+    volumes:
+      - ${WORKER_VOLUME}/filemetric/:/workspace/target/volume/
   void:
     image: docker.io/library/databus-mods-void:1.0-SNAPSHOT
     user: "root"
     ports:
-      - "9000"
+      - "14010-14014:9000"
     volumes:
-      - ${WORKER_VOLUME}/void/:/workspace/worker-data
+      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+  mimetype:
+    image: docker.io/library/databus-mods-mimetype:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14030:9000"
+    volumes:
+      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
 
 #volumes:
 #  dbdumps:

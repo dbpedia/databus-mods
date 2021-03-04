@@ -3,7 +3,7 @@ package org.dbpedia.databus_mods.server.core.execution
 import java.lang.Thread.UncaughtExceptionHandler
 import java.util.concurrent.LinkedBlockingDeque
 
-import org.dbpedia.databus_mods.server.core.persistence.{Task, Worker}
+import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskStatus, Worker}
 import org.dbpedia.databus_mods.server.core.service.{TaskService, WorkerService}
 
 class WorkerThreadExceptionHandler(
@@ -12,6 +12,12 @@ class WorkerThreadExceptionHandler(
 
   override def uncaughtException(t: Thread, e: Throwable): Unit = {
 
+    t match {
+      case wte: WorkerThreadException =>
+        val task = wte.task
+        task.setState(TaskStatus.Fail.id)
+        taskService.save(task)
+    }
 
 //    e match {
 //      case wte: WorkerThreadException =>

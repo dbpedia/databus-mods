@@ -9,9 +9,9 @@ class OnlineCheckScheduler {
 
   private val log = LoggerFactory.getLogger(classOf[OnlineCheckScheduler])
 
-  @Scheduled(cron = "0 * * * * ?")
-  def checkFiles(): Unit = {
-    log.info("TODO: impl checkFiles")
-    // in different service to block call from multiple threads this will help to use it for e.g., the init
-  }
+//  @Scheduled(cron = "0 * * * * ?")
+//  def checkFiles(): Unit = {
+//    log.info("TODO: impl checkFiles")
+//    // in different service to block call from multiple threads this will help to use it for e.g., the init
+//  }
 }

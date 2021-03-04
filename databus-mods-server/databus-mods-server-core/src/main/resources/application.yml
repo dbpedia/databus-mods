@@ -1,0 +1,65 @@
+server:
+  port: 9050
+spring:
+  datasource:
+    driver-class-name: 'org.apache.derby.jdbc.EmbeddedDriver'
+    username: 'mysqluser'
+    password: 'mysqlpass'
+    url: 'jdbc:derby:derby;create=true'
+  jpa:
+    hibernate:
+#      ddl-auto: 'update'
+      ddl-auto: 'create-drop'
+vaadin:
+  urlMapping: '/demo/*'
+
+mod-server:
+  triple-store:
+    db-url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
+    db-user: 'dba'
+    db-password: 'DasIstDasHausVomNikolaus'
+    endpoint: 'http://localhost:8890/sparql'
+
+tmp:
+  volume: ./target/repo
+  web.base.url: "something"
+  sparql.base.url: "something"
+  db:
+    url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
+    usr: 'dba'
+    psw: 'DasIstDasHausVomNikolaus'
+
+#provider:
+#  sparql:
+#    databaseUrl: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
+#    databaseUsr: 'dba'
+#    databasePsw: 'DasIstDasHausVomNikolaus'
+#    endpoint: 'http://localhost:8890/sparql'
+#  http:
+#    volume: '/home/marvin/src/github.com/dbpedia/databus-mods/databus-mods-server/volumes/www'
+#    baseUrl: 'http://localhost:8900/'
+mods:
+  - name: 'DEMO'
+    accept: 'file'
+    select:
+    workers:
+      - 'http://localhost:32768/api'
+    query: '
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX rdf:    <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX rdfs:   <http://www.w3.org/2000/01/rdf-schema#>
+SELECT DISTINCT ?file ?sha256sum ?downloadURL ?issued WHERE {
+{ SELECT DISTINCT ?file ?sha256sum ?downloadURL ?issued WHERE {
+	?dataset dcat:distribution ?distribution .
+    ?distribution dct:issued ?issued .
+	?distribution dataid:file ?file .
+	?distribution dataid:sha256sum ?sha256sum .
+    ?distribution dcat:downloadURL ?downloadURL .
+    ?distribution dcat:byteSize ?size .
+	?dataset dataid:artifact <https://databus.dbpedia.org/dbpedia/databus/databus-data> .
+    } ORDER BY ?size OFFSET 5 LIMIT 10 }
+}
+'

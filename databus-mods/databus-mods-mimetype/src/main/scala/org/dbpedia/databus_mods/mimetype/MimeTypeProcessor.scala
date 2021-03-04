@@ -1,24 +1,35 @@
 package org.dbpedia.databus_mods.mimetype
 
-import java.io.{BufferedInputStream, FileInputStream, InputStream}
+import java.io.{BufferedInputStream, InputStream}
+import java.net.URI
 
-import better.files.File
 import org.apache.any23.mime.TikaMIMETypeDetector
 import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.riot.RDFDataMgr
-import org.dbpedia.databus_mods.lib.worker.base.DataIDExtension
+import org.dbpedia.databus_mods.lib.util.UriUtil
+import org.dbpedia.databus_mods.lib.worker.execution.{Extension, ModProcessor}
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver
 import org.springframework.stereotype.Component
 
 @Component
-class MimeTypeProcessor extends org.dbpedia.databus_mods.lib.worker.base.Process {
+class MimeTypeProcessor extends ModProcessor {
 
-//  private val ianaOntology = RDFDataMgr.loadModel("http://dataid.dbpedia.org/iana/ianaOntology.ttl")
+  private val ianaOntology = RDFDataMgr.loadModel("http://dataid.dbpedia.org/iana/ianaOntology.ttl")
 
+  def process(ext: Extension): Unit = {
+    //    modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#mediaType", getMimeTypeFromIanaOntology(mimeType))
+    ///home/marvin/src/github.com/dbpedia/databus-mods/databus-mods/databus-mods-mimetype/src/main/scala/org/dbpedia/databus_mods/mimetype
+    //    if (compression.nonEmpty) {
+    //      modelHelper.addStmtToModel(resultURI, "http://www.w3.org/ns/dcat#compression", s"http://dataid.dbpedia.org/ns/mt#$compression")
 
-  override def run(ext: DataIDExtension): Unit = {
+    val inputStream = new BufferedInputStream(UriUtil.openStream(new URI(ext.source)))
+    val mimeType = checkMimeType(inputStream)
+    inputStream.close()
 
+    ext.setType("https://mods.tools.dbpedia.org/file#MimeTypeMod")
+    val mimeTypeResource = getMimeTypeFromIanaOntology(mimeType)
+    ext.addProperty("https://mods.tools.dbpedia.org/file#mimeType",mimeTypeResource.getURI)
   }
 
   def checkMimeType(stream: InputStream, name: String = null): String = {
@@ -27,50 +38,30 @@ class MimeTypeProcessor extends org.dbpedia.databus_mods.lib.worker.base.Process
     detector.guessMIMEType(name, stream,null).toString
   }
 
-//  /**
-//   * get MimeType URI of Iana Ontology that corresponds to calculated mimeType
-//   *
-//   * @param mimeType calculated mimeType
-//   * @return Resource of ianaOntology that matches with the mimeType
-//   */
-//  def getMimeTypeFromIanaOntology(mimeType: String): Resource = {
-//    val queryStr =
-//      s"""
-//         |SELECT ?s
-//         |WHERE {
-//         | ?s ?p ?o .
-//         | FILTER (regex(str(?s), '$mimeType','i'))
-//         |}
-//         |LIMIT 1
-//      """.stripMargin
-//
-//    val query = QueryFactory.create(queryStr)
-//    val qe = QueryExecutionFactory.create(query, ianaOntology)
-//
-//    val results = qe.execSelect()
-//    val result = results.next().getResource("s")
-//    qe.close()
-//
-//    result
-//  }
-}
+    /**
+      * get MimeType URI of Iana Ontology that corresponds to calculated mimeType
+      *
+      * @param mimeType calculated mimeType
+      * @return Resource of ianaOntology that matches with the mimeType
+      */
+    private def getMimeTypeFromIanaOntology(mimeType: String): Resource = {
+      val queryStr =
+        s"""
+           |SELECT ?s
+           |WHERE {
+           | ?s ?p ?o .
+           | FILTER (regex(str(?s), '$mimeType','i'))
+           |}
+           |LIMIT 1
+        """.stripMargin
 
-object MimeTypeProcessor extends App {
+      val query = QueryFactory.create(queryStr)
+      val qe = QueryExecutionFactory.create(query, ianaOntology)
 
-  val p = new MimeTypeProcessor
+      val results = qe.execSelect()
+      val result = results.next().getResource("s")
+      qe.close()
 
-  val resolver = new PathMatchingResourcePatternResolver()
-  val testfiles = resolver.getResources("testfiles/*")
-
-
-  import scala.collection.JavaConverters._
-  import scala.collection.JavaConversions._
-  testfiles.foreach({
-    resource =>
-      println(resource)
-      println(p.checkMimeType(new BufferedInputStream(resource.getInputStream),resource.getFile.getName))
-  })
-
-
-//  p.checkMimeType()
+      result
+    }
 }

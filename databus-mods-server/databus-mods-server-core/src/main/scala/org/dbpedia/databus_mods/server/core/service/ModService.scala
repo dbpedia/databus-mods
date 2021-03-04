@@ -1,6 +1,7 @@
 package org.dbpedia.databus_mods.server.core.service
 
 import java.util
+import java.util.Optional
 
 import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker, WorkerRepository}
 import org.slf4j.LoggerFactory
@@ -26,6 +27,10 @@ class ModService {
     } else {
       modRepository.save(m)
     }
+  }
+
+  def get(modName: String): Optional[Mod] = {
+    modRepository.findByName(modName)
   }
 
 //  def add(name: String, query: String, workerApis: java.util.ArrayList[String]) = {

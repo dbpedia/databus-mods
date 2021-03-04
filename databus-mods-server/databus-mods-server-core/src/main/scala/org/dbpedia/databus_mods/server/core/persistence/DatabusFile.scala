@@ -20,6 +20,7 @@ class DatabusFile
   // TODO rename to databusFileID or fileID
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
+  @(Column@field)(length = 4000)
   var dataIdSingleFile: String,
   @BeanProperty
   var publisher: String,
@@ -30,6 +31,7 @@ class DatabusFile
   @BeanProperty
   var dataIdVersion: String,
   @BeanProperty
+  @(Column@field)(length = 4000)
   var downloadUrl: String,
   @BeanProperty
   var name: String,
@@ -58,7 +60,7 @@ class DatabusFile
   }
 
   def this(dataIdSingleFile: String, downloadUrl: String, checksum: String, issued: java.sql.Timestamp) {
-    this(dataIdSingleFile, null, null, null, null, null, downloadUrl, checksum, issued)
+    this(dataIdSingleFile, null, null, null, null, downloadUrl, null, checksum, issued)
     val Array(p, g, a, v, f) = dataIdSingleFile.split('/').drop(3)
     this.publisher = p
     this.dataIdGroup = g

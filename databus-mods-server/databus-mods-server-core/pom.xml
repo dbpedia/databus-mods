@@ -9,6 +9,10 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <properties>
+        <maven.deploy.skip>true</maven.deploy.skip>
+    </properties>
+
     <artifactId>databus-mods-server-core</artifactId>
     <packaging>jar</packaging>
 </project>

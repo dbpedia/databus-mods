@@ -1,9 +1,8 @@
 package org.dbpedia.databus_mods.server.core.service
 
 import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingDeque}
-import java.util.function.Supplier
 
-import org.dbpedia.databus_mods.server.core.execution.TaskQueues
+import org.dbpedia.databus_mods.server.core.execution.TaskQueue
 import org.dbpedia.databus_mods.server.core.persistence._
 import org.dbpedia.databus_mods.server.core.utils.DatabusQueryUtil
 import org.springframework.stereotype.Service
@@ -13,16 +12,24 @@ import scala.collection.JavaConversions._
 @Service
 class TaskService(taskRepository: TaskRepository,
                   databusFileService: DatabusFileService,
-                  modRepository: ModRepository,
-                  taskQueues: TaskQueues) {
+                  modRepository: ModRepository) {
 
+  private val taskQueues = new ConcurrentHashMap[String, TaskQueue]()
   // TODO init part put all open in queue
 
-  def getQueue(key: String): LinkedBlockingDeque[Task] = {
-    taskQueues.getOrCreate(key)
+  def getQueue(key: String): TaskQueue = {
+    taskQueues.getOrElseUpdate(key, new TaskQueue)
   }
 
-  // TODO to other class
+  def getQueues: ConcurrentHashMap[String,TaskQueue] = {
+    taskQueues
+  }
+
+  def save(task: Task): Unit = {
+    taskRepository.save(task)
+  }
+
+  // TODO move
   def update(): Unit = {
     modRepository.findAll().foreach({
       mod =>
@@ -35,31 +42,28 @@ class TaskService(taskRepository: TaskRepository,
     })
   }
 
-  def save(t: Task): Unit = {
-    //TODO if not exists
-    taskRepository.save(t)
-  }
-
-  def add(t: Task): Unit = {
-    val task = taskRepository.findByDatabusFileIdAndModId(t.databusFile.id, t.mod.id)
+  def add(t: Task, putFirst: Boolean = false): Unit = {
+    val task = taskRepository.findByDatabusFileIdAndModId(
+      t.databusFile.id,
+      t.mod.id)
     if (task.isPresent) {
       t.copyOf(task.get)
     } else {
       taskRepository.save(t)
     }
     if (t.getState == TaskStatus.Open.id) {
-      addToQueue(t)
-      // TODO better move to WorkerThread
-      //      t.setState(TaskStatus.Wait.id)
-      //      taskRepository.save(t)
+      if (putFirst) queue(t, putFirst)
+      else queue(t)
     }
   }
 
-  private def addToQueue(t: Task): Unit = {
+  private def queue(t: Task, putFirst: Boolean = false): Unit = {
     val key = t.mod.name
     val q = getQueue(key)
-    q.putLast(t)
+    if (putFirst) q.putIfAbsent(t,putFirst)
+    else q.putIfAbsent(t)
   }
+
 
   //  def addTask(modName: String, databusIdentifier: DatabusIdentifier): Unit = {
   //    var databusFile = databusFileRepository.findByDataIdSingleFileAndChecksum(

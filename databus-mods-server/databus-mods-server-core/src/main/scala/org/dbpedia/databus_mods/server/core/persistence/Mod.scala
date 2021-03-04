@@ -5,6 +5,7 @@ import java.util
 import com.fasterxml.jackson.annotation.JsonView
 import javax.persistence._
 import org.dbpedia.databus_mods.server.core.views.Views
+import org.hibernate.annotations.{LazyCollection, LazyCollectionOption}
 
 import scala.annotation.meta.field
 import scala.beans.BeanProperty
@@ -29,6 +30,11 @@ class Mod
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   @BeanProperty
   var id: Long = _
+
+  @BeanProperty
+  @(LazyCollection@field)(LazyCollectionOption.FALSE)
+  @(ElementCollection@field)
+  var selects: java.util.List[String] = new util.ArrayList[String]()
 
   @(OneToMany@field)(mappedBy = "mod", fetch = FetchType.EAGER)
   @BeanProperty

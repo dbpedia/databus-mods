@@ -43,6 +43,12 @@ class Task
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var state: Int = _
 
+  @(ManyToOne@field)(fetch = FetchType.EAGER)
+  @(JoinColumn@field)(name = "worker_id")
+  @BeanProperty
+  @(JsonView@field)(value = Array(classOf[Views.PublicTaskView]))
+  var worker: Worker = _
+
   //  @Transient
 //  @Basic
 //  private var statusValue: Int = _
@@ -70,11 +76,10 @@ class Task
   }
 
     override def toString: String = {
-      s"""TASK#$id
-         |+ databusFile.id : ${databusFile.getId}
-         |+ databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile}
-         |+ mod.id : ${mod.getId}
-         |+ mod.name : ${mod.getName}
-         |""".stripMargin
+      s"""TASK#$id(
+         |  databusFile.id : ${databusFile.getId},
+         |  databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile},
+         |  mod.id : ${mod.getId},
+         |  mod.name : ${mod.getName})""".stripMargin
     }
 }

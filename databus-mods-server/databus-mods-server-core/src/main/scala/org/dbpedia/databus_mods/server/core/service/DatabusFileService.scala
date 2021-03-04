@@ -7,8 +7,7 @@ import org.dbpedia.databus_mods.server.core.persistence.{DatabusFile, DatabusFil
 import org.springframework.stereotype.Service
 
 @Service
-class DatabusFileService(
-                        databusFileRepository: DatabusFileRepository) {
+class DatabusFileService(databusFileRepository: DatabusFileRepository) {
 
   def add(df: DatabusFile): Unit = {
     val databusFile = databusFileRepository.findByDataIdSingleFileAndChecksum(df.dataIdSingleFile, df.checksum)

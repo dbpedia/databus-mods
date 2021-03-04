@@ -36,7 +36,8 @@ class Worker
     this(null, null)
   }
 
-  def info: String = s"WORKER($url,${mod.name})"
+  override def toString: String =
+    s"""WORKER#$id(mod.id = ${mod.id}, url = $url)""".stripMargin
 
   def copyOf(w: Worker) : Unit = {
     setId(w.getId)

@@ -1,26 +1,28 @@
 package org.dbpedia.databus_mods.void
 
+import java.net.URI
+
 import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.lang.PipedRDFIterator
 import org.apache.jena.vocabulary.RDF
+import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 import org.dbpedia.databus_mods.lib.util.{IORdfUtil, UriUtil}
-import org.dbpedia.databus_mods.lib.worker.base.{DataIDExtension, Process}
+import org.dbpedia.databus_mods.lib.worker.execution.{Extension, ModProcessor}
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
 import scala.collection.mutable
-import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 
 @Component
-class VoidProcess extends Process {
+class VoidProcess extends ModProcessor {
 
   private val log = LoggerFactory.getLogger(classOf[VoidProcess])
 
-  override def run(ext: DataIDExtension): Unit = {
-    val is = UriUtil.openStream(ext.source)
+  def process(ext: Extension): Unit = {
+    val is = UriUtil.openStream(new URI(ext.source))
     val pipedRDF = IORdfUtil.toPipedRDF(is)
-    ext.getModel.addStmtToModel("",RDF.`type`.getURI,"https://mods.tools.dbpedia.org/ns/void#VoidMod")
+    ext.getModel.addStmtToModel("", RDF.`type`.getURI, "https://mods.tools.dbpedia.org/ns/void#VoidMod")
     try {
       if (pipedRDF.hasNext) {
         val (classPartitionMap, propertyPartitionMap) = calculateVoIDPartitions(pipedRDF)
