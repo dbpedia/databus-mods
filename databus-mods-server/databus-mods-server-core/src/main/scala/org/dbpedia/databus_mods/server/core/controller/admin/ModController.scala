@@ -20,31 +20,31 @@ class ModController {
   private var modService: ModService = _
 
   @JsonView(value = Array(classOf[Views.PublicModView]))
-  @RequestMapping(value = Array(), method = Array(RequestMethod.GET))
-  def getMods = {
+  @RequestMapping(value = Array(), method = Array(RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST))
+  def mods = {
     modRepository.findAll()
   }
 
-  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
-  def addMod(
-            @RequestParam name: String,
-            @RequestParam query: String,
-            @RequestParam workerApis: java.util.ArrayList[String] = new util.ArrayList[String]()): Unit = {
-
-    throw new UnsupportedOperationException("not implemented yet")
-  }
-
-  @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
-  def deleteMod(
-               @RequestParam name: String): Unit = {
-
-    modService.deleteMod(name)
-  }
-
-  @RequestMapping(value = Array("deleteAll"), method = Array(RequestMethod.DELETE))
-  def deleteAll(): Unit = {
-    modService.deleteAll()
-  }
+//  @RequestMapping(value = Array("add"), method = Array(RequestMethod.POST))
+//  def addMod(
+//            @RequestParam name: String,
+//            @RequestParam query: String,
+//            @RequestParam workerApis: java.util.ArrayList[String] = new util.ArrayList[String]()): Unit = {
+//
+//    throw new UnsupportedOperationException("not implemented yet")
+//  }
+//
+//  @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
+//  def deleteMod(
+//               @RequestParam name: String): Unit = {
+//
+//    modService.deleteMod(name)
+//  }
+//
+//  @RequestMapping(value = Array("deleteAll"), method = Array(RequestMethod.DELETE))
+//  def deleteAll(): Unit = {
+//    modService.deleteAll()
+//  }
 
 //  @RequestMapping(value = Array("{modName}/addWorker"), method = Array(RequestMethod.POST))
 //  def addWorker(

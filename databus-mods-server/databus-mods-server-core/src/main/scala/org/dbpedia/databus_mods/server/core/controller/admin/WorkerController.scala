@@ -16,26 +16,26 @@ class WorkerController {
   @Autowired private var workerRepository: WorkerRepository = _
 
   @JsonView(value = Array(classOf[Views.PublicWorkerView]))
-  @RequestMapping(value = Array(), method = Array(RequestMethod.GET))
-  def getWorker = {
+  @RequestMapping(value = Array(), method = Array(RequestMethod.GET, RequestMethod.DELETE, RequestMethod.POST))
+  def workers = {
     log.info("get")
     workerRepository.findAll()
   }
-
-  @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
-  def deleteWorker(@RequestParam url: String) = {
-    log.info("delete")
-    val worker = workerRepository.findByUrl(url)
-    if(worker.isPresent) {
-      log.info("if")
-      workerRepository.delete(worker.get())
-    } else
-      log.info("else")
-  }
-
-  @RequestMapping(value = Array("deleteAll"), method = Array(RequestMethod.DELETE))
-  def deleteAll = {
-    log.info("deleteAll")
-    workerRepository.deleteAll()
-  }
+//
+//  @RequestMapping(value = Array("delete"), method = Array(RequestMethod.DELETE))
+//  def deleteWorker(@RequestParam url: String) = {
+//    log.info("delete")
+//    val worker = workerRepository.findByUrl(url)
+//    if(worker.isPresent) {
+//      log.info("if")
+//      workerRepository.delete(worker.get())
+//    } else
+//      log.info("else")
+//  }
+//
+//  @RequestMapping(value = Array("deleteAll"), method = Array(RequestMethod.DELETE))
+//  def deleteAll = {
+//    log.info("deleteAll")
+//    workerRepository.deleteAll()
+//  }
 }

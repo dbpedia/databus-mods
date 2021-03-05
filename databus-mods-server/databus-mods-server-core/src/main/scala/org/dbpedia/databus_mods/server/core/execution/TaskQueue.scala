@@ -31,4 +31,8 @@ class TaskQueue {
   def contains(task: Task): Boolean = {
     queue.contains(task)
   }
+
+  def toIterator() = {
+    queue.iterator()
+  }
 }

@@ -13,8 +13,8 @@ class DatabusFileController {
   @Autowired private var databusFileService: DatabusFileService = _
 
   @JsonView(value = Array(classOf[Views.DatabusFileView]))
-  @RequestMapping(value = Array(""), method = Array(RequestMethod.GET))
-  def getDatabusFiles() = {
+  @RequestMapping(value = Array(""), method = Array(RequestMethod.GET, RequestMethod.DELETE))
+  def databusFiles() = {
     databusFileService.getAll
   }
 }
