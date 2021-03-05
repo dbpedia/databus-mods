@@ -32,7 +32,8 @@ class FileMetricsProcessor extends org.dbpedia.databus_mods.lib.worker.execution
   def process(ext: Extension): Unit = {
     import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 
-    ext.getModel.addStmtToModel("", RDF.`type`.getURI, "https://mods.tools.dbpedia.org/ns/databus#FileMetricMod")
+    ext.setType("https://mods.tools.dbpedia.org/ns/file#FileMetricMod")
+    ext.addPrefix("filemod","https://mods.tools.dbpedia.org/file#")
     val resultOS = ext.createModResult(resultFileName)
 
     val (nonEmptyLines, duplicates, sorted, uncompressedByteSize) = genFileMetrics(new URI(ext.source))
@@ -111,7 +112,7 @@ class FileMetricsProcessor extends org.dbpedia.databus_mods.lib.worker.execution
           sorted = sort
           uncompressedByteSize = uncompressedSize
 
-
+          in.close()
         } catch {
           case e: Exception =>
             //log.warn(s"Read Error for file: ${this.file.getAbsolutePath} not calculate line-based file metadata statistics (e.g. #empty lines) and also uncompressed byte-size for File")

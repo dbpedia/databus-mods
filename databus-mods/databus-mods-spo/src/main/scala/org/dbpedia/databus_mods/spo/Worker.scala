@@ -2,11 +2,11 @@ package org.dbpedia.databus_mods.spo
 
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}
-import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.{ComponentScan, Import}
 
 @SpringBootApplication
 @EnableAutoConfiguration
-@ComponentScan(basePackages = Array("org.dbpedia.databus_mods.lib.worker.base","org.dbpedia.databus_mods.spo"))
+@Import(value = Array(classOf[org.dbpedia.databus_mods.lib.worker.AsyncWorker]))
 class Worker {
 
 }

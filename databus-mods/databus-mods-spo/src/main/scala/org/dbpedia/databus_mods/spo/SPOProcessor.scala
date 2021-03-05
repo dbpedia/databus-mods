@@ -1,12 +1,13 @@
 package org.dbpedia.databus_mods.spo
 
 import java.io.OutputStreamWriter
+import java.net.URI
 import java.nio.charset.StandardCharsets
 
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.lang.PipedRDFIterator
 import org.dbpedia.databus_mods.lib.util.{IORdfUtil, UriUtil}
-import org.dbpedia.databus_mods.lib.worker.base.{DataIDExtension, Process}
+import org.dbpedia.databus_mods.lib.worker.execution.{Extension, ModProcessor}
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -16,23 +17,25 @@ import scala.collection.mutable
  * calculate the number of occurrences of each subject, predicate, and object of rdf file
  */
 @Component
-class SPOProcessor extends Process {
+class SPOProcessor extends ModProcessor {
 
   private val log = LoggerFactory.getLogger(classOf[SPOProcessor])
 
-  override def run(ext: DataIDExtension): Unit = {
-    try {
-      val (s, p, o) = calculateSPO(IORdfUtil.toPipedRDF(UriUtil.openStream(ext.source)))
-      val os = ext.createModResult("spo.tsv")
-      val osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)
-      write(osw, s, "subject")
-      write(osw, p, "predicate")
-      write(osw, o, "object")
-      os.flush()
-      os.close()
-    } catch {
-      case e: Exception => e.printStackTrace()
-    }
+  def process(ext: Extension): Unit = {
+    ext.addPrefix("spo","https://mods.tools.dbpedia.org/ns/spo#")
+    ext.setType("https://mods.tools.dbpedia.org/ns/spo#Mod")
+
+    val is = UriUtil.openStream(new URI(ext.source))
+    val (s, p, o) = calculateSPO(IORdfUtil.toPipedRDF(is))
+    is.close()
+
+    val os = ext.createModResult("spo.csv","http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom")
+    val osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)
+    write(osw, s, "subject")
+    write(osw, p, "predicate")
+    write(osw, o, "object")
+    os.flush()
+    os.close()
   }
 
   /**

@@ -64,7 +64,9 @@ class TaskService(taskRepository: TaskRepository,
     else q.putIfAbsent(t)
   }
 
-
+  def get(dataIdSingleFile: String, modName: String) = {
+    taskRepository.findByDatabusFileDataIdSingleFileAndModName(dataIdSingleFile,modName)
+  }
   //  def addTask(modName: String, databusIdentifier: DatabusIdentifier): Unit = {
   //    var databusFile = databusFileRepository.findByDataIdSingleFileAndChecksum(
   //      databusIdentifier.id,

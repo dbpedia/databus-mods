@@ -20,19 +20,20 @@ class VoidProcess extends ModProcessor {
   private val log = LoggerFactory.getLogger(classOf[VoidProcess])
 
   def process(ext: Extension): Unit = {
+    ext.setType("https://mods.tools.dbpedia.org/ns/void#Mod")
+    ext.addPrefix("voidmod","https://mods.tools.dbpedia.org/ns/void#")
     val is = UriUtil.openStream(new URI(ext.source))
     val pipedRDF = IORdfUtil.toPipedRDF(is)
-    ext.getModel.addStmtToModel("", RDF.`type`.getURI, "https://mods.tools.dbpedia.org/ns/void#VoidMod")
-    try {
-      if (pipedRDF.hasNext) {
-        val (classPartitionMap, propertyPartitionMap) = calculateVoIDPartitions(pipedRDF)
-        val voidModel = toJenaModel(classPartitionMap, propertyPartitionMap)
-        voidModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
-        voidModel.write(ext.createModResult("rdfVoid.ttl"), "TURTLE")
-      } else {
-        log.warn(s"empty iterator")
-      }
+
+    if (pipedRDF.hasNext) {
+      val (classPartitionMap, propertyPartitionMap) = calculateVoIDPartitions(pipedRDF)
+      val voidModel = toJenaModel(classPartitionMap, propertyPartitionMap)
+      voidModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
+      voidModel.write(ext.createModResult("rdfVoid.ttl","http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom"), "TURTLE")
+    } else {
+      log.warn(s"empty iterator")
     }
+    is.close()
   }
 
   def calculateVoIDPartitions(iter: PipedRDFIterator[Triple]): (mutable.HashMap[String, Int], mutable.HashMap[String, Int]) = {

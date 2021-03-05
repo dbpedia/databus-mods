@@ -10,13 +10,13 @@
 <h2><a href="http://mods.tools.dbpedia.org/sparql">SPARQL Endpoint</a></h2>
 <h2><a href="http://mods.tools.dbpedia.org:29000/demo">Demo Annotation Mod</a></h2>
 <hr>
-<p th:text="${modName}"></p>
-
-<!--<table>-->
-<!--    <tr th:each="item: ${iter}">-->
-<!--        <td><a th:href="'/main/'+${item.name}" th:text="${item.name}"/></td>-->
-<!--    </tr>-->
-<!--</table>-->
+<h2 th:text="${databusPath}"></h2>
+<table>
+    <tr><a href="../">../</a></tr>
+    <tr th:each="item: ${subDirs}">
+        <td><a th:href="${item}" th:text="${item}"/></td>
+    </tr>
+</table>
 </body>
 </html>
 

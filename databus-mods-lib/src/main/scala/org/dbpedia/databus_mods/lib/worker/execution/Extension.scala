@@ -6,22 +6,25 @@ import java.util.Calendar
 import org.apache.jena.datatypes.RDFDatatype
 import org.apache.jena.datatypes.xsd.XSDDateTime
 import org.apache.jena.rdf.model.{Model, ModelFactory}
-import org.apache.jena.vocabulary.{RDF, RDFS}
+import org.apache.jena.vocabulary.{RDF, RDFS, XSD}
 import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 import org.dbpedia.databus_mods.lib.worker.service.FileService
 
-class Extension(fileService: FileService, path: String, val source: String) {
-  private val subjectUri = ""
+class Extension(fileService: FileService, path: String, val databusID: String, val source: String) {
+  private val subjectUri = "metadata.ttl"
 
   private val metadata = ModelFactory.createDefaultModel()
 
   private val prov = "http://www.w3.org/ns/prov#"
 
   metadata.setNsPrefix("prov", prov)
+  metadata.setNsPrefix("xsd", XSD.NS)
+  metadata.setNsPrefix("mods","http://dataid.dbpedia.org/ns/mods#")
+  metadata.addStmtToModel(subjectUri, prov + "used", databusID)
 
-  metadata.addStmtToModel(subjectUri, prov + "used", s"https://databus.dbpedia.org/$path")
-
-  def createModResult(name: String): OutputStream = {
+  def createModResult(name: String, backLinkWith: String = null): OutputStream = {
+    if(null != backLinkWith)
+      metadata.addStmtToModel(name,backLinkWith,databusID)
     metadata.addStmtToModel(subjectUri, prov + "generated", name)
     new FileOutputStream(fileService.createFile(path, name))
   }
@@ -29,6 +32,10 @@ class Extension(fileService: FileService, path: String, val source: String) {
   def addProperty(property:String, value: String): Unit = {
     import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
     metadata.addStmtToModel(subjectUri,property,value)
+  }
+
+  def addPrefix(label: String, ns: String): Unit = {
+    metadata.setNsPrefix(label,ns)
   }
 
   def setType(uri: String): Unit = {

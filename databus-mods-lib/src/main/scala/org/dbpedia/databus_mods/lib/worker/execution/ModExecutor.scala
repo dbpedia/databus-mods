@@ -17,7 +17,7 @@ class ModExecutor(processor: ModProcessor, queue: ModQueue[ModRequest], fileServ
       log.info(s"start process ${request.databusID} with ${request.sourceURI}")
       val time = Instant.now()
       try {
-        val dataIDExtension = new Extension(fileService, request.databusPath, request.sourceURI)
+        val dataIDExtension = new Extension(fileService, request.databusPath, request.databusID, request.sourceURI)
         dataIDExtension.setStart(Calendar.getInstance())
         processor.process(dataIDExtension)
         dataIDExtension.setEnd(Calendar.getInstance())

@@ -12,7 +12,7 @@
 <hr>
 <table>
     <tr th:each="item: ${iter}">
-        <td><a th:href="'/main/'+${item.name}" th:text="${item.name}"/></td>
+        <td><a th:href="'/main/'+${item.name}+'/'" th:text="${item.name}"/></td>
     </tr>
 </table>
 </body>

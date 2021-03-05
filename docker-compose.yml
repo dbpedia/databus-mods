@@ -14,44 +14,55 @@ services:
       - DEFAULT_GRAPH=http://mods.tools.dbpedia.org
     volumes:
       - ${DB_DUMPS_VOLUME}:/data/dumps
-  filemetric:
-    image: docker.io/library/databus-mods-filemetrics:1.0-SNAPSHOT
-    user: "root"
-    ports:
-      - "14000-14002:9000"
-    volumes:
-      - ${WORKER_VOLUME}/filemetric/:/workspace/target/volume/
-  void:
-    image: docker.io/library/databus-mods-void:1.0-SNAPSHOT
-    user: "root"
-    ports:
-      - "14010-14014:9000"
-    volumes:
-      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
-    deploy:
-      resources:
-        limits:
-          memory: 1024M
-        reservations:
-          memory: 512M
   mimetype:
     image: docker.io/library/databus-mods-mimetype:1.0-SNAPSHOT
     user: "root"
     ports:
-      - "14030:9000"
+      - "14000-14001:9000"
     volumes:
-      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
+      - ${WORKER_VOLUME}/mimetype/:/workspace/target/volume/
     deploy:
       resources:
         limits:
           memory: 1024M
         reservations:
           memory: 512M
-
-#volumes:
-#  dbdumps:
-#    driver: local
-#    driver_opts:
-#      type: "none"
-#      o: "bind"
-#      device: ${DB_DUMPS_VOLUME}
+  filemetric:
+    image: docker.io/library/databus-mods-filemetrics:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14010-14011:9000"
+    volumes:
+      - ${WORKER_VOLUME}/filemetric/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+  void:
+    image: docker.io/library/databus-mods-void:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14020-14021:9000"
+    volumes:
+      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 512M
+  spo:
+    image: docker.io/library/databus-mods-spo:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14030-14031:9000"
+    volumes:
+      - ${WORKER_VOLUME}/spo/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 512M

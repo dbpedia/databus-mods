@@ -31,11 +31,8 @@ mods:
     selects:
       - 'rdfVoid.ttl'
     workers:
-      - 'http://localhost:14010/modApi'
-      - 'http://localhost:14011/modApi'
-      - 'http://localhost:14012/modApi'
-      - 'http://localhost:14013/modApi'
-      - 'http://localhost:14014/modApi'
+      - 'http://localhost:14020/modApi'
+      - 'http://localhost:14021/modApi'
     query: '
 PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
 PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
@@ -57,29 +54,79 @@ SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
   FILTER( str(?ext) = "nt" )
   } LIMIT 10 }
 }'
-#  - name: 'filemetric'
-#    accept: 'file'
-#    select: 'rdfVoid.ttl'
-#    workers:
-#      - 'http://localhost:32798/modApi'
-#      - 'http://localhost:32799/modApi'
-#      - 'http://localhost:32800/modApi'
-#    query: '
-#PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-#PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
-#PREFIX dct:    <http://purl.org/dc/terms/>
-#PREFIX dcat:   <http://www.w3.org/ns/dcat#>
-#PREFIX db:     <https://databus.dbpedia.org/>
-#PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
-#
-#SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
-#  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
-#  ?s dataid:file ?file .
-#  ?s dct:issued ?issued .
-#  ?s dataid:sha256sum ?sha256sum .
-#  ?s dcat:downloadURL ?downloadURL .
-#  ?s dataid-cv:type ?cv .
-#  FILTER( str(?cv) = "parsed")
-#  ?s dataid:formatExtension ?ext .
-#  FILTER( str(?ext) = "nt" )
-#}'
+  - name: 'filemetric'
+    accept: 'file'
+    select: 'file-metrics.ttl'
+    workers:
+      - 'http://localhost:14010/modApi'
+      - 'http://localhost:14011/modApi'
+    query: '
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+
+SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+  ?s dataid:file ?file .
+  ?s dct:issued ?issued .
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dcat:downloadURL ?downloadURL .
+  ?s dataid-cv:type ?cv .
+  FILTER( str(?cv) = "parsed")
+  ?s dataid:formatExtension ?ext .
+  FILTER( str(?ext) = "nt" )
+}'
+  - name: 'mimetype'
+    accept: 'file'
+    select:
+    workers:
+      - 'http://localhost:14000/modApi'
+      - 'http://localhost:14001/modApi'
+    query: '
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+
+SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+  ?s dataid:file ?file .
+  ?s dct:issued ?issued .
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dcat:downloadURL ?downloadURL .
+  ?s dataid-cv:type ?cv .
+  FILTER( str(?cv) = "parsed")
+  ?s dataid:formatExtension ?ext .
+  FILTER( str(?ext) = "nt" )
+}'
+  - name: 'spo'
+    accept: 'file'
+    select:
+    workers:
+      - 'http://localhost:14030/modApi'
+      - 'http://localhost:14031/modApi'
+    query: '
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+
+SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+  ?s dataid:file ?file .
+  ?s dct:issued ?issued .
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dcat:downloadURL ?downloadURL .
+  ?s dataid-cv:type ?cv .
+  FILTER( str(?cv) = "parsed")
+  ?s dataid:formatExtension ?ext .
+  FILTER( str(?ext) = "nt" )
+}
+'
