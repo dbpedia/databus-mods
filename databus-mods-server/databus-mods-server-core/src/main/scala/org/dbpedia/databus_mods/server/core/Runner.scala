@@ -4,9 +4,10 @@ import java.util
 import java.util.function.Consumer
 
 import org.dbpedia.databus_mods.server.core.config.{MasterConfig, mods}
-import org.dbpedia.databus_mods.server.core.persistence.{Mod, Worker}
-import org.dbpedia.databus_mods.server.core.service.{ModService, TaskService, WorkerService}
+import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker}
+import org.dbpedia.databus_mods.server.core.service.{ModService, TaskService, ThreadService, WorkerService}
 import org.slf4j.LoggerFactory
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
 import org.springframework.stereotype.Component
 
@@ -18,13 +19,15 @@ class Runner(
               sConf: MasterConfig,
               modService: ModService,
               taskService: TaskService,
-              workerService: WorkerService) extends CommandLineRunner {
+              workerService: WorkerService,
+              threadService: ThreadService,
+              @Value("${mod-server.schedule.task-updates}") updateDelay: String) extends CommandLineRunner {
 
   private val log = LoggerFactory.getLogger(classOf[Runner])
 
   override def run(args: String*): Unit = {
 
-    //    modService.deleteAll()
+    modService.deleteAll()
 
     sConf.mods.foreach({
       mc =>
@@ -36,13 +39,20 @@ class Runner(
           val worker = new Worker(mod, addr)
           workerService.add(worker)
         })
-      })
+    })
 
     // todo add TaskStatus Wait to queue first then TaskStatus Open
 
-    log.info("poll updates")
-    taskService.update()
-    log.info("done updates")
+    if (updateDelay.toInt > 0 ) {
+      log.info("poll updates")
+      taskService.update()
+      log.info("done updates")
+    }
+
+    modService.getMods.foreach({
+      mod =>
+        log.warn(s"${mod.name} initial queue size " + taskService.getQueue(mod.name).toIterator().size)
+    })
   }
 
   //  def update(): Unit = {

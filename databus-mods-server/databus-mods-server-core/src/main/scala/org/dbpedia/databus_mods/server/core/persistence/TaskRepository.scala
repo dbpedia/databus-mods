@@ -20,4 +20,5 @@ trait TaskRepository extends CrudRepository[Task,Long] {
 
   def findByDatabusFileDataIdSingleFileAndModName(databusFileDataIdSingleFile: String, modName: String): Optional[Task]
 
+  def findByState(state: Int): java.util.List[Task]
 }

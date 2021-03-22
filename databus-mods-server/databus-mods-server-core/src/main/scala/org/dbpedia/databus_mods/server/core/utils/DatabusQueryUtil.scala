@@ -1,6 +1,8 @@
 package org.dbpedia.databus_mods.server.core.utils
 
-import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
+import java.sql.Timestamp
+
+import org.apache.jena.query.{QueryExecutionFactory, QueryFactory, Syntax}
 import org.dbpedia.databus_mods.server.core.persistence.DatabusFile
 
 import scala.collection.mutable.ArrayBuffer
@@ -14,7 +16,7 @@ object DatabusQueryUtil {
 
     do {
       responseSize = 0
-      val sparql = QueryFactory.create(query + s" LIMIT $limit OFFSET $offset")
+      val sparql = QueryFactory.create(query + s" LIMIT $limit OFFSET $offset", Syntax.syntaxSPARQL_11)
       val queryExec = QueryExecutionFactory.sparqlService(
         "https://databus.dbpedia.org/repo/sparql", sparql
       )
@@ -54,7 +56,7 @@ object DatabusQueryUtil {
     val sparql = QueryFactory.create(query)
     val queryExec = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", sparql)
     val resultSet = queryExec.execSelect()
-    if (resultSet.hasNext) {
+    val possibleDatabusFile = if (resultSet.hasNext) {
       val qs = resultSet.next()
       Some(new DatabusFile(
         uri,
@@ -65,5 +67,11 @@ object DatabusQueryUtil {
     } else {
       None
     }
+    queryExec.close()
+    possibleDatabusFile
+  }
+
+  def main(args: Array[String]): Unit = {
+    new Timestamp(System.currentTimeMillis())
   }
 }

@@ -38,7 +38,7 @@ class MainController(
   @RequestMapping(value = Array(), method = Array(RequestMethod.GET))
   def main() = {
 
-    val mods = modService.getMods
+    val mods = fileService.listDir("","").sorted
 
     val mav = new ModelAndView();
     mav.addObject("iter", mods);
@@ -70,7 +70,7 @@ class MainController(
           sub.getName
         else
           sub.getName + "/"
-    })
+    }).sorted
 
     val mav = new ModelAndView();
     mav.addObject("subDirs", subDirs);
@@ -124,6 +124,7 @@ class MainController(
              @RequestParam sha256sum: Optional[String],
              response: HttpServletResponse): Unit = {
 
+    println("create")
     val possibleMod = modService.get(modName)
     if (possibleMod.isPresent) {
 
@@ -138,7 +139,7 @@ class MainController(
         databusFileService.add(databusFile)
         // TODO source in Task entry
         val task = new Task(databusFile, possibleMod.get())
-        taskService.add(task)
+        taskService.add(task,true)
         tmp(task, response)
       } else {
         // databus file not found

@@ -13,12 +13,13 @@ services:
       - SPARQL_UPDATE=true
       - DEFAULT_GRAPH=http://mods.tools.dbpedia.org
     volumes:
-      - ${DB_DUMPS_VOLUME}:/data/dumps
+      - ./virtuoso.ini:/data/virtuoso.ini:ro
+      - ${DB_DUMPS_VOLUME}:/data
   mimetype:
     image: docker.io/library/databus-mods-mimetype:1.0-SNAPSHOT
     user: "root"
     ports:
-      - "14000-14001:9000"
+      - "14000-14009:9000"
     volumes:
       - ${WORKER_VOLUME}/mimetype/:/workspace/target/volume/
     deploy:
@@ -57,7 +58,7 @@ services:
     image: docker.io/library/databus-mods-spo:1.0-SNAPSHOT
     user: "root"
     ports:
-      - "14030-14031:9000"
+      - "14030-14039:9000"
     volumes:
       - ${WORKER_VOLUME}/spo/:/workspace/target/volume/
     deploy:

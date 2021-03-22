@@ -33,11 +33,13 @@ class SchedulerConfig(onlineCheckService: OnlineCheckService,
         }
       })
     // task updates
-    taskRegistrar.addFixedDelayTask(new Runnable {
-      override def run(): Unit = {
-        taskService.update()
-      }
-    }, updateDelay.toInt)
+    if(updateDelay.toInt > 0) {
+      taskRegistrar.addFixedDelayTask(new Runnable {
+        override def run(): Unit = {
+          taskService.update()
+        }
+      }, updateDelay.toInt)
+    }
   }
 }
 

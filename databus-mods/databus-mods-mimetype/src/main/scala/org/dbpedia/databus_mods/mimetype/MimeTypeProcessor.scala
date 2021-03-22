@@ -28,7 +28,7 @@ class MimeTypeProcessor extends ModProcessor {
     inputStream.close()
 
     ext.setType("https://mods.tools.dbpedia.org/ns/file#MimeTypeMod")
-    ext.addPrefix("filemod","https://mods.tools.dbpedia.org/ns/file#")
+    ext.addPrefix("","https://mods.tools.dbpedia.org/ns/file#")
     val mimeTypeResource = getMimeTypeFromIanaOntology(mimeType)
     ext.addProperty("https://mods.tools.dbpedia.org/file#mimeType",mimeTypeResource.getURI)
   }

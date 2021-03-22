@@ -50,7 +50,6 @@ class DatabusFile
   var id: Long = _
 
   @(JsonView@field)(value = Array(classOf[Views.DatabusFileView]))
-//  @(OneToMany@field)(mappedBy = "databusFile", cascade = Array(CascadeType.ALL), fetch = FetchType.EAGER, orphanRemoval = true)
   @(OneToMany@field)(mappedBy = "databusFile", cascade = Array(CascadeType.ALL), fetch = FetchType.EAGER, orphanRemoval = true)
   @BeanProperty
   var tasks: java.util.List[Task] = new util.ArrayList[Task]()
@@ -83,6 +82,10 @@ class DatabusFile
        |+ checksum : $checksum
        |+ taskIds : ${tasks.map(_.getId).mkString(", ")}
        |""".stripMargin
+  }
+
+  def getDatabusPath: String = {
+    List(publisher,dataIdGroup,dataIdArtifact,dataIdVersion,name).mkString("/")
   }
 
   def copyOf(df: DatabusFile): Unit = {

@@ -20,6 +20,11 @@ class FileService(@Value("${tmp.volume}") base: String) {
     file
   }
 
+  def exsits(modName: String, databusPath: String, extension: String = "metadata.ttl"): Boolean = {
+    val file = new File(base, List(modName, databusPath, `extension`).mkString("/"))
+    file.exists()
+  }
+
   def listDir(modName: String, databusPath: String) = {
     val dir = new File(base+ "/" + modName + "/" +databusPath)
     dir.listFiles()

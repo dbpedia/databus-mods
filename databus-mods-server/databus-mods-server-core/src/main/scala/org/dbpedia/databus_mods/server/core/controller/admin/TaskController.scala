@@ -1,12 +1,13 @@
 package org.dbpedia.databus_mods.server.core.controller.admin
 
 import java.util
+import java.util.Optional
 
 import com.fasterxml.jackson.annotation.JsonView
 import io.swagger.annotations.ApiParam
 import javax.servlet.http.HttpServletResponse
 import org.dbpedia.databus_mods.server.core.config.Defaults
-import org.dbpedia.databus_mods.server.core.persistence.Task
+import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskRepository}
 import org.dbpedia.databus_mods.server.core.service.TaskService
 import org.dbpedia.databus_mods.server.core.utils.DatabusQueryUtil
 import org.dbpedia.databus_mods.server.core.views.Views
@@ -18,16 +19,21 @@ import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, R
 @RequestMapping(value = Array("admin/tasks"))
 class TaskController {
 
-  @Autowired
-  private var taskService: TaskService = _
+  @Autowired private var taskService: TaskService = _
+
+  @Autowired private var taskRepository: TaskRepository = _
 
 //  @Autowired
 //  private var taskQueues: TaskQueues = _
 
   @JsonView(value = Array(classOf[Views.PublicTaskView]))
   @RequestMapping(value = Array(""), method = Array(RequestMethod.GET, RequestMethod.DELETE))
-  def tasks = {
-    taskService.getTasks()
+  def tasks(@RequestParam state: Optional[String]) = {
+    if(state.isPresent) {
+      taskRepository.findByState(state.get().toInt)
+    } else {
+      taskService.getTasks()
+    }
   }
 
 //  @JsonView(value = Array(classOf[Views.PublicTaskView]))

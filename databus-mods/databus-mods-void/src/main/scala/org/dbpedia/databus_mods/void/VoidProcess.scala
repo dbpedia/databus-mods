@@ -20,8 +20,8 @@ class VoidProcess extends ModProcessor {
   private val log = LoggerFactory.getLogger(classOf[VoidProcess])
 
   def process(ext: Extension): Unit = {
-    ext.setType("https://mods.tools.dbpedia.org/ns/void#Mod")
-    ext.addPrefix("voidmod","https://mods.tools.dbpedia.org/ns/void#")
+    ext.setType("https://mods.tools.dbpedia.org/ns/rdf#VoidMod")
+    ext.addPrefix("","https://mods.tools.dbpedia.org/ns/rdf#")
     val is = UriUtil.openStream(new URI(ext.source))
     val pipedRDF = IORdfUtil.toPipedRDF(is)
 

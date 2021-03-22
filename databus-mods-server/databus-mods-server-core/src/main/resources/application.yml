@@ -14,11 +14,16 @@ vaadin:
   urlMapping: '/demo/*'
 
 mod-server:
+  volume: ./target/repo
+  web-base: "https://mods.tools.dbpedia.org/main/"
   triple-store:
     db-url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
     db-user: 'dba'
     db-password: 'DasIstDasHausVomNikolaus'
     endpoint: 'http://localhost:8890/sparql'
+  schedule:
+    online-check: 3600000
+    task-updates: 3600000
 
 tmp:
   volume: ./target/repo

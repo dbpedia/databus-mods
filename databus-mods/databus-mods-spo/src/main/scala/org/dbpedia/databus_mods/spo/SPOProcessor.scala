@@ -22,20 +22,20 @@ class SPOProcessor extends ModProcessor {
   private val log = LoggerFactory.getLogger(classOf[SPOProcessor])
 
   def process(ext: Extension): Unit = {
-    ext.addPrefix("spo","https://mods.tools.dbpedia.org/ns/spo#")
-    ext.setType("https://mods.tools.dbpedia.org/ns/spo#Mod")
+    ext.addPrefix("","https://mods.tools.dbpedia.org/ns/rdf#")
+    ext.setType("https://mods.tools.dbpedia.org/ns/rdf#SpoMod")
 
     val is = UriUtil.openStream(new URI(ext.source))
     val (s, p, o) = calculateSPO(IORdfUtil.toPipedRDF(is))
     is.close()
 
-    val os = ext.createModResult("spo.csv","http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom")
+    val os = ext.createModResult("spo.csv","http://dataid.dbpedia.org/ns/mod#statisticsDerivedFrom")
     val osw = new OutputStreamWriter(os, StandardCharsets.UTF_8)
     write(osw, s, "subject")
     write(osw, p, "predicate")
     write(osw, o, "object")
-    os.flush()
-    os.close()
+    osw.flush()
+    osw.close()
   }
 
   /**
@@ -45,9 +45,9 @@ class SPOProcessor extends ModProcessor {
    * @return subjectMap, predicateMap, objectMap
    */
   def calculateSPO(iter: PipedRDFIterator[Triple]): (mutable.HashMap[String, Int], mutable.HashMap[String, Int], mutable.HashMap[String, Int]) = {
-    val subjectMap: mutable.HashMap[String, Int] = mutable.HashMap.empty
-    val predicateMap: mutable.HashMap[String, Int] = mutable.HashMap.empty
-    val objectMap: mutable.HashMap[String, Int] = mutable.HashMap.empty
+    val subjectMap: mutable.HashMap[String, Int] = mutable.HashMap.empty[String,Int]
+    val predicateMap: mutable.HashMap[String, Int] = mutable.HashMap.empty[String,Int]
+    val objectMap: mutable.HashMap[String, Int] = mutable.HashMap.empty[String,Int]
 
     while (iter.hasNext) {
       val triple = iter.next()
@@ -90,8 +90,13 @@ class SPOProcessor extends ModProcessor {
    */
   def write(osw: OutputStreamWriter, elementMap: mutable.HashMap[String, Int], elementPositionName: String): Unit = {
     while (elementMap.nonEmpty) {
-      if (elementMap.head._1.contains(";")) osw.append(s""""${elementMap.head._1}";$elementPositionName;${elementMap.head._2}\n""")
-      else osw.append(s"${elementMap.head._1};$elementPositionName;${elementMap.head._2}\n")
+      val line =
+        if (elementMap.head._1.contains(";")) {
+        s""""${elementMap.head._1}";$elementPositionName;${elementMap.head._2}\n"""
+      } else {
+        s"""${elementMap.head._1};$elementPositionName;${elementMap.head._2}\n"""
+      }
+      osw.append(line)
       elementMap.remove(elementMap.head._1)
     }
   }

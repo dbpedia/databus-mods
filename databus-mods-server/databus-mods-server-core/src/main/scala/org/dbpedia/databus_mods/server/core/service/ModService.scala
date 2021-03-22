@@ -29,6 +29,10 @@ class ModService {
     }
   }
 
+  def save(m: Mod): Unit = {
+    modRepository.save(m)
+  }
+
   def get(modName: String): Optional[Mod] = {
     modRepository.findByName(modName)
   }

@@ -38,5 +38,9 @@ class OnlineCheck
   def this(databusFile: DatabusFile, status: Int) {
     this(databusFile,new Timestamp(System.currentTimeMillis()),status)
   }
+
+  override def toString: String = {
+    s"""$timestamp; $status ;${databusFile.getDataIdSingleFile}"""
+  }
 }
 

@@ -10,6 +10,7 @@ class TaskQueue {
   private val queue = new LinkedBlockingDeque[Task]()
 
   def putIfAbsent(task: Task, moveToFirst: Boolean = false): Unit = synchronized {
+
     if(contains(task) && moveToFirst) {
       remove(task)
       queue.putFirst(task)

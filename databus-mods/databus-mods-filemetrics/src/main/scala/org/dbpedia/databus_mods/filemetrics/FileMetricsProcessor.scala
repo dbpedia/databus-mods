@@ -33,7 +33,7 @@ class FileMetricsProcessor extends org.dbpedia.databus_mods.lib.worker.execution
     import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 
     ext.setType("https://mods.tools.dbpedia.org/ns/file#FileMetricMod")
-    ext.addPrefix("filemod","https://mods.tools.dbpedia.org/file#")
+    ext.addPrefix("","https://mods.tools.dbpedia.org/ns/file#")
     val resultOS = ext.createModResult(resultFileName)
 
     val (nonEmptyLines, duplicates, sorted, uncompressedByteSize) = genFileMetrics(new URI(ext.source))

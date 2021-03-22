@@ -19,7 +19,7 @@ class Extension(fileService: FileService, path: String, val databusID: String, v
 
   metadata.setNsPrefix("prov", prov)
   metadata.setNsPrefix("xsd", XSD.NS)
-  metadata.setNsPrefix("mods","http://dataid.dbpedia.org/ns/mods#")
+  metadata.setNsPrefix("mod","http://dataid.dbpedia.org/ns/mod#")
   metadata.addStmtToModel(subjectUri, prov + "used", databusID)
 
   def createModResult(name: String, backLinkWith: String = null): OutputStream = {
