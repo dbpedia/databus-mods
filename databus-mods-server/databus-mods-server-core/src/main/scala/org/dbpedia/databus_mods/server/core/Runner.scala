@@ -34,6 +34,8 @@ class Runner(
         val mod = new Mod(mc.name, mc.query)
         mod.setSelects(mc.selects)
         modService.add(mod)
+        mod.setQuery(mc.query)
+        modService.save(mod)
         log.info(s"added ${mc.name} mod")
         mc.workers.foreach({ addr =>
           val worker = new Worker(mod, addr)
