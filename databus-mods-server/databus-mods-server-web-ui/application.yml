@@ -1,0 +1,10 @@
+tmp:
+  volume: ./target/repo
+  base: "https://mods.tools.dbpedia.org:29000/repo"
+  url: "jdbc:virtuoso://akswnc7.informatik.uni-leipzig.de:21111/charset=UTF-8/"
+  usr: "dba"
+  psw: "DasIstDasHausVomNikolaus"
+vaadin:
+  urlMapping: '/demo/*'
+server:
+  port: 9000

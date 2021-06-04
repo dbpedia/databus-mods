@@ -1,0 +1,69 @@
+#
+# main docker-compose file
+#
+version: "3"
+services:
+  db:
+    image: tenforce/virtuoso
+    ports:
+      - "18890:8890"
+      - "11111:1111"
+    environment:
+      - DBA_PASSWORD=DasIstDasHausVomNikolaus
+      - SPARQL_UPDATE=true
+      - DEFAULT_GRAPH=http://mods.tools.dbpedia.org
+    volumes:
+      - ./virtuoso.ini:/data/virtuoso.ini:ro
+      - ${DB_DUMPS_VOLUME}:/data
+  mimetype:
+    image: docker.io/library/databus-mods-mimetype:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14000-14009:9000"
+    volumes:
+      - ${WORKER_VOLUME}/mimetype/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+  filemetric:
+    image: docker.io/library/databus-mods-filemetrics:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14010-14011:9000"
+    volumes:
+      - ${WORKER_VOLUME}/filemetric/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1024M
+        reservations:
+          memory: 512M
+  void:
+    image: docker.io/library/databus-mods-void:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14020-14021:9000"
+    volumes:
+      - ${WORKER_VOLUME}/void/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 512M
+  spo:
+    image: docker.io/library/databus-mods-spo:1.0-SNAPSHOT
+    user: "root"
+    ports:
+      - "14030-14039:9000"
+    volumes:
+      - ${WORKER_VOLUME}/spo/:/workspace/target/volume/
+    deploy:
+      resources:
+        limits:
+          memory: 1500M
+        reservations:
+          memory: 512M

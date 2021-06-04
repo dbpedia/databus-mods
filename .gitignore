@@ -5,4 +5,6 @@ updates.tsv
 derby.log
 errorLog.log
 derbyDB/
+derby/
 localRepo/
+node_modules/

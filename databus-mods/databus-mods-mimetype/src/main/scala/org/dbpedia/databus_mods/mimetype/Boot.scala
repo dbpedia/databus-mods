@@ -3,15 +3,12 @@ package org.dbpedia.databus_mods.mimetype
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.{EnableAutoConfiguration, SpringBootApplication}
 import org.springframework.context.ConfigurableApplicationContext
+import org.springframework.context.annotation.{ComponentScan, Import}
 
 @SpringBootApplication
-@EnableAutoConfiguration
+@Import(value = Array(classOf[org.dbpedia.databus_mods.lib.worker.AsyncWorker]))
 class Boot {}
 
 object Boot extends App {
-
-  val app: ConfigurableApplicationContext = SpringApplication.run(classOf[Boot], args: _*)
-
-  val executor: DatabusModExecutor = app.getBean(classOf[DatabusModExecutor])
-  new Thread(executor).run()
+  SpringApplication.run(classOf[Boot],args: _*)
 }

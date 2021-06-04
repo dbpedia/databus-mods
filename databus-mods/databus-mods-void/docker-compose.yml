@@ -1,0 +1,12 @@
+version: "3.9"
+services:
+  worker:
+    image: docker.io/library/databus-mods-void:1.0-SNAPSHOT 
+    ports:
+      - "9000"
+    user: root
+    volumes:
+      - void-data:/workspace/worker-data/
+
+volumes:
+  void-data:

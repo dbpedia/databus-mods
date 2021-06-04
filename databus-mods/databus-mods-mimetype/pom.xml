@@ -10,8 +10,17 @@
 
     <parent>
         <groupId>org.dbpedia.databus-mods</groupId>
-        <artifactId>databus-mods</artifactId>
+        <artifactId>databus-mods-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
     </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.dbpedia.databus-mods</groupId>
+            <artifactId>databus-mods-lib</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 </project>
 

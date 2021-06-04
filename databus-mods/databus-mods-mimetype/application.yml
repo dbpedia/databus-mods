@@ -1,6 +1,8 @@
 server:
-  port: 9001
-name: mimetype-mod
-volumes:
-  localRepo: volume/localRepo
-  fileCache: volume/fileCache
+  port: 9000
+worker:
+  volume: ./target/volume
+  api:
+    base: api
+    query:
+    create:

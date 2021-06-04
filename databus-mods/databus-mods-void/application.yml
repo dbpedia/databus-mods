@@ -1,6 +1,8 @@
 server:
-  port: 9003
-name: void-mod
-volumes:
-  localRepo: volumes/localRepo
-  fileCache: volumes/fileCache
+  port: 9000
+worker:
+  volume: ./target/volume
+  api:
+    base: api
+    query:
+    create:
