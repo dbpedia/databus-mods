@@ -5,7 +5,7 @@ import java.util.function.Consumer
 
 import org.dbpedia.databus_mods.server.core.config.{MasterConfig, mods}
 import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker}
-import org.dbpedia.databus_mods.server.core.service.{ModService, TaskService, ThreadService, WorkerService}
+import org.dbpedia.databus_mods.server.core.service.{ModService, TaskService, WorkerService}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.CommandLineRunner
@@ -20,7 +20,6 @@ class Runner(
               modService: ModService,
               taskService: TaskService,
               workerService: WorkerService,
-              threadService: ThreadService,
               @Value("${mod-server.schedule.task-updates}") updateDelay: String) extends CommandLineRunner {
 
   private val log = LoggerFactory.getLogger(classOf[Runner])
