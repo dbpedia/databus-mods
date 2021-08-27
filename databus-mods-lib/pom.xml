@@ -22,11 +22,11 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.Vehnem</groupId>
-            <artifactId>rdfdetector</artifactId>
-            <version>master-SNAPSHOT</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.github.Vehnem</groupId>-->
+<!--            <artifactId>rdfdetector</artifactId>-->
+<!--            <version>master-SNAPSHOT</version>-->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.jena/jena-shacl -->
         <dependency>
             <groupId>org.apache.jena</groupId>
@@ -59,9 +59,32 @@
                 <groupId>com.github.jsonld-java</groupId>
                 <artifactId>jsonld-java</artifactId>
             </exclusion>
-        </exclusions>
+            </exclusions>
         </dependency>
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>javax.persistence</groupId>-->
+<!--            <artifactId>javax.persistence-api</artifactId>-->
+<!--            <version>2.2</version>-->
+<!--        </dependency>-->
 
+<!--        <dependency>-->
+<!--            <groupId>org.springframework.boot</groupId>-->
+<!--            <artifactId>spring-boot-starter-data-jpa</artifactId>-->
+<!--            <version>2.3.0.RELEASE</version>-->
+<!--        </dependency>-->
+
+<!--        <dependency>-->
+<!--            <groupId>org.apache.derby</groupId>-->
+<!--            <artifactId>derby</artifactId>-->
+<!--            <version>10.14.2.0</version>-->
+<!--        </dependency>-->
+
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-spring-boot-starter</artifactId>
+            <version>4.6.1</version>
+        </dependency>
     </dependencies>
 
 </project>
