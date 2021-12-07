@@ -67,7 +67,7 @@ Publishing your datasets on the databus and then writing mods for your data only
 
 
 ### Result of mods
-![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/provo_databus-modrelation.png)
+![Prov-O relation to Mod](https://github.com/dbpedia/databus-mods/raw/master/doc/provo_databus-modrelation.png)
 
 
 Here is an example description of the online-checker taken from:
