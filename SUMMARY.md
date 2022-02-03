@@ -6,7 +6,7 @@
 
 ## Model
 
-* [Model](docs/model.md)
+* [Model](doc/model.md)
 
 ## Usage
 
