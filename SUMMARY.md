@@ -4,6 +4,7 @@
 
 * [Databus Mods](README.md)
 * [Metadata Model](doc/model.md)
+* [Architecture](docs/arch.md)
 
 ## Building Mods
 * [Spring Boot Starter](databus-mods-lib/databus-mods-spring-boot-starter/README.md)
