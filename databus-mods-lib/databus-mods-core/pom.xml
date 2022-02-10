@@ -2,14 +2,70 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <artifactId>databus-mods-lib</artifactId>
         <groupId>org.dbpedia.databus-mods</groupId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>databus-mods-core</artifactId>
+    <packaging>jar</packaging>
 
+    <dependencies>
+        <!-- JENA -->
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-core</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-arq</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jena</groupId>
+            <artifactId>jena-shacl</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsonld-java</groupId>
+                    <artifactId>jsonld-java</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
 
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.pathikrit</groupId>
+            <artifactId>better-files_2.11</artifactId>
+        </dependency>
+
+        <!-- CLI -->
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-spring-boot-starter</artifactId>
+            <version>4.6.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+    </dependencies>
 </project>
