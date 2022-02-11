@@ -5,7 +5,7 @@ name: Java 8 CI with Maven
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, cleanup-1.0 ]
   pull_request:
     branches: [ master ]
 
