@@ -4,6 +4,7 @@ import org.apache.jena.graph
 import org.apache.jena.graph.{Node, NodeFactory}
 import org.apache.jena.riot.system.{StreamRDF, StreamRDFWrapper}
 
+
 class RewriteIRIStreamWrapper(streamRDF: StreamRDF,
                               regex: String,
                               replacement: String) extends StreamRDFWrapper(streamRDF) {

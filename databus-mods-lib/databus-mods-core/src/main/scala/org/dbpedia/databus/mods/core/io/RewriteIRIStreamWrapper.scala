@@ -7,7 +7,7 @@ import org.apache.jena.riot.system.{StreamRDF, StreamRDFWrapper}
 class RewriteIRIStreamWrapper(streamRDF: StreamRDF,
                               regex: String,
                               replacement: String) extends StreamRDFWrapper(streamRDF) {
-  
+
   override def triple(triple: graph.Triple): Unit = {
     other.triple(
       graph.Triple.create(

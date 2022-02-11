@@ -34,11 +34,24 @@
 
     <modules>
         <module>databus-mods-lib</module>
-<!--        <module>databus-mods-server</module>-->
+        <module>databus-mods-server</module>
     </modules>
 
     <dependencyManagement>
     <dependencies>
+
+        <dependency>
+            <groupId>org.dbpedia.databus-mods</groupId>
+            <artifactId>databus-mods-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
+        <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+            <version>10.14.2.0</version>
+        </dependency>
 
         <!--
         BEGIN This is from mods pom.xml
@@ -150,6 +163,13 @@
             <groupId>io.springfox</groupId>
             <artifactId>springfox-boot-starter</artifactId>
             <version>3.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>29.0-jre</version>
         </dependency>
 
         <!-- Databus Client -->

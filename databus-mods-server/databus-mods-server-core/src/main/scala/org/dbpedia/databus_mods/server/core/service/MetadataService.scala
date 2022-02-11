@@ -2,13 +2,11 @@ package org.dbpedia.databus_mods.server.core.service
 
 import java.io.{ByteArrayInputStream, FileOutputStream}
 import java.net.URI
-
 import org.apache.commons.io.IOUtils
 import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory, SimpleSelector}
-import org.apache.jena.riot.system.StreamRDFLib.graph
 import org.apache.jena.riot.system.{StreamRDFLib, StreamRDFWriter}
 import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
-import org.dbpedia.databus_mods.lib.util.UriUtil
+import org.dbpedia.databus.mods.core.util.UriUtil
 import org.dbpedia.databus_mods.server.core.execution.MetadataExtension
 import org.dbpedia.databus_mods.server.core.persistence.Task
 import org.slf4j.LoggerFactory

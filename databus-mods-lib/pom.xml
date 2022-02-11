@@ -4,15 +4,16 @@
 
     <modelVersion>4.0.0</modelVersion>
 
+    <artifactId>databus-mods-lib</artifactId>
+    <packaging>pom</packaging>
+
+    <name>Mods - Library Modules</name>
+
     <parent>
         <groupId>org.dbpedia.databus-mods</groupId>
         <artifactId>databus-mods-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
-
-    <artifactId>databus-mods-lib</artifactId>
-    <packaging>pom</packaging>
-    <name>Databus-Mods Core-Library</name>
 
     <modules>
         <module>databus-mods-core</module>

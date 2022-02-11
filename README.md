@@ -13,3 +13,11 @@ The project contains the following modules:
 * [`databus-mods-lib`](databus-mods-lib) core implementation, shared libraries, and utilities
 * [`databus-mods-server`](databus-mods-server) reusable server implementation
 * [`databus-mods`](databus-mods) basic Databus Mod Worker implementations and examples
+
+## Test Deployment
+```bash
+docker-compose up
+```
+visit [localhost:8080](localhost:8080)
+
+## License
