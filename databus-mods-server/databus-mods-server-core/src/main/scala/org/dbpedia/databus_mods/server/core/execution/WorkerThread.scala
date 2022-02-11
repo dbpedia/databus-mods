@@ -2,10 +2,8 @@ package org.dbpedia.databus_mods.server.core.execution
 
 import java.net.URI
 import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingDeque}
-
 import org.apache.http.client.utils.URIBuilder
-import org.apache.jena.rdf.model.Model
-import org.dbpedia.databus_mods.lib.util.ModApiUtil
+import org.dbpedia.databus.mods.core.util.ModApiUtil
 import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskStatus, Worker}
 import org.dbpedia.databus_mods.server.core.service.{MetadataService, TaskService}
 import org.slf4j.LoggerFactory

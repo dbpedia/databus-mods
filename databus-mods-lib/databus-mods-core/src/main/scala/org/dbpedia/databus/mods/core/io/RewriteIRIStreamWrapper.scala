@@ -1,9 +1,8 @@
-package org.dbpedia.databus_mods.server.core.io.rdf
+package org.dbpedia.databus.mods.core.io
 
 import org.apache.jena.graph
 import org.apache.jena.graph.{Node, NodeFactory}
 import org.apache.jena.riot.system.{StreamRDF, StreamRDFWrapper}
-
 
 class RewriteIRIStreamWrapper(streamRDF: StreamRDF,
                               regex: String,
@@ -19,8 +18,6 @@ class RewriteIRIStreamWrapper(streamRDF: StreamRDF,
 
   private def rewriteIRI(node: Node): Node = {
     if (node.isURI) {
-//      println("1 " + node.getURI)
-//      println("2 " + regex)
       NodeFactory.createURI(node.getURI.replaceAll(regex, replacement))
     } else {
       node
