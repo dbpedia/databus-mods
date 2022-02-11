@@ -75,7 +75,7 @@
         <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
         <dependency>
             <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_2.11</artifactId>
+            <artifactId>better-files_${scala.compat.version}</artifactId>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->

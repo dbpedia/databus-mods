@@ -55,7 +55,7 @@
 
         <dependency>
             <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_2.11</artifactId>
+            <artifactId>better-files_${scala.compat.version}</artifactId>
         </dependency>
 
         <!-- CLI -->
