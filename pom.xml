@@ -19,17 +19,24 @@
         <encoding>UTF-8</encoding>
         <file.encoding>UTF-8</file.encoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>11</maven.compiler.source>
+
+        <scala.version>2.12.15</scala.version>
+        <scala.compat.version>2.12</scala.compat.version>
+
+        <jena.version>4.2.0</jena.version>
         <spring.version>2.3.7.RELEASE</spring.version>
-        <scala.version>2.11.12</scala.version>
-        <scala.compat.version>2.11</scala.compat.version>
+        <springfox.version>3.0.0</springfox.version>
+        <scalatest.version>3.2.3</scalatest.version>
+
         <!-- maven license plugin-->
         <!--        <license.inceptionYear>2020</license.inceptionYear>-->
         <!--        <license.organizationName>Sebastian Hellmann (on behalf of the DBpedia Association)</license.organizationName>-->
         <!--        <license.licenseName>agpl_v3</license.licenseName>-->
         <!--        &lt;!&ndash; github server corresponds to entry in ~/.m2/settings.xml &ndash;&gt;-->
         <!--        <maven.plugin.tools.version>3.6.0</maven.plugin.tools.version>-->
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
     </properties>
 
     <modules>
@@ -38,178 +45,178 @@
     </modules>
 
     <dependencyManagement>
-    <dependencies>
+        <dependencies>
 
-        <dependency>
-            <groupId>org.dbpedia.databus-mods</groupId>
-            <artifactId>databus-mods-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+            <dependency>
+                <groupId>org.dbpedia.databus-mods</groupId>
+                <artifactId>databus-mods-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
 
-        <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
-        <dependency>
-            <groupId>org.apache.derby</groupId>
-            <artifactId>derby</artifactId>
-            <version>10.14.2.0</version>
-        </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.derby/derby -->
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>10.14.2.0</version>
+            </dependency>
 
-        <!--
-        BEGIN This is from mods pom.xml
-        -->
-        <!-- https://mvnrepository.com/artifact/org.apache.any23/apache-any23-mime -->
-        <dependency>
-            <groupId>org.apache.any23</groupId>
-            <artifactId>apache-any23-mime</artifactId>
-            <version>2.3</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-compress</artifactId>
-            <version>1.21</version>
-        </dependency>
-        <!--
-        END This is from mods pom.xml
-        -->
+            <!--
+            BEGIN This is from mods pom.xml
+            -->
+            <!-- https://mvnrepository.com/artifact/org.apache.any23/apache-any23-mime -->
+            <dependency>
+                <groupId>org.apache.any23</groupId>
+                <artifactId>apache-any23-mime</artifactId>
+                <version>2.3</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-compress -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.21</version>
+            </dependency>
+            <!--
+            END This is from mods pom.xml
+            -->
 
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-core</artifactId>
-            <version>3.17.0</version>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.jena</groupId>
+                <artifactId>jena-core</artifactId>
+                <version>${jena.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-arq</artifactId>
-            <version>3.17.0</version>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.jena</groupId>
+                <artifactId>jena-arq</artifactId>
+                <version>${jena.version}</version>
+            </dependency>
 
-        <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>jena-shacl</artifactId>
-            <version>3.17.0</version>
-        </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-java8-compat -->
-        <dependency>
-            <groupId>org.scala-lang.modules</groupId>
-            <artifactId>scala-java8-compat_2.11</artifactId>
-            <version>0.9.1</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
-        <dependency>
-            <groupId>com.github.pathikrit</groupId>
-            <artifactId>better-files_2.11</artifactId>
-            <version>3.9.1</version>
-        </dependency>
+            <dependency>
+                <groupId>org.apache.jena</groupId>
+                <artifactId>jena-shacl</artifactId>
+                <version>${jena.version}</version>
+            </dependency>
 
 
-        <!-- Spring -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-            <version>${spring.version}</version>
-            <!--            <exclusions>-->
-            <!--                <exclusion>-->
-            <!--                    <groupId>org.springframework.boot</groupId>-->
-            <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
-            <!--                </exclusion>-->
-            <!--            </exclusions>-->
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-thymeleaf</artifactId>
-            <version>${spring.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.logging.log4j</groupId>
-                    <artifactId>log4j-to-slf4j</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <version>2.3.0.RELEASE</version>
-            <scope>test</scope>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.junit.vintage</groupId>
-                    <artifactId>junit-vintage-engine</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-java8-compat -->
+            <dependency>
+                <groupId>org.scala-lang.modules</groupId>
+                <artifactId>scala-java8-compat_2.11</artifactId>
+                <version>0.9.1</version>
+            </dependency>
 
-        <!-- API Doc -->
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger2</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-swagger-ui</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>io.springfox</groupId>
-            <artifactId>springfox-boot-starter</artifactId>
-            <version>3.0.0</version>
-        </dependency>
+            <!-- https://mvnrepository.com/artifact/com.github.pathikrit/better-files -->
+            <dependency>
+                <groupId>com.github.pathikrit</groupId>
+                <artifactId>better-files_${scala.compat.version}</artifactId>
+                <version>3.9.1</version>
+            </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>29.0-jre</version>
-        </dependency>
 
-        <!-- Databus Client -->
-        <dependency>
-            <groupId>com.github.dbpedia</groupId>
-            <artifactId>databus-client</artifactId>
-            <version>2bf789b786</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.scalactic</groupId>
-                    <artifactId>scalactic_2.11</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>com.github.tarql</groupId>
-                    <artifactId>tarql</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-core</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>org.apache.jena</groupId>
-                    <artifactId>jena-arq</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>${spring.version}</version>
+                <!--            <exclusions>-->
+                <!--                <exclusion>-->
+                <!--                    <groupId>org.springframework.boot</groupId>-->
+                <!--                    <artifactId>spring-boot-starter-logging</artifactId>-->
+                <!--                </exclusion>-->
+                <!--            </exclusions>-->
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-to-slf4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-thymeleaf</artifactId>
+                <version>${spring.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.logging.log4j</groupId>
+                        <artifactId>log4j-to-slf4j</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
+                <version>${spring.version}</version>
+                <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.junit.vintage</groupId>
+                        <artifactId>junit-vintage-engine</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
 
-        <!-- test -->
-        <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.compat.version}</artifactId>
-            <version>3.2.3</version>
-            <scope>test</scope>
-        </dependency>
+            <!-- API Doc -->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger2</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-swagger-ui</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
 
-    </dependencies>
+            <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>30.1.1-jre</version>
+            </dependency>
+
+            <!-- Databus Client -->
+            <dependency>
+                <groupId>com.github.dbpedia</groupId>
+                <artifactId>databus-client</artifactId>
+                <version>2bf789b786</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.scalactic</groupId>
+                        <artifactId>scalactic_2.11</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.github.tarql</groupId>
+                        <artifactId>tarql</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.jena</groupId>
+                        <artifactId>jena-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.jena</groupId>
+                        <artifactId>jena-arq</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <!-- test -->
+            <dependency>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest_${scala.compat.version}</artifactId>
+                <version>${scalatest.version}</version>
+                <scope>test</scope>
+            </dependency>
+
+        </dependencies>
     </dependencyManagement>
 
     <repositories>
@@ -231,35 +238,17 @@
             <id>sonatype-releases</id>
             <url>https://oss.sonatype.org/service/local/repositories/releases/content/</url>
         </repository>
-<!--        <repository>-->
-<!--            <id>archiva.internal</id>-->
-<!--            <name>Internal Release Repository</name>-->
-<!--            <url>https://databus.dbpedia.org:8081/repository/internal</url>-->
-<!--        </repository>-->
-<!--        <repository>-->
-<!--            <id>archiva.snapshots</id>-->
-<!--            <name>Internal Snapshot Repository</name>-->
-<!--            <url>https://databus.dbpedia.org:8081/repository/snapshots</url>-->
-<!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>archiva.internal</id>-->
+        <!--            <name>Internal Release Repository</name>-->
+        <!--            <url>https://databus.dbpedia.org:8081/repository/internal</url>-->
+        <!--        </repository>-->
+        <!--        <repository>-->
+        <!--            <id>archiva.snapshots</id>-->
+        <!--            <name>Internal Snapshot Repository</name>-->
+        <!--            <url>https://databus.dbpedia.org:8081/repository/snapshots</url>-->
+        <!--        </repository>-->
     </repositories>
-
-    <distributionManagement>
-        <!--repository>
-            <id>internal.repo</id>
-            <name>Temporary Staging Repository</name>
-            <url>file://${project.build.directory}/mvn-repo</url>
-        </repository-->
-<!--        <repository>-->
-<!--            <id>archiva.internal</id>-->
-<!--            <name>Internal Release Repository</name>-->
-<!--            <url>https://databus.dbpedia.org:8081/repository/internal/</url>-->
-<!--        </repository>-->
-<!--        <snapshotRepository>-->
-<!--            <id>archiva.snapshots</id>-->
-<!--            <name>Internal Snapshot Repository</name>-->
-<!--            <url>https://databus.dbpedia.org:8081/repository/snapshots/</url>-->
-<!--        </snapshotRepository>-->
-    </distributionManagement>
 
     <build>
         <sourceDirectory>src/main/scala</sourceDirectory>
@@ -303,14 +292,4 @@
             </plugin>
         </plugins>
     </build>
-
-<!--    <dependencyManagement>-->
-<!--        <dependencies>-->
-<!--            <dependency>-->
-<!--                <groupId>org.dbpedia.databus_mods</groupId>-->
-<!--                <artifactId>databus-mods-lib</artifactId>-->
-<!--                <version>${project.version}</version>-->
-<!--            </dependency>-->
-<!--        </dependencies>-->
-<!--    </dependencyManagement>-->
 </project>

@@ -8,3 +8,5 @@ derbyDB/
 derby/
 localRepo/
 node_modules/
+.metals/
+build/
