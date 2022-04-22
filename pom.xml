@@ -34,7 +34,7 @@
         <scala.compat.version>2.12</scala.compat.version>
 
         <jena.version>4.2.0</jena.version>
-        <spring.version>2.3.7.RELEASE</spring.version>
+        <spring.version>2.5.12</spring.version>
         <spring.boot.version></spring.boot.version>
         <springfox.version>3.0.0</springfox.version>
         <scalatest.version>3.2.3</scalatest.version>
