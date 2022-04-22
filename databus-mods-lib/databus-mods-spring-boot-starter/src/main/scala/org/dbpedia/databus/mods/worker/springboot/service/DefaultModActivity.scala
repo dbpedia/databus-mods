@@ -1,7 +1,7 @@
 package org.dbpedia.databus.mods.worker.springboot.service
 
 import org.dbpedia.databus.mods.model.{ModActivity, ModActivityMetadata, ModActivityMetadataBuilder, ModActivityRequest}
-import org.graalvm.compiler.lir.CompositeValue.Component
+import org.springframework.stereotype.Component
 
 @Component
 class DefaultModActivity extends ModActivity {
