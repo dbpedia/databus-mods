@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface EnableModWorkerApi {
+
     String version() default  "";
 
     String apiEndpoint() default "";

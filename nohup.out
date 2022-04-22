@@ -1,0 +1,372 @@
+2022-04-04 16:50:53,550 [   3645]   WARN - l.NotificationGroupManagerImpl - Notification group CodeWithMe is already registered (group=com.intellij.notification.NotificationGroup@1a88a39a). Plugin descriptor: PluginDescriptor(name=Code With Me, id=com.jetbrains.codeWithMe, descriptorPath=plugin.xml, path=~/opt/idea-IC-213.6777.52/plugins/cwm-plugin, version=213.6777.52, package=null, isBundled=true) 
+Info  | RdCoroutineScope          | 18:JobScheduler FJ pool 6/11 | RdCoroutineHost overridden 
+2022-04-04 16:50:59,372 [   9467]   WARN - pl.local.NativeFileWatcherImpl - Watcher terminated with exit code 130 
+2022-04-04 16:50:59,618 [   9713]   WARN -      #org.jetbrains.idea.maven - Maven pulling logger was failed: 1 times 
+Info  | RdCoroutineScope          | 12:JobScheduler FJ pool 2/11 | RdCoroutineHost overridden 
+2022-04-04 16:51:13,046 [   3610]   WARN - l.NotificationGroupManagerImpl - Notification group CodeWithMe is already registered (group=com.intellij.notification.NotificationGroup@51917450). Plugin descriptor: PluginDescriptor(name=Code With Me, id=com.jetbrains.codeWithMe, descriptorPath=plugin.xml, path=~/opt/idea-IC-213.6777.52/plugins/cwm-plugin, version=213.6777.52, package=null, isBundled=true) 
+Initialize stderr logger, severity=LOGSEVERITY_DISABLE
+2022-04-04 16:51:20,324 [  10888]   WARN - ctionSystem.impl.ActionUpdater - 763 ms to grab EDT for OpenFileAction#update (com.intellij.ide.actions.OpenFileAction) 
+2022-04-04 16:51:22,743 [  13307]   WARN - ctionSystem.impl.ActionUpdater - 678 ms to grab EDT for CodeWithMeUsersAction#update (com.jetbrains.rd.platform.codeWithMe.toolbar.CodeWithMeUsersAction) 
+2022-04-04 16:51:25,312 [  15876]   WARN - ctionSystem.impl.ActionUpdater - 348 ms to grab EDT for TabListAction#update (com.intellij.ide.actions.TabListAction) 
+2022-04-04 16:51:25,312 [  15876]   WARN - ctionSystem.impl.ActionUpdater - 347 ms to grab EDT for CWMTelephonyGroup#update (com.jetbrains.rd.platform.codeWithMe.telephony.CWMTelephonyGroup) 
+2022-04-04 16:51:32,715 [  23279]   WARN - com.intellij.util.xmlb.Binding - no accessors for scala.collection.immutable.Seq 
+2022-04-04 16:51:33,181 [  23745]   WARN - ctionSystem.impl.ActionUpdater - 513 ms to grab EDT for UndoAction#update (com.intellij.ide.actions.UndoAction) 
+2022-04-04 16:51:33,183 [  23747]   WARN - ctionSystem.impl.ActionUpdater - 502 ms to grab EDT for OpenFileAction#update (com.intellij.ide.actions.OpenFileAction) 
+2022-04-04 16:51:38,398 [  28962]   WARN - ution.rmi.RemoteProcessSupport - SLF4J: Class path contains multiple SLF4J bindings. 
+2022-04-04 16:51:38,398 [  28962]   WARN - ution.rmi.RemoteProcessSupport - SLF4J: Found binding in [jar:file:/home/marvin/opt/idea-IC-213.6777.52/plugins/maven/lib/maven36-server.jar!/org/slf4j/impl/StaticLoggerBinder.class] 
+2022-04-04 16:51:38,399 [  28963]   WARN - ution.rmi.RemoteProcessSupport - SLF4J: Found binding in [jar:file:/home/marvin/opt/idea-IC-213.6777.52/lib/3rd-party-rt.jar!/org/slf4j/impl/StaticLoggerBinder.class] 
+2022-04-04 16:51:38,400 [  28964]   WARN - ution.rmi.RemoteProcessSupport - SLF4J: See http://www.slf4j.org/codes.html#multiple_bindings for an explanation. 
+2022-04-04 16:51:38,402 [  28966]   WARN - ution.rmi.RemoteProcessSupport - SLF4J: Actual binding is of type [org.jetbrains.idea.maven.server.Maven3WrapperSl4LoggerFactory] 
+2022-04-04 16:52:50,539 [ 101103]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-core::4.2.0, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-arq::4.2.0, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-shacl::4.2.0, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.github.pathikrit:better-files_2.12::3.9.1, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading info.picocli:picocli-spring-boot-starter::4.6.1, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading info.picocli:picocli::4.6.1, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-web::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-base::4.2.0, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-shaded-guava::4.2.0, was also in node: null 
+2022-04-04 16:52:50,540 [ 101104]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.commons:commons-csv::1.9.0, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading commons-io:commons-io::2.11.0, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.commons:commons-lang3::3.10, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading commons-codec:commons-codec::1.14, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.github.andrewoma.dexx:collection::0.7, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.jena:jena-iri::4.2.0, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading commons-cli:commons-cli::1.4, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.httpcomponents:httpclient::4.5.13, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.httpcomponents:httpcore::4.4.14, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.apicatalog:titanium-json-ld::1.1.0, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.glassfish:jakarta.json::2.0.1, was also in node: null 
+2022-04-04 16:52:50,541 [ 101105]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.core:jackson-core::2.11.3, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.core:jackson-databind::2.11.3, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.core:jackson-annotations::2.11.3, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.httpcomponents:httpclient-cache::4.5.13, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.thrift:libthrift::0.14.2, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-data-jpa::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,542 [ 101106]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-aop::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-aop::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-beans::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-core::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.aspectj:aspectjweaver::1.9.6, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-jdbc::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.zaxxer:HikariCP::3.4.5, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-jdbc::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,543 [ 101107]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-tx::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading jakarta.transaction:jakarta.transaction-api::1.3.3, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading jakarta.persistence:jakarta.persistence-api::2.2.3, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.hibernate:hibernate-core::5.4.25.Final, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.jboss.logging:jboss-logging::3.4.1.Final, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.javassist:javassist::3.27.0-GA, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading net.bytebuddy:byte-buddy::1.10.18, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.jboss:jandex::2.1.3.Final, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml:classmate::1.5.1, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.dom4j:dom4j::2.1.3, was also in node: null 
+2022-04-04 16:52:50,544 [ 101108]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.hibernate.common:hibernate-commons-annotations::5.1.2.Final, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.glassfish.jaxb:jaxb-runtime::2.3.3, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading jakarta.xml.bind:jakarta.xml.bind-api::2.3.3, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.glassfish.jaxb:txw2::2.3.3, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.sun.istack:istack-commons-runtime::3.0.11, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.sun.activation:jakarta.activation::1.2.2, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.data:spring-data-jpa::2.3.6.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.data:spring-data-commons::2.3.6.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-orm::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-context::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-expression::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-jcl::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-aspects::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-autoconfigure::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-logging::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,545 [ 101109]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading ch.qos.logback:logback-classic::1.2.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading ch.qos.logback:logback-core::1.2.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.yaml:snakeyaml::1.26, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-json::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-web::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.datatype:jackson-datatype-jdk8::2.11.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.datatype:jackson-datatype-jsr310::2.11.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.fasterxml.jackson.module:jackson-module-parameter-names::2.11.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-tomcat::2.3.7.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.tomcat.embed:tomcat-embed-core::9.0.41, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.glassfish:jakarta.el::3.0.3, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.tomcat.embed:tomcat-embed-websocket::9.0.41, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-webmvc::5.2.12.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-swagger2::3.0.0, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-spi::3.0.0, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-core::3.0.0, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.plugin:spring-plugin-core::2.0.0.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.plugin:spring-plugin-metadata::2.0.0.RELEASE, was also in node: null 
+2022-04-04 16:52:50,546 [ 101110]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-schema::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-swagger-common::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-spring-web::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-spring-webmvc::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.swagger:swagger-annotations::1.5.20, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.swagger:swagger-models::1.5.20, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.swagger.core.v3:swagger-annotations::2.1.2, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.github.classgraph:classgraph::4.8.83, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-spring-webflux::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.mapstruct:mapstruct::1.3.1.Final, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-swagger-ui::3.0.0, was also in node: null 
+2022-04-04 16:52:50,547 [ 101111]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-boot-starter::3.0.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-oas::3.0.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.swagger.core.v3:swagger-models::2.1.2, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-data-rest::3.0.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading io.springfox:springfox-bean-validators::3.0.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-lang:scala-library::2.12.11, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.derby:derby::10.14.2.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading javax.persistence:javax.persistence-api::2.2, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.openlink.virtuoso:virtjdbc4-1::7.1.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.openlink.virtuoso:virtjena3::7.1.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.google.guava:guava::30.1.1-jre, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.google.guava:failureaccess::1.0.1, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.google.guava:listenablefuture::9999.0-empty-to-avoid-conflict-with-guava, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.checkerframework:checker-qual::3.8.0, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.google.errorprone:error_prone_annotations::2.5.1, was also in node: null 
+2022-04-04 16:52:50,548 [ 101112]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.google.j2objc:j2objc-annotations::1.3, was also in node: null 
+2022-04-04 16:53:26,709 [ 137273]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.logging.log4j:log4j-to-slf4j::2.13.3, was also in node: null 
+2022-04-04 16:53:26,710 [ 137274]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.logging.log4j:log4j-api::2.13.3, was also in node: null 
+2022-04-04 16:53:27,352 [ 137916]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading net.alchim31.maven:scala-maven-plugin::4.5.4, was also in node: null 
+2022-04-04 16:53:29,864 [ 140428]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.codehaus.plexus:plexus-utils::3.4.0, was also in node: null 
+2022-04-04 16:53:29,865 [ 140429]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.codehaus.plexus:plexus-archiver::4.2.5, was also in node: null 
+2022-04-04 16:53:29,865 [ 140429]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.doxia:doxia-sink-api::1.10, was also in node: null 
+2022-04-04 16:53:29,865 [ 140429]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.doxia:doxia-logging-api::1.10, was also in node: null 
+2022-04-04 16:53:29,865 [ 140429]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.shared:maven-invoker::3.1.0, was also in node: null 
+2022-04-04 16:53:29,865 [ 140429]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-core_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-apiinfo_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:compiler-bridge_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-classpath_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.jline:jline::3.19.0, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:compiler-interface::1.5.7, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:util-interface::1.5.0, was also in node: null 
+2022-04-04 16:53:29,866 [ 140430]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-persist-core-assembly::1.5.7, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:io_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:util-logging_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:collections_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:util-position_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:core-macros_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.eed3si9n:sjson-new-core_2.13::0.9.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt.jline:jline::2.14.7-sbt-a1b0ffbb8f64bb820f4f84a0c07a0c0964507493, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.fusesource.jansi:jansi::2.1.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.jline:jline-terminal-jna::3.19.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.jline:jline-terminal-jansi::3.19.0, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.logging.log4j:log4j-api::2.11.2, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.logging.log4j:log4j-core::2.11.2, was also in node: null 
+2022-04-04 16:53:29,867 [ 140431]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.lmax:disruptor::3.4.2, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.eed3si9n:sjson-new-scalajson_2.13::0.9.1, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.eed3si9n:shaded-jawn-parser_2.13::0.9.1, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.eed3si9n:shaded-scalajson_2.13::1.0.0-M4, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-lang:scala-reflect::2.13.5, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:util-relation_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-persist_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:sbinary_2.13::0.5.1, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-lang.modules:scala-xml_2.13::1.2.0, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-compile-core_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:launcher-interface::1.1.3, was also in node: null 
+2022-04-04 16:53:29,868 [ 140432]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:util-control_2.13::1.5.0, was also in node: null 
+2022-04-04 16:53:29,869 [ 140433]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.scala-sbt:zinc-classfile_2.13::1.5.7, was also in node: null 
+2022-04-04 16:53:33,231 [ 143795]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.plugins:maven-resources-plugin::3.1.0, was also in node: null 
+2022-04-04 16:53:33,233 [ 143797]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.plugins:maven-jar-plugin::3.2.0, was also in node: null 
+2022-04-04 16:53:33,734 [ 144298]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.plugins:maven-compiler-plugin::3.8.1, was also in node: null 
+2022-04-04 16:53:33,734 [ 144298]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.plugins:maven-surefire-plugin::2.22.2, was also in node: null 
+2022-04-04 16:53:34,236 [ 144800]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.surefire:maven-surefire-common::2.22.2, was also in node: null 
+2022-04-04 16:53:34,237 [ 144801]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.surefire:surefire-api::2.22.2, was also in node: null 
+2022-04-04 16:53:34,237 [ 144801]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.surefire:surefire-logger-api::2.22.2, was also in node: null 
+2022-04-04 16:53:34,237 [ 144801]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apache.maven.surefire:surefire-booter::2.22.2, was also in node: null 
+2022-04-04 16:56:41,278 [ 331842]   WARN - com.intellij.util.xmlb.Binding - no accessors for org.jetbrains.idea.perforce.perforce.ConnectionId 
+2022-04-04 17:05:21,229 [ 851793]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-starter-test::2.3.7.RELEASE, was also in node: null 
+2022-04-04 17:05:21,229 [ 851793]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-test::2.3.7.RELEASE, was also in node: null 
+2022-04-04 17:05:21,229 [ 851793]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework.boot:spring-boot-test-autoconfigure::2.3.7.RELEASE, was also in node: null 
+2022-04-04 17:05:21,229 [ 851793]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.jayway.jsonpath:json-path::2.4.0, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading net.minidev:json-smart::2.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading net.minidev:accessors-smart::1.2, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.ow2.asm:asm::5.0.4, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading jakarta.activation:jakarta.activation-api::1.2.2, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.assertj:assertj-core::3.16.1, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.hamcrest:hamcrest::2.2, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.jupiter:junit-jupiter::5.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.jupiter:junit-jupiter-api::5.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.apiguardian:apiguardian-api::1.1.0, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.opentest4j:opentest4j::1.2.0, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.platform:junit-platform-commons::1.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.jupiter:junit-jupiter-params::5.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.jupiter:junit-jupiter-engine::5.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.platform:junit-platform-engine::1.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.junit.vintage:junit-vintage-engine::5.6.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading junit:junit::4.13.1, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.mockito:mockito-core::3.3.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading net.bytebuddy:byte-buddy-agent::1.10.18, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.objenesis:objenesis::2.6, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.mockito:mockito-junit-jupiter::3.3.3, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.skyscreamer:jsonassert::1.5.0, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.vaadin.external.google:android-json::0.0.20131108.vaadin1, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.springframework:spring-test::5.2.12.RELEASE, was also in node: null 
+2022-04-04 17:05:21,230 [ 851794]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.xmlunit:xmlunit-core::2.7.0, was also in node: null 
+2022-04-04 17:08:04,000 [1014564]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading org.spr:springfox-boot-starter-web::unknown, was also in node: null 
+2022-04-04 17:10:09,520 [1140084]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading com.github.jsonld-java:jsonld-java::0.13.3, was also in node: null 
+2022-04-04 17:10:09,525 [1140089]   WARN - lij.build.BuildTreeConsoleView - start event id collision found:Downloading commons-io:commons-io::unknown, was also in node: null 
+2022-04-04 17:12:32,111 [1282675]   WARN - ctionSystem.impl.ActionUpdater - 367 ms to call on EDT PreviousLessonAction#update (training.actions.PreviousLessonAction) - speed it up and/or implement UpdateInBackground. 
+2022-04-04 17:12:32,112 [1282676]   WARN - ctionSystem.impl.ActionUpdater - 359 ms to grab EDT for Left#update (com.intellij.ide.actions.ResizeToolWindowAction$Left) 
+2022-04-04 17:12:33,688 [1284252]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:27:07,153 [2157717]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:27:08,745 [2159309]   WARN - ompiler.CompileServerLauncher$ - Connection refused (Connection refused) 
+java.net.ConnectException: Connection refused (Connection refused)
+	at java.base/java.net.PlainSocketImpl.socketConnect(Native Method)
+	at java.base/java.net.AbstractPlainSocketImpl.doConnect(AbstractPlainSocketImpl.java:399)
+	at java.base/java.net.AbstractPlainSocketImpl.connectToAddress(AbstractPlainSocketImpl.java:242)
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:224)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.base/java.net.Socket.connect(Socket.java:609)
+	at org.jetbrains.jps.incremental.scala.remote.RemoteResourceOwner.send(RemoteResourceOwner.scala:39)
+	at org.jetbrains.jps.incremental.scala.remote.RemoteResourceOwner.send$(RemoteResourceOwner.scala:33)
+	at org.jetbrains.plugins.scala.compiler.RemoteServerRunner.send(RemoteServerRunner.scala:22)
+	at org.jetbrains.plugins.scala.compiler.CompileServerLauncher$.sendDummyRequest(CompileServerLauncher.scala:101)
+	at org.jetbrains.plugins.scala.compiler.CompileServerLauncher$.tryToStart(CompileServerLauncher.scala:83)
+	at org.jetbrains.plugins.scala.compiler.CompileServerLauncher$.ensureServerRunning(CompileServerLauncher.scala:410)
+	at org.jetbrains.plugins.scala.compiler.CompileServerLauncher$Listener.ensureCompileServerRunning(CompileServerLauncher.scala:69)
+	at org.jetbrains.plugins.scala.compiler.CompileServerLauncher$Listener.buildStarted(CompileServerLauncher.scala:55)
+	at com.intellij.util.messages.impl.MessageBusImpl.invokeMethod(MessageBusImpl.java:645)
+	at com.intellij.util.messages.impl.MessageBusImpl.invokeListener(MessageBusImpl.java:620)
+	at com.intellij.util.messages.impl.MessageBusImpl.deliverMessage(MessageBusImpl.java:417)
+	at com.intellij.util.messages.impl.MessageBusImpl.pumpWaitingBuses(MessageBusImpl.java:390)
+	at com.intellij.util.messages.impl.MessageBusImpl.pumpMessages(MessageBusImpl.java:372)
+	at com.intellij.util.messages.impl.MessageBusImpl.access$200(MessageBusImpl.java:33)
+	at com.intellij.util.messages.impl.MessageBusImpl$MessagePublisher.invoke(MessageBusImpl.java:179)
+	at com.sun.proxy.$Proxy260.buildStarted(Unknown Source)
+	at com.intellij.compiler.server.BuildManager$NotifyingMessageHandler.buildStarted(BuildManager.java:1797)
+	at com.intellij.compiler.server.DelegatingMessageHandler.buildStarted(DelegatingMessageHandler.java:18)
+	at com.intellij.compiler.server.BuildMessageDispatcher.messageReceived(BuildMessageDispatcher.java:165)
+	at com.intellij.compiler.server.BuildMessageDispatcher.messageReceived(BuildMessageDispatcher.java:26)
+	at org.jetbrains.io.SimpleChannelInboundHandlerAdapter.channelRead0(SimpleChannelInboundHandlerAdapter.java:21)
+	at io.netty.channel.SimpleChannelInboundHandler.channelRead(SimpleChannelInboundHandler.java:99)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:324)
+	at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:296)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:357)
+	at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:379)
+	at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:365)
+	at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919)
+	at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:722)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:658)
+	at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:584)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:496)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:986)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base/java.lang.Thread.run(Thread.java:829)
+2022-04-04 17:27:09,313 [2159877]   WARN - .scala.compiler.ProcessWatcher - [stderr] WARNING: A terminally deprecated method in java.lang.System has been called 
+2022-04-04 17:27:09,314 [2159878]   WARN - .scala.compiler.ProcessWatcher - [stderr] WARNING: System::setSecurityManager has been called by 
+2022-04-04 17:27:09,314 [2159878]   WARN - .scala.compiler.ProcessWatcher - [stderr] com.martiansoftware.nailgun.NGServer (file:/home/marvin/.local/share/JetBrains/IdeaIC2021.3/Scala/lib/jps/nailgun.jar) 
+2022-04-04 17:27:09,314 [2159878]   WARN - .scala.compiler.ProcessWatcher - [stderr] WARNING: Please consider reporting this to the maintainers of com.martiansoftware.nailgun.NGServer 
+2022-04-04 17:27:09,314 [2159878]   WARN - .scala.compiler.ProcessWatcher - [stderr] WARNING: System::setSecurityManager will be removed in a future release 
+2022-04-04 17:27:27,661 [2178225]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:29:33,631 [2304195]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:29:48,316 [2318880]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:30:53,507 [2384071]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:31:09,248 [2399812]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:33:30,456 [2541020]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:34:02,725 [2573289]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:44:34,858 [3205422]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:45:49,562 [3280126]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:46:41,351 [3331915]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:47:48,310 [3398874]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:47:57,447 [3408011]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:48:24,339 [3434903]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:48:24,339 [3434903]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:48:29,155 [3439719]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:48:31,368 [3441932]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:50:11,790 [3542354]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:50:28,416 [3558980]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:50:50,491 [3581055]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:51:28,144 [3618708]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:53:31,417 [3741981]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:54:55,377 [3825941]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:55:24,574 [3855138]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:55:39,568 [3870132]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:57:08,268 [3958832]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 17:57:10,349 [3960913]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:58:26,410 [4036974]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 17:59:12,963 [4083527]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:01:05,914 [4196478]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:01:55,485 [4246049]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:02:22,971 [4273535]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:03:13,838 [4324402]   WARN - vdmanager.AvdManagerConnection - No Android SDK Found 
+2022-04-04 18:03:16,283 [4326847]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:04:11,776 [4382340]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:04:31,213 [4401777]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 18:05:35,642 [4466206]   WARN - nCompilerReferenceIndexStorage - kotlin-data-container is not found 
+2022-04-04 22:28:43,981 [20254545]   WARN - .packagesearch.intellij-plugin - com.jetbrains.packagesearch.intellij.plugin.data.PackageSearchProjectService#knownRepositoriesFlow - Error while refreshing known repositories 
+java.net.UnknownHostException: package-search.services.jetbrains.com
+	at java.base/java.net.AbstractPlainSocketImpl.connect(AbstractPlainSocketImpl.java:220)
+	at java.base/java.net.SocksSocketImpl.connect(SocksSocketImpl.java:392)
+	at java.base/java.net.Socket.connect(Socket.java:609)
+	at java.base/sun.security.ssl.SSLSocketImpl.connect(SSLSocketImpl.java:299)
+	at java.base/sun.net.NetworkClient.doConnect(NetworkClient.java:177)
+	at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:474)
+	at java.base/sun.net.www.http.HttpClient.openServer(HttpClient.java:569)
+	at java.base/sun.net.www.protocol.https.HttpsClient.<init>(HttpsClient.java:266)
+	at java.base/sun.net.www.protocol.https.HttpsClient.New(HttpsClient.java:373)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.getNewHttpClient(AbstractDelegateHttpsURLConnection.java:203)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect0(HttpURLConnection.java:1232)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.plainConnect(HttpURLConnection.java:1081)
+	at java.base/sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:189)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream0(HttpURLConnection.java:1592)
+	at java.base/sun.net.www.protocol.http.HttpURLConnection.getInputStream(HttpURLConnection.java:1520)
+	at java.base/java.net.HttpURLConnection.getResponseCode(HttpURLConnection.java:527)
+	at java.base/sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(HttpsURLConnectionImpl.java:334)
+	at com.intellij.util.io.HttpRequests.openConnection(HttpRequests.java:608)
+	at com.intellij.util.io.HttpRequests$RequestImpl.getConnection(HttpRequests.java:359)
+	at com.jetbrains.packagesearch.intellij.plugin.api.http.HttpWrapperKt$requestString$$inlined$suspendCancellableCoroutine$lambda$2.process(HttpWrapper.kt:33)
+	at com.jetbrains.packagesearch.intellij.plugin.api.http.HttpWrapperKt$requestString$$inlined$suspendCancellableCoroutine$lambda$2.process(HttpWrapper.kt)
+	at com.intellij.util.io.HttpRequests.doProcess(HttpRequests.java:516)
+	at com.intellij.util.io.HttpRequests.process(HttpRequests.java:498)
+	at com.intellij.util.io.HttpRequests$RequestBuilderImpl.connect(HttpRequests.java:333)
+	at com.jetbrains.packagesearch.intellij.plugin.api.http.HttpWrapperKt.requestString(HttpWrapper.kt:32)
+	at com.jetbrains.packagesearch.intellij.plugin.api.PackageSearchApiClient.repositories(PackageSearchApiClient.kt:100)
+	at com.jetbrains.packagesearch.intellij.plugin.ui.toolwindow.models.ProjectDataProvider.fetchKnownRepositories(ProjectDataProvider.kt:22)
+	at com.jetbrains.packagesearch.intellij.plugin.data.PackageSearchProjectService$knownRepositoriesFlow$1.invokeSuspend(PackageSearchProjectService.kt:137)
+	at com.jetbrains.packagesearch.intellij.plugin.data.PackageSearchProjectService$knownRepositoriesFlow$1.invoke(PackageSearchProjectService.kt)
+	at com.jetbrains.packagesearch.intellij.plugin.util.CoroutinesUtilsKt$mapLatestTimedWithLoading$1$invokeSuspend$$inlined$measureTimedValue$lambda$1.invokeSuspend(CoroutinesUtils.kt:164)
+	at com.jetbrains.packagesearch.intellij.plugin.util.CoroutinesUtilsKt$mapLatestTimedWithLoading$1$invokeSuspend$$inlined$measureTimedValue$lambda$1.invoke(CoroutinesUtils.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startUndispatchedOrReturn(Undispatched.kt:89)
+	at kotlinx.coroutines.CoroutineScopeKt.coroutineScope(CoroutineScope.kt:264)
+	at com.jetbrains.packagesearch.intellij.plugin.util.CoroutinesUtilsKt$mapLatestTimedWithLoading$1.invokeSuspend(CoroutinesUtils.kt:164)
+	at com.jetbrains.packagesearch.intellij.plugin.util.CoroutinesUtilsKt$mapLatestTimedWithLoading$1.invoke(CoroutinesUtils.kt)
+	at kotlinx.coroutines.flow.FlowKt__MergeKt$mapLatest$1.invokeSuspend(Merge.kt:217)
+	at kotlinx.coroutines.flow.FlowKt__MergeKt$mapLatest$1.invoke(Merge.kt)
+	at kotlinx.coroutines.flow.FlowKt__MergeKt$mapLatest$1.invoke(Merge.kt)
+	at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3$1$2.invokeSuspend(Merge.kt:34)
+	at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3$1$2.invoke(Merge.kt)
+	at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3$1$2.invoke(Merge.kt)
+	at kotlinx.coroutines.intrinsics.UndispatchedKt.startCoroutineUndispatched(Undispatched.kt:55)
+	at kotlinx.coroutines.CoroutineStart.invoke(CoroutineStart.kt:112)
+	at kotlinx.coroutines.AbstractCoroutine.start(AbstractCoroutine.kt:126)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch(Builders.common.kt:56)
+	at kotlinx.coroutines.BuildersKt.launch(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__Builders_commonKt.launch$default(Builders.common.kt:47)
+	at kotlinx.coroutines.BuildersKt.launch$default(Unknown Source)
+	at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3$invokeSuspend$$inlined$collect$1.emit(Collect.kt:140)
+	at kotlinx.coroutines.flow.internal.SafeCollectorKt$emitFun$1.invoke(SafeCollector.kt:15)
+	at kotlinx.coroutines.flow.internal.SafeCollectorKt$emitFun$1.invoke(SafeCollector.kt:15)
+	at kotlinx.coroutines.flow.internal.SafeCollector.emit(SafeCollector.kt:77)
+	at kotlinx.coroutines.flow.internal.SafeCollector.emit(SafeCollector.kt:59)
+	at com.jetbrains.packagesearch.intellij.plugin.util.CoroutinesUtilsKt$timer$1.invokeSuspend(CoroutinesUtils.kt:97)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:106)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:571)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:750)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:678)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:665)
+2022-04-04 22:28:44,008 [20254572]   WARN -      #org.jetbrains.idea.maven - Maven pulling logger was failed: 1 times 
+2022-04-04 22:28:44,008 [20254572]   WARN -      #org.jetbrains.idea.maven - Maven pulling download listener was failed: 1 times 
+2022-04-04 22:28:44,033 [20254597]   WARN - gnostic.PerformanceWatcherImpl - UI was frozen for 430240ms, details saved to /home/marvin/.cache/JetBrains/IdeaIC2021.3/log/threadDumps-freeze-20220404-222843-IC-213.6777.52-430sec 

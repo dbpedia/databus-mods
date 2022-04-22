@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd "$(dirname $0)/../"
+
+java -jar databus-mods-lib/databus-mods-validate/target/*.jar $@
+

@@ -1,34 +1,41 @@
 package org.dbpedia.databus.mods.worker.springboot.service
 
-import java.util.concurrent._
-
-import org.dbpedia.databus.dataid.SingleFile
-import org.dbpedia.databus.mods.model.ModActivityMetadata
+import org.dbpedia.databus.mods.model.{ModActivity, ModActivityMetadata, ModActivityMetadataBuilder, ModActivityRequest}
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+
+import java.util.concurrent._
 
 @Service
 class ActivityService() {
 
-  private val executor = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue[Runnable]())
+  @Autowired
+  private var modActivity: ModActivity = _
+
+  private val executor = new ThreadPoolExecutor(
+    1, 1, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue[Runnable]())
 
   private val activities = new ConcurrentHashMap[String, Future[ModActivityMetadata]]()
 
   // GET Request current
   // TODO implement
-  def get(dbusSF: SingleFile): Option[Future[ModActivityMetadata]] = synchronized {
-    activities.get(dbusSF.path) match {
+  def get(id: String): Option[Future[ModActivityMetadata]] = synchronized {
+    val a = activities.get(id)
+    println(a)
+    a match {
       case null =>
         None
-      case mam =>
-        if(mam.isDone) activities.remove(dbusSF.path)
-        Some(mam)
+      case futureActivityMetadata: Future[ModActivityMetadata] =>
+        if (futureActivityMetadata.isDone) activities.remove(id)
+        Some(futureActivityMetadata)
     }
   }
 
-  def submit(activityPlan: ActivityPlan): Unit = synchronized {
-    val future: java.util.concurrent.Future[ModActivityMetadata] = executor.submit(activityPlan)
-    activities.put(activityPlan.dbusSF.path, future)
+  def submit(activityRequest: ModActivityRequest): Unit = synchronized {
+    val future: Future[ModActivityMetadata] = executor.submit(
+      new ActivityRunner(activityRequest, modActivity)
+    )
+    // TODO better put?
+    activities.put(activityRequest.id, future)
   }
-
-  // TODO putOrGet
 }

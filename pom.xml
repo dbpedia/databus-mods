@@ -15,6 +15,13 @@
     <name>Databus-Mods Parent</name>
     <packaging>pom</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+        </dependency>
+    </dependencies>
+
     <properties>
         <encoding>UTF-8</encoding>
         <file.encoding>UTF-8</file.encoding>
@@ -28,6 +35,7 @@
 
         <jena.version>4.2.0</jena.version>
         <spring.version>2.3.7.RELEASE</spring.version>
+        <spring.boot.version></spring.boot.version>
         <springfox.version>3.0.0</springfox.version>
         <scalatest.version>3.2.3</scalatest.version>
 
@@ -155,6 +163,7 @@
                 </exclusions>
             </dependency>
 
+
             <!-- API Doc -->
             <dependency>
                 <groupId>io.springfox</groupId>
@@ -208,6 +217,14 @@
                 </exclusions>
             </dependency>
 
+            <!-- cli -->
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli</artifactId>
+                <version>4.6.3</version>
+            </dependency>
+
+
             <!-- test -->
             <dependency>
                 <groupId>org.scalatest</groupId>
@@ -216,6 +233,11 @@
                 <scope>test</scope>
             </dependency>
 
+            <dependency>
+                <groupId>org.scala-lang</groupId>
+                <artifactId>scala-library</artifactId>
+                <version>${scala.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -251,8 +273,8 @@
     </repositories>
 
     <build>
-        <sourceDirectory>src/main/scala</sourceDirectory>
-        <testSourceDirectory>src/test/scala</testSourceDirectory>
+<!--        <sourceDirectory>src/main/scala</sourceDirectory>-->
+<!--        <testSourceDirectory>src/test/scala</testSourceDirectory>-->
         <plugins>
             <!--            <plugin>-->
             <!--                <artifactId>maven-deploy-plugin</artifactId>-->
@@ -263,16 +285,65 @@
             <!--                    <pomFile>pom.xml</pomFile>-->
             <!--                </configuration>-->
             <!--            </plugin>-->
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>4.5.4</version>
                 <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>testCompile</goal>
-                        </goals>
+<!--                    <execution>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                            <goal>testCompile</goal>-->
+<!--                        </goals>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                            <goal>testCompile</goal>-->
+<!--                        </goals>-->
+<!--                        <executions>-->
+                            <execution>
+                                <id>scala-compile-first</id>
+                                <phase>process-resources</phase>
+                                <goals>
+                                    <goal>add-source</goal>
+                                    <goal>compile</goal>
+                                </goals>
+                                <configuration>
+                                    <args>
+                                        <arg>-dependencyfile</arg>
+                                        <arg>${project.build.directory}/.scala_dependencies</arg>
+                                        <arg>-deprecation</arg>
+                                        <arg>-nobootcp</arg>
+                                        <arg>-feature</arg>
+                                    </args>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>scala-test-compile</id>
+                                <phase>process-test-resources</phase>
+                                <goals>
+                                    <goal>testCompile</goal>
+                                </goals>
+<!--                            </execution>-->
+<!--                        </executions>-->
                         <configuration>
                             <args>
                                 <!--<arg>-make:transitive</arg>-->
@@ -281,7 +352,7 @@
                                 <arg>-deprecation</arg>
                                 <arg>-nobootcp</arg>
                                 <arg>-feature</arg>
-                                <arg>-target:jvm-1.8</arg>
+<!--                                <arg>-target:jvm-1.8</arg>-->
                             </args>
                         </configuration>
                     </execution>
@@ -291,5 +362,44 @@
                 </configuration>
             </plugin>
         </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <version>${spring.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>net.alchim31.maven</groupId>
+                    <artifactId>scala-maven-plugin</artifactId>
+                    <version>4.6.1</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.1</version>
+                    <configuration>
+                        <source>${maven.compiler.source}</source>
+                        <target>${maven.compiler.target}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav</artifactId>
+                <version>1.0-beta-2</version>
+            </extension>
+        </extensions>
     </build>
+
+    <distributionManagement>
+        <repository>
+            <id>akswnc7</id>
+            <name>AKSW NC7 DAV</name>
+            <url>https://akswnc7.informatik.uni-leipzig.de/dav/m2/</url>
+            <uniqueVersion>false</uniqueVersion>
+        </repository>
+    </distributionManagement>
 </project>

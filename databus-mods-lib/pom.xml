@@ -17,8 +17,11 @@
 
     <modules>
         <module>databus-mods-core</module>
-<!--        <module>databus-mods-spring-boot-starter</module>-->
+        <module>databus-mods-spring-boot-starter</module>
+        <module>databus-mods-validate</module>
+        <module>databus-mods-dummy</module>
     </modules>
+
 
 <!--    <dependencies>-->
 
