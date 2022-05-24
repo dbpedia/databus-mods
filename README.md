@@ -1,4 +1,4 @@
-# Databus Mods [![Java 8 CI with Maven](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-8.yml/badge.svg)](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-8.yml) [![Java 11 CI with Maven](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-11.yml)
+# Databus Mods [![Java 11 CI with Maven](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-11.yml/badge.svg)](https://github.com/dbpedia/databus-mods/actions/workflows/maven-java-11.yml)
 Description and Demo for Databus Mods (incl/ Ontology and Process)
 Contains a working mod to check whether all download links are working.
 Please post ideas and endeavours to mod in the [DBpedia Forum](https://forum.dbpedia.org) 
