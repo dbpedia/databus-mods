@@ -34,8 +34,8 @@
         <scala.compat.version>2.12</scala.compat.version>
 
         <jena.version>4.2.0</jena.version>
-        <spring.version>2.3.7.RELEASE</spring.version>
-        <spring.boot.version></spring.boot.version>
+        <spring.version>5.3.18.</spring.version>
+        <spring.boot.version>2.6.6</spring.boot.version>
         <springfox.version>3.0.0</springfox.version>
         <scalatest.version>3.2.3</scalatest.version>
 
@@ -109,7 +109,7 @@
             <!-- https://mvnrepository.com/artifact/org.scala-lang.modules/scala-java8-compat -->
             <dependency>
                 <groupId>org.scala-lang.modules</groupId>
-                <artifactId>scala-java8-compat_2.11</artifactId>
+                <artifactId>scala-java8-compat_${scala.compat.version}</artifactId>
                 <version>0.9.1</version>
             </dependency>
 
@@ -125,7 +125,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring.boot.version}</version>
                 <!--            <exclusions>-->
                 <!--                <exclusion>-->
                 <!--                    <groupId>org.springframework.boot</groupId>-->
@@ -142,7 +142,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-thymeleaf</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring.boot.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.apache.logging.log4j</groupId>
@@ -153,7 +153,7 @@
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring.version}</version>
+                <version>${spring.boot.version}</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -222,6 +222,12 @@
                 <groupId>info.picocli</groupId>
                 <artifactId>picocli</artifactId>
                 <version>4.6.3</version>
+            </dependency>
+
+            <dependency>
+                <groupId>info.picocli</groupId>
+                <artifactId>picocli-spring-boot-starter</artifactId>
+                <version>4.6.1</version>
             </dependency>
 
 
@@ -380,7 +386,7 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
-                    <version>${spring.version}</version>
+                    <version>${spring.boot.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
