@@ -2,14 +2,12 @@ package org.dbpedia.databus_mods.mimetype
 
 import java.io.{BufferedInputStream, InputStream}
 import java.net.URI
-
-import org.apache.any23.mime.TikaMIMETypeDetector
 import org.apache.jena.query.{QueryExecutionFactory, QueryFactory}
 import org.apache.jena.rdf.model.Resource
 import org.apache.jena.riot.RDFDataMgr
-import org.dbpedia.databus_mods.lib.util.UriUtil
-import org.dbpedia.databus_mods.lib.worker.execution.{Extension, ModProcessor}
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver
+import org.apache.tika.config.TikaConfig
+import org.dbpedia.databus.mods.core.util.UriUtil
+import org.dbpedia.databus.mods.core.worker.execution.{Extension, ModProcessor}
 import org.springframework.stereotype.Component
 
 @Component
@@ -35,8 +33,8 @@ class MimeTypeProcessor extends ModProcessor {
 
   def checkMimeType(stream: InputStream, name: String = null): String = {
     //  Files.probeContentType(file.path)
-    val detector = new TikaMIMETypeDetector()
-    detector.guessMIMEType(name, stream,null).toString
+    val detector = TikaConfig.getDefaultConfig.getDetector
+    detector.detect(stream,null).toString
   }
 
     /**

@@ -18,8 +18,14 @@
     <dependencies>
         <dependency>
             <groupId>org.dbpedia.databus-mods</groupId>
-            <artifactId>databus-mods-lib</artifactId>
+            <artifactId>databus-mods-core</artifactId>
             <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.tika/tika-core -->
+        <dependency>
+            <groupId>org.apache.tika</groupId>
+            <artifactId>tika-core</artifactId>
+            <version>2.5.0</version>
         </dependency>
     </dependencies>
 </project>
