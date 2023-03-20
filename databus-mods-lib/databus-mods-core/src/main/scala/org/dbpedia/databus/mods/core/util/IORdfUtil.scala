@@ -20,12 +20,10 @@ object IORdfUtil {
     //    val executor: ExecutorService = Executors.newSingleThreadExecutor()
 
     // Create a runnable for our parser thread
-    val parser: Runnable = new Runnable() {
-      override def run() {
-        // Call the parsing process.
+    val parser: Runnable = new Runnable:
+      override def run(): Unit = {
         RDFParser.source(in).lang(Lang.NTRIPLES).base("http://base").parse(rdfStream)
       }
-    }
     // Start the parser on another thread
     new Thread(parser).start()
     pipedRDF

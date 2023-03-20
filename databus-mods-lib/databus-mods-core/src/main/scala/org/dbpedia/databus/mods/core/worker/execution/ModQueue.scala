@@ -2,7 +2,7 @@ package org.dbpedia.databus.mods.core.worker.execution
 
 import java.util
 import java.util.concurrent.LinkedBlockingQueue
-import scala.collection.JavaConversions._
+import scala.collection.JavaConverters._
 
 class ModQueue[T] extends LinkedBlockingQueue[T] {
 
@@ -29,6 +29,6 @@ class ModQueue[T] extends LinkedBlockingQueue[T] {
   }
 
   def getQueueIterator: util.Iterator[T] = {
-    this.toIterator
+    this.iterator()
   }
 }

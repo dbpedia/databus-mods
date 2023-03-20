@@ -16,6 +16,10 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala3-library_3</artifactId>
+        </dependency>
         <!-- JENA -->
         <dependency>
             <groupId>org.apache.jena</groupId>

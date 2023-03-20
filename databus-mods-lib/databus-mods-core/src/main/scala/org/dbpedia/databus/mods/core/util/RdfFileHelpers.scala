@@ -44,7 +44,7 @@ object RdfFileHelpers {
 
     // Create a runnable for our parser thread
     val parser: Runnable = new Runnable() {
-      override def run() {
+      override def run(): Unit = {
         // Call the parsing process.
         RDFParser.source(in).lang(Lang.NTRIPLES).base("http://base").parse(rdfStream)
       }

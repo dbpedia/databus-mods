@@ -28,6 +28,9 @@ class DummyDatabusModWorker {
 }
 
 
-object DummyDatabusModWorker extends App {
-  SpringApplication.run(classOf[DummyDatabusModWorker], args: _*)
+object DummyDatabusModWorker {
+
+  def main(args: Array[String]): Unit = {
+    SpringApplication.run(classOf[DummyDatabusModWorker], args: _*)
+  }
 }

@@ -18,7 +18,7 @@
     <dependencies>
         <dependency>
             <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
+            <artifactId>scala3-library_3</artifactId>
         </dependency>
     </dependencies>
 
@@ -30,8 +30,10 @@
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
 
-        <scala.version>2.12.15</scala.version>
-        <scala.compat.version>2.12</scala.compat.version>
+<!--        <scala.version>2.12.15</scala.version>-->
+<!--        <scala.compat.version>2.12</scala.compat.version>-->
+        <scala.version>3.2.2</scala.version>
+        <scala.compat.version>3</scala.compat.version>
 
         <jena.version>4.2.0</jena.version>
         <spring.version>5.3.18.</spring.version>
@@ -49,7 +51,7 @@
 
     <modules>
         <module>databus-mods-lib</module>
-        <module>databus-mods-server</module>
+<!--        <module>databus-mods-server</module>-->
     </modules>
 
     <dependencyManagement>
@@ -117,7 +119,7 @@
             <dependency>
                 <groupId>com.github.pathikrit</groupId>
                 <artifactId>better-files_${scala.compat.version}</artifactId>
-                <version>3.9.1</version>
+                <version>3.9.2</version>
             </dependency>
 
 
@@ -238,11 +240,19 @@
                 <scope>test</scope>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/org.scala-lang/scala3-library -->
             <dependency>
                 <groupId>org.scala-lang</groupId>
-                <artifactId>scala-library</artifactId>
-                <version>${scala.version}</version>
+                <artifactId>scala3-library_3</artifactId>
+                <version>3.2.2</version>
             </dependency>
+
+
+            <!--            <dependency>-->
+<!--                <groupId>org.scala-lang</groupId>-->
+<!--                <artifactId>scala-library</artifactId>-->
+<!--                <version>${scala.version}</version>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -278,8 +288,8 @@
     </repositories>
 
     <build>
-<!--        <sourceDirectory>src/main/scala</sourceDirectory>-->
-<!--        <testSourceDirectory>src/test/scala</testSourceDirectory>-->
+        <sourceDirectory>src/main/scala</sourceDirectory>
+        <testSourceDirectory>src/test/scala</testSourceDirectory>
         <plugins>
             <!--            <plugin>-->
             <!--                <artifactId>maven-deploy-plugin</artifactId>-->
@@ -390,7 +400,7 @@
                 <plugin>
                     <groupId>net.alchim31.maven</groupId>
                     <artifactId>scala-maven-plugin</artifactId>
-                    <version>4.6.1</version>
+                    <version>4.8.1</version>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

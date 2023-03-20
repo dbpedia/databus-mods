@@ -4,7 +4,7 @@ import org.dbpedia.databus.mods.core.worker.execution.{ModExecutor, ModProcessor
 import org.springframework.stereotype.Service
 
 import java.util.concurrent.Executors
-import scala.collection.JavaConversions._
+import collection.JavaConverters._
 
 @Service
 class ExecutionService(process: ModProcessor, fileService: FileService) {
@@ -22,7 +22,7 @@ class ExecutionService(process: ModProcessor, fileService: FileService) {
   }
 
   def waitingOrRunning(databusID: String): Boolean = synchronized {
-    (queue.getCacheIterator ++ queue.getQueueIterator)
+    (queue.getCacheIterator.asScala ++ queue.getQueueIterator.asScala)
       .exists(request => request.databusID == databusID)
   }
 }

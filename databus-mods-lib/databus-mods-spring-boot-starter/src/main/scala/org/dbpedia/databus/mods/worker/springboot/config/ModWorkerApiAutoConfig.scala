@@ -39,7 +39,7 @@ class ModWorkerApiAutoConfig() {
 
   @Bean
   def defString(context: ApplicationContext): WorkerApi = {
-    import scala.collection.JavaConverters._
+    import collection.JavaConverters._
 
     val annotation = context.getBeansWithAnnotation(classOf[EnableModWorkerApi]).keySet().asScala.map(
       key => context.findAnnotationOnBean(key, classOf[EnableModWorkerApi])
