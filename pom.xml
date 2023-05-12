@@ -416,7 +416,7 @@
         <repository>
             <id>akswnc7</id>
             <name>AKSW NC7 DAV</name>
-            <url>https://akswnc7.informatik.uni-leipzig.de/dav/m2/</url>
+            <url>https://akswnc7.informatik.uni-leipzig.de/dav/mavenrepository/</url>
             <uniqueVersion>false</uniqueVersion>
         </repository>
     </distributionManagement>

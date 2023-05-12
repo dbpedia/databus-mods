@@ -6,8 +6,8 @@ services:
   db:
     image: tenforce/virtuoso
     ports:
-      - "18890:8890"
-      - "11111:1111"
+      - "28890:8890"
+      - "21111:1111"
     environment:
       - DBA_PASSWORD=DasIstDasHausVomNikolaus
       - SPARQL_UPDATE=true

@@ -1,17 +1,15 @@
 package org.dbpedia.databus_mods.void
 
-import java.net.URI
-
 import org.apache.jena.graph.{NodeFactory, Triple}
 import org.apache.jena.rdf.model.{Model, ModelFactory, ResourceFactory}
 import org.apache.jena.riot.lang.PipedRDFIterator
-import org.apache.jena.vocabulary.RDF
-import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
-import org.dbpedia.databus_mods.lib.util.{IORdfUtil, UriUtil}
-import org.dbpedia.databus_mods.lib.worker.execution.{Extension, ModProcessor}
+import org.dbpedia.databus.mods.core.util.ModelUtil.ModelWrapper
+import org.dbpedia.databus.mods.core.util.{IORdfUtil, UriUtil}
+import org.dbpedia.databus.mods.core.worker.execution.{Extension, ModProcessor}
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
+import java.net.URI
 import scala.collection.mutable
 
 @Component
@@ -21,7 +19,7 @@ class VoidProcess extends ModProcessor {
 
   def process(ext: Extension): Unit = {
     ext.setType("https://mods.tools.dbpedia.org/ns/rdf#VoidMod")
-    ext.addPrefix("","https://mods.tools.dbpedia.org/ns/rdf#")
+    ext.addPrefix("", "https://mods.tools.dbpedia.org/ns/rdf#")
     val is = UriUtil.openStream(new URI(ext.source))
     val pipedRDF = IORdfUtil.toPipedRDF(is)
 
@@ -29,7 +27,7 @@ class VoidProcess extends ModProcessor {
       val (classPartitionMap, propertyPartitionMap) = calculateVoIDPartitions(pipedRDF)
       val voidModel = toJenaModel(classPartitionMap, propertyPartitionMap)
       voidModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
-      voidModel.write(ext.createModResult("rdfVoid.ttl","http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom"), "TURTLE")
+      voidModel.write(ext.createModResult("rdfVoid.ttl", "http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom"), "TURTLE")
     } else {
       log.warn(s"empty iterator")
     }
@@ -61,12 +59,10 @@ class VoidProcess extends ModProcessor {
   }
 
   def toJenaModel(
-                   classPartitionsMap: mutable.HashMap[String, Int],
-                   propertyPartitionsMap: mutable.HashMap[String, Int],
-                   uri: String = "")
+    classPartitionsMap: mutable.HashMap[String, Int],
+    propertyPartitionsMap: mutable.HashMap[String, Int],
+    uri: String = "")
   : Model = {
-
-    import org.dbpedia.databus_mods.lib.util.ModelUtil.ModelWrapper
 
     val model = ModelFactory.createDefaultModel()
 
