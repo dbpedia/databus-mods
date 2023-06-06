@@ -1,18 +1,14 @@
 package org.dbpedia.databus_mods.server.core.controller.admin
 
-import java.util
-import java.util.Optional
-
 import com.fasterxml.jackson.annotation.JsonView
-import io.swagger.annotations.ApiParam
-import javax.servlet.http.HttpServletResponse
-import org.dbpedia.databus_mods.server.core.config.Defaults
 import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskRepository}
 import org.dbpedia.databus_mods.server.core.service.TaskService
-import org.dbpedia.databus_mods.server.core.utils.DatabusQueryUtil
 import org.dbpedia.databus_mods.server.core.views.Views
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.web.bind.annotation.{RequestMapping, RequestMethod, RequestParam, RestController}
+
+import java.util
+import java.util.Optional
 
 
 @RestController
@@ -63,7 +59,6 @@ class TaskController {
   @JsonView(value = Array(classOf[Views.PublicTaskView]))
   @RequestMapping(value = Array("queues"), method = Array(RequestMethod.GET))
   def queues() = {
-    import scala.collection.JavaConverters._
     import scala.collection.JavaConversions._
     val map = new util.HashMap[String,util.Iterator[Task]]()
     taskService.getQueues.foreach(f => {

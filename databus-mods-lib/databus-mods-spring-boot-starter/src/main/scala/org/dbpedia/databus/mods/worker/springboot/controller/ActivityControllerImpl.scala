@@ -1,13 +1,11 @@
 package org.dbpedia.databus.mods.worker.springboot.controller
 
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.apache.commons.io.IOUtils
-import org.dbpedia.databus.dataid.Part
-import org.dbpedia.databus.mods.core.model.ModActivityRequest
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.GetMapping
 
 import java.nio.charset.StandardCharsets
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 class ActivityControllerImpl extends ActivityController {
 

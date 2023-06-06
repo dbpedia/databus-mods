@@ -25,19 +25,21 @@ class RDFVoidWorker {
     override def perform(request: ModActivityRequest, builder: ModActivityMetadataBuilder): ModActivityMetadata = {
       builder.withType("https://mods.tools.dbpedia.org/ns/rdf#VoidMod")
 
-//      val is = DataUtil.openStream(request.accessUri))
-      
-      val pipedRDF = RdfIO.toPipedRDF(is)
+      ModActivity
 
-      if (pipedRDF.hasNext) {
-        val (classPartitionMap, propertyPartitionMap) = RDFVoidUtil.calculateVoIDPartitions(pipedRDF)
-        val voidModel = RDFVoidUtil.toJenaModel(classPartitionMap, propertyPartitionMap)
-        voidModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
-        voidModel.write(builder.createModResult("rdfVoid.ttl", "http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom"), "TURTLE")
-      } else {
-        log.warn(s"empty iterator")
-      }
-      is.close()
+//      val is = DataUtil.openStream(request.accessUri))
+
+//      val pipedRDF = RdfIO.toPipedRDF(is)
+
+//      if (pipedRDF.hasNext) {
+//        val (classPartitionMap, propertyPartitionMap) = RDFVoidUtil.calculateVoIDPartitions(pipedRDF)
+//        val voidModel = RDFVoidUtil.toJenaModel(classPartitionMap, propertyPartitionMap)
+//        voidModel.setNsPrefix("void", "http://rdfs.org/ns/void#")
+//        voidModel.write(builder.createModResult("rdfVoid.ttl", "http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom"), "TURTLE")
+//      } else {
+//        log.warn(s"empty iterator")
+//      }
+//      is.close()
 
       builder.build()
     }

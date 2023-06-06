@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service
 
 import java.util.concurrent._
 
-@Service
+//@Service
 class ActivityExecutionService(modActivity: ModActivity) extends ActivityExecution(modActivity) {}

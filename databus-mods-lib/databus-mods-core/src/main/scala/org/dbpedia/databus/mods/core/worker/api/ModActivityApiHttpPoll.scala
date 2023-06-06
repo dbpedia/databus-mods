@@ -1,16 +1,13 @@
 package org.dbpedia.databus.mods.core.worker.api
 
-import org.apache.commons.io.IOUtils
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.apache.jena.riot.{Lang, RDFWriter, RIOT}
-import org.dbpedia.databus.dataid.Part
-import org.dbpedia.databus.mods.core.worker.exec.ActivityExecution
 import org.dbpedia.databus.mods.core.model.ModActivityRequest
+import org.dbpedia.databus.mods.core.worker.exec.ActivityExecution
 
 import java.net.URI
-import java.nio.charset.StandardCharsets
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.atomic.AtomicLong
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 /**
  * An Implementation of the Worker Mod Activity HTTP API

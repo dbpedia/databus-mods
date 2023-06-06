@@ -1,11 +1,11 @@
 package org.dbpedia.databus.mods.worker.dummy
 
+import jakarta.servlet.http.{HttpServletRequest, HttpServletResponse}
 import org.apache.commons.io.IOUtils
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.RequestMapping
 
 import java.nio.charset.StandardCharsets
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 @Controller
 class FakeDatabusImpl {

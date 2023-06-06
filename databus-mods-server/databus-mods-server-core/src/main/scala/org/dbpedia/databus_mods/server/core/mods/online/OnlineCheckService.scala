@@ -6,7 +6,6 @@ import java.sql.Timestamp
 import java.util
 import java.util.concurrent.atomic.{AtomicBoolean, AtomicInteger}
 import java.util.{Calendar, Date, GregorianCalendar, Optional}
-
 import org.apache.http.client.methods.HttpHead
 import org.apache.http.impl.client.HttpClientBuilder
 import org.dbpedia.databus_mods.server.core.persistence.DatabusFile
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
+import java.time.Instant
 import scala.collection.JavaConversions._
 
 @Service
@@ -35,11 +35,11 @@ class OnlineCheckService(databusFileService: DatabusFileService,
       "Error: rate <= 15000"
   }
 
-  def getNextExecutionTime(lastActualExecutionTime: Date): Date = {
+  def getNextExecutionTime(lastActualExecutionTime: Instant): Instant = {
     val nextExecutionTime = new GregorianCalendar
-    nextExecutionTime.setTime(if (lastActualExecutionTime != null) lastActualExecutionTime else new Date())
+    nextExecutionTime.setTime(if (lastActualExecutionTime != null)  Date.from(lastActualExecutionTime) else new Date())
     nextExecutionTime.add(Calendar.MILLISECOND, executionDelay.get()) //you can get the value from wherever you want
-    nextExecutionTime.getTime
+    nextExecutionTime.getTime.toInstant
   }
 
   private val updateLock = new AtomicBoolean(false)

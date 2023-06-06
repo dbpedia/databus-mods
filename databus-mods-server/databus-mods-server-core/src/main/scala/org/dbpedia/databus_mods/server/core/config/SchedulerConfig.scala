@@ -1,7 +1,6 @@
 package org.dbpedia.databus_mods.server.core.config
 
 import java.util.Date
-
 import org.dbpedia.databus_mods.server.core.mods.online.OnlineCheckService
 import org.dbpedia.databus_mods.server.core.service.TaskService
 import org.springframework.beans.factory.annotation.{Autowired, Value}
@@ -10,6 +9,8 @@ import org.springframework.scheduling.{Trigger, TriggerContext}
 import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
+
+import java.time.Instant
 
 @Configuration
 class SchedulerConfig(onlineCheckService: OnlineCheckService,
@@ -28,8 +29,8 @@ class SchedulerConfig(onlineCheckService: OnlineCheckService,
       }
     },
       new Trigger {
-        override def nextExecutionTime(triggerContext: TriggerContext): Date = {
-          onlineCheckService.getNextExecutionTime(triggerContext.lastActualExecutionTime())
+        override def nextExecution(triggerContext: TriggerContext): Instant = {
+          onlineCheckService.getNextExecutionTime(triggerContext.lastActualExecution())
         }
       })
     // task updates

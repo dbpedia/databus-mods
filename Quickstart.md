@@ -19,31 +19,26 @@
 ```
 
 ```scala
-import org.dbpedia.databus.mods.core.worker.execution.{Extension, ModProcessor}
+package org.dbpedia.databus.mods.worker.dummy
 
-import org.dbpedia.databus.mods.core.worker.AsyncWorker
+import org.dbpedia.databus.mods.core.model.{ModActivity, ModActivityMetadata, ModActivityMetadataBuilder, ModActivityRequest}
+import org.dbpedia.databus.mods.worker.springboot.{EnableModWorkerApi, ModWorkerApiProfile}
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
-import org.springframework.context.annotation.Import
+import org.springframework.context.annotation.Bean
+
+import scala.util.Random;
 
 @SpringBootApplication
-@Import(value = Array(classOf[AsyncWorker]))
-class Worker {
-  
-  @Component
-  class Process extends ModProcessor {
-    
-    def process(ext: Extension): Unit = {
-      ext.setType("https://mods.tools.dbpedia.org/ns/rdf#SomeMod")
-      ext.addPrefix("", "https://mods.tools.dbpedia.org/ns/rdf#")
-      val modResultFile = ext.createModResult("file.txt", "http://dataid.dbpedia.org/ns/mods#statisticsDerivedFrom")
-      // TODO write into file
+class DummyWorker {
+
+  @Bean
+  @EnableModWorkerApi(version = "1.0.0", profile = ModWorkerApiProfile.HttpPoll)
+  def getModActivity: ModActivity = new ModActivity {
+    override def perform(request: ModActivityRequest, builder: ModActivityMetadataBuilder): ModActivityMetadata = {
+      builder.withStatSummary((Random.nextInt(100)/100.0).toString).build()
     }
   }
-}
-
-object Worker extends App {
-  SpringApplication.run(classOf[Worker], args: _*)
 }
 ```
 

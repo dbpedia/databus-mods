@@ -1,12 +1,11 @@
 package org.dbpedia.databus.mods.worker.springboot.controller
 
+import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.io.IOUtils
 import org.dbpedia.databus.dataid.Part
 import org.dbpedia.databus.mods.worker.springboot.service.ResultService
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.{PathVariable, RequestMapping, RequestMethod}
-
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
 
 @Controller
 class BasicResultFileController(resultService: ResultService) {

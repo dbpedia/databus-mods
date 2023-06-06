@@ -1,44 +1,36 @@
 package org.dbpedia.databus_mods.server.core.controller
 
-import java.io.FileInputStream
-import java.net.URI
-import java.nio.charset.StandardCharsets
-import java.util.Optional
-
-import javax.servlet.ServletResponse
-import javax.servlet.http.{HttpServletRequest, HttpServletResponse}
+import jakarta.servlet.http.HttpServletResponse
 import org.apache.commons.io.IOUtils
-import org.dbpedia.databus_mods.server.core.config.Defaults
-import org.dbpedia.databus_mods.server.core.config.Defaults.{databusFile, modName}
-import org.dbpedia.databus_mods.server.core.controller.admin.ModController
 import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskStatus}
 import org.dbpedia.databus_mods.server.core.service.{DatabusFileService, FileService, ModService, TaskService}
 import org.dbpedia.databus_mods.server.core.utils.DatabusQueryUtil
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.web.bind.annotation.{PathVariable, RequestMapping, RequestMethod, RequestParam, RestController}
+import org.springframework.web.bind.annotation._
 import org.springframework.web.servlet.ModelAndView
 
-import scala.collection.JavaConverters._
-import scala.collection.JavaConverters._
-import scala.collection.JavaConversions._
+import java.io.FileInputStream
+import java.net.URI
+import java.nio.charset.StandardCharsets
+import java.util.Optional
 
 @RestController
 @RequestMapping(value = Array("main"))
 class MainController(
-                      @Value("${tmp.web.base.url}") webBaseUrl: String,
-                      @Value("${tmp.sparql.base.url}") sparqlBaseUrl: String,
-                      modService: ModService,
-                      taskService: TaskService,
-                      databusFileService: DatabusFileService,
-                      fileService: FileService) {
+  @Value("${tmp.web.base.url}") webBaseUrl: String,
+  @Value("${tmp.sparql.base.url}") sparqlBaseUrl: String,
+  modService: ModService,
+  taskService: TaskService,
+  databusFileService: DatabusFileService,
+  fileService: FileService) {
 
   private val log = LoggerFactory.getLogger(classOf[MainController])
 
   @RequestMapping(value = Array(), method = Array(RequestMethod.GET))
   def main() = {
 
-    val mods = fileService.listDir("","").sorted
+    val mods = fileService.listDir("", "").sorted
 
     val mav = new ModelAndView();
     mav.addObject("iter", mods);
@@ -56,11 +48,11 @@ class MainController(
       "{modName}/{publisher}/{group}/{artifact}/{version}/{file}/"
     ), method = Array(RequestMethod.GET))
   def mod(@PathVariable modName: String,
-          @PathVariable publisher: Optional[String],
-          @PathVariable group: Optional[String],
-          @PathVariable artifact: Optional[String],
-          @PathVariable version: Optional[String],
-          @PathVariable file: Optional[String]) = {
+    @PathVariable publisher: Optional[String],
+    @PathVariable group: Optional[String],
+    @PathVariable artifact: Optional[String],
+    @PathVariable version: Optional[String],
+    @PathVariable file: Optional[String]) = {
 
     val databusPath = List(publisher, group, artifact, version, file).filter(_.isPresent).map(_.get()).mkString("/")
 
@@ -123,10 +115,10 @@ class MainController(
     method = Array(RequestMethod.POST)
   )
   def create(@PathVariable modName: String,
-             @RequestParam databusID: String,
-             @RequestParam source: Optional[String],
-             @RequestParam sha256sum: Optional[String],
-             response: HttpServletResponse): Unit = {
+    @RequestParam databusID: String,
+    @RequestParam source: Optional[String],
+    @RequestParam sha256sum: Optional[String],
+    response: HttpServletResponse): Unit = {
 
     println("create")
     val possibleMod = modService.get(modName)
@@ -143,7 +135,7 @@ class MainController(
         databusFileService.add(databusFile)
         // TODO source in Task entry
         val task = new Task(databusFile, possibleMod.get())
-        taskService.add(task,true)
+        taskService.add(task, true)
         tmp(task, response)
       } else {
         // databus file not found
@@ -163,17 +155,17 @@ class MainController(
       "{modName}/{publisher}/{group}/{artifact}/{version}/{file}/{extension}"),
     method = Array(RequestMethod.GET, RequestMethod.DELETE))
   def get(@PathVariable modName: String,
-          @PathVariable publisher: String,
-          @PathVariable group: String,
-          @PathVariable artifact: String,
-          @PathVariable version: String,
-          @PathVariable file: String,
-          @PathVariable extension: String,
-          response: HttpServletResponse): Unit = {
+    @PathVariable publisher: String,
+    @PathVariable group: String,
+    @PathVariable artifact: String,
+    @PathVariable version: String,
+    @PathVariable file: String,
+    @PathVariable extension: String,
+    response: HttpServletResponse): Unit = {
 
     val databusPath = List(publisher, group, artifact, version, file).mkString("/")
     val possibleFile = fileService.getOrCreate(modName, databusPath, `extension`)
-    val possibleTask = taskService.get("https://databus.dbpedia.org/"+databusPath,modName)
+    val possibleTask = taskService.get("https://databus.dbpedia.org/" + databusPath, modName)
 
     if (possibleTask.isPresent && possibleTask.get().getState < 2) {
       response.setStatus(302)
@@ -194,12 +186,12 @@ class MainController(
   }
 
   private def tmp(task: Task,
-                  response: HttpServletResponse): Unit = {
-//
-//    if (task.getState == TaskStatus.Done.id) {
-//      println("TODO")
-//    }
-  if (task.getState == TaskStatus.Fail.id) {
+    response: HttpServletResponse): Unit = {
+    //
+    //    if (task.getState == TaskStatus.Done.id) {
+    //      println("TODO")
+    //    }
+    if (task.getState == TaskStatus.Fail.id) {
       response.setStatus(500)
       IOUtils.write("Internal Server Error", response.getOutputStream, StandardCharsets.UTF_8)
     } else {
