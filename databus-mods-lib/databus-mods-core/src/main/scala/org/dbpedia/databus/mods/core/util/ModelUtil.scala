@@ -1,8 +1,9 @@
 package org.dbpedia.databus.mods.core.util
 
 import java.net.{MalformedURLException, URL}
-
 import org.apache.jena.rdf.model.{Model, Resource, ResourceFactory}
+
+import scala.language.implicitConversions
 
 object ModelUtil {
 

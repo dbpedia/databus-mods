@@ -1,9 +1,9 @@
 package org.dbpedia.databus.mods.worker.springboot.config
 
-import org.dbpedia.databus.mods.model.ModActivity
-import org.dbpedia.databus.mods.worker.springboot.EnableModWorkerApi
-import org.dbpedia.databus.mods.worker.springboot.controller.{BasicWorkerApi, PollingBasedWorkerApi, WorkerApi, WorkerApiProfile}
-import org.dbpedia.databus.mods.worker.springboot.service.{ActivityService, DefaultModActivity, LocalResultService, ResultService}
+import org.dbpedia.databus.mods.core.model.{ModActivity, ModActivityMetadataBuilder, ModActivityRequest}
+import org.dbpedia.databus.mods.worker.springboot.controller.{ActivityController, ActivityControllerImpl, ActivityControllerPollImpl}
+import org.dbpedia.databus.mods.worker.springboot.service.{ActivityExecutionService, LocalResultService, ResultService}
+import org.dbpedia.databus.mods.worker.springboot.{EnableModWorkerApi, ModWorkerApiProfile}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
@@ -11,6 +11,8 @@ import org.springframework.context.ApplicationContext
 import org.springframework.context.annotation.{Bean, Configuration}
 
 import java.io.File
+import scala.collection.JavaConverters._
+
 
 @Configuration
 class ModWorkerApiAutoConfig() {
@@ -19,17 +21,20 @@ class ModWorkerApiAutoConfig() {
 
   @Bean
   @ConditionalOnMissingBean(Array(classOf[ModActivity]))
-  def getModActivity(): ModActivity = {
-    new DefaultModActivity()
+  def getModActivity: ModActivity = (request: ModActivityRequest, builder: ModActivityMetadataBuilder) => {
+    builder.withStatSummary("1.0").build()
   }
 
   @Bean
-  def getActivityService(): ActivityService = {
-    new ActivityService
+  def getActivityService(modActivity: ModActivity): ActivityExecutionService = {
+    new ActivityExecutionService(modActivity)
   }
 
   @Value("${result.dir:files}")
   var baseDirPath: String = _
+
+  @Value("${api.http.retry-after:0}")
+  var retryAfter: Int = 0
 
   @Bean
   @ConditionalOnMissingBean(Array(classOf[ResultService]))
@@ -38,8 +43,10 @@ class ModWorkerApiAutoConfig() {
   }
 
   @Bean
-  def defString(context: ApplicationContext): WorkerApi = {
-    import scala.collection.JavaConverters._
+  def getActivityController(
+    context: ApplicationContext,
+    activityExecutionService: ActivityExecutionService
+  ): ActivityController = {
 
     val annotation = context.getBeansWithAnnotation(classOf[EnableModWorkerApi]).keySet().asScala.map(
       key => context.findAnnotationOnBean(key, classOf[EnableModWorkerApi])
@@ -47,16 +54,11 @@ class ModWorkerApiAutoConfig() {
 
     if (annotation.isDefined) {
       annotation.get.profile() match {
-        case WorkerApiProfile.Basic => new BasicWorkerApi
-        case WorkerApiProfile.Polling => new PollingBasedWorkerApi(getActivityService())
+        case ModWorkerApiProfile.Http => new ActivityControllerImpl
+        case ModWorkerApiProfile.HttpPoll => new ActivityControllerPollImpl(activityExecutionService)
       }
     } else {
-      new BasicWorkerApi
+      new ActivityControllerImpl
     }
   }
-
-  //  @Bean
-  //  def workerApi(): WorkerApi = {
-  //    new PollingBasedWorkerApi(activityService())
-  //  }
 }

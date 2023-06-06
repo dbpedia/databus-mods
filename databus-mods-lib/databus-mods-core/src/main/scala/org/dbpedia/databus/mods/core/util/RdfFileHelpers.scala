@@ -5,6 +5,7 @@ import java.util.concurrent.{ExecutorService, Executors}
 import org.apache.jena.graph.Triple
 import org.apache.jena.riot.lang.{PipedRDFIterator, PipedRDFStream, PipedTriplesStream}
 import org.apache.jena.riot.{Lang, RDFParser}
+import org.dbpedia.databus.mods.core.io.Compression
 
 object RdfFileHelpers {
 
@@ -33,7 +34,7 @@ object RdfFileHelpers {
     //    iter
 
     val bis = new BufferedInputStream(new FileInputStream(file))
-    val in = Compressor.decompress(bis)
+    val in = Compression.decompress(bis)
 
     //    val lang = org.dbpedia.databus.util.MimeTypeGetter.getRDFFormat(item.downloadURL)
     val iter: PipedRDFIterator[Triple] = new PipedRDFIterator[Triple]()

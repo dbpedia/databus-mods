@@ -1,8 +1,10 @@
 package org.dbpedia.databus.mods.worker.dummy
 
-import org.dbpedia.databus.mods.model.ModActivity
-import org.dbpedia.databus.mods.worker.springboot.controller.{PollingBasedWorkerApi, WorkerApi}
-import org.dbpedia.databus.mods.worker.springboot.service.ActivityService
+import org.apache.commons.io.IOUtils
+import org.dbpedia.databus.mods.core.model.ModActivity
+import org.dbpedia.databus.mods.core.worker.api.ModActivityClientHttp
+import org.dbpedia.databus.mods.worker.springboot.controller.{ActivityController, ActivityControllerPollImpl}
+import org.dbpedia.databus.mods.worker.springboot.service.ActivityExecutionService
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -12,10 +14,12 @@ import org.springframework.boot.web.server.LocalServerPort
 import org.springframework.http.{HttpEntity, HttpHeaders, HttpMethod, MediaType, ResponseEntity}
 import org.springframework.util.LinkedMultiValueMap
 
+import java.net.URI
+
 
 @SpringBootTest(
   webEnvironment = WebEnvironment.RANDOM_PORT,
-  classes = Array(classOf[DummyDatabusModWorker])
+  classes = Array(classOf[DummyWorker])
 )
 class DummyTest {
 
@@ -23,13 +27,13 @@ class DummyTest {
   private var port: Integer = _
 
   @Autowired
-  private var restTemplate: TestRestTemplate = _
+  private var activityService: ActivityExecutionService = _
 
   @Autowired
-  private var activityService: ActivityService = _
+  private var workerApi: ActivityController = _
 
   @Autowired
-  private var workerApi: WorkerApi = _
+  private var databusImpl: FakeDatabusImpl = _
 
   @Autowired
   private var modActivity: ModActivity = _
@@ -38,41 +42,22 @@ class DummyTest {
   def contextLoad(): Unit = {
     assert(activityService != null)
     assert(workerApi != null)
-    assert(workerApi.isInstanceOf[PollingBasedWorkerApi])
+    assert(workerApi.isInstanceOf[ActivityControllerPollImpl])
     assert(modActivity != null);
+    assert(databusImpl != null)
   }
 
   @Test
   def test(): Unit = {
-    val path = "/vehnem/paper-supplements/demo-graph/20210301/demo-graph.nt.gz";
 
-    val headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+    val client = new ModActivityClientHttp
 
-    val map= new LinkedMultiValueMap[String,String]();
-    map.add("source", "file:///proc/cpuinfo");
+    val result = client.send(
+      new URI(s"http://localhost:${port}/activity"),
+      new URI(s"http://localhost:${port}/publisher/group/artifact/version/file"),
+      minDelay = 1000
+    )
 
-    var lastStatusCode = 0;
-
-    val rePOST = this.restTemplate.exchange(
-      "http://localhost:"+port+path+"/activity",
-      HttpMethod.POST,
-      new HttpEntity(map,headers),
-      classOf[String])
-
-    lastStatusCode = rePOST.getStatusCodeValue
-    assert(lastStatusCode == 202,"wrong status code response POST")
-
-    var body = "";
-    while (lastStatusCode == 202) {
-      val reGET = this.restTemplate.getForEntity(
-        "http://localhost:"+port+path+"/activity",
-        classOf[String])
-      lastStatusCode = reGET.getStatusCodeValue
-      body = reGET.getBody;
-    }
-
-    System.out.println(body);
-    assert(lastStatusCode == 200);
+    IOUtils.write(result.data,System.out)
   }
 }
