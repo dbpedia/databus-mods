@@ -9,7 +9,7 @@ import scala.collection.mutable.ArrayBuffer
 
 object DatabusQueryUtil {
 
-  def getUpdates(query: String): Array[DatabusFile] = {
+  def getUpdates(query: String, endpoint: String): Array[DatabusFile] = {
     val limit = 10000
     var responseSize, offset = 0
     val databusFilesBuffer = new ArrayBuffer[DatabusFile]()
@@ -18,7 +18,7 @@ object DatabusQueryUtil {
       responseSize = 0
       val sparql = QueryFactory.create(query + s" LIMIT $limit OFFSET $offset", Syntax.syntaxSPARQL_11)
       val queryExec = QueryExecutionFactory.sparqlService(
-        "https://databus.dbpedia.org/repo/sparql", sparql
+        endpoint, sparql
       )
       val resultSet = queryExec.execSelect()
 
@@ -40,7 +40,7 @@ object DatabusQueryUtil {
     databusFilesBuffer.toArray
   }
 
-  def queryDatabusFileByURI(uri: String): Option[DatabusFile] = {
+  def queryDatabusFileByURI(uri: String, endpoint: String): Option[DatabusFile] = {
     val query =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
          |PREFIX dct:    <http://purl.org/dc/terms/>
@@ -54,7 +54,7 @@ object DatabusQueryUtil {
          |  ?distribution dcat:downloadURL ?downloadURL .
          |}""".stripMargin
     val sparql = QueryFactory.create(query)
-    val queryExec = QueryExecutionFactory.sparqlService("https://databus.dbpedia.org/repo/sparql", sparql)
+    val queryExec = QueryExecutionFactory.sparqlService(endpoint, sparql)
     val resultSet = queryExec.execSelect()
     val possibleDatabusFile = if (resultSet.hasNext) {
       val qs = resultSet.next()

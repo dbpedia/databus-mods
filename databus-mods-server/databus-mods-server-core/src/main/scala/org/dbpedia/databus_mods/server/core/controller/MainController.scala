@@ -114,6 +114,10 @@ class MainController(
   //    }
   //  }
 
+
+  @Value("${mod-server.databus:https://databus.dbpedia.org/repo/sparql}")
+  var endpoint: String = "https://databus.dbpedia.org/repo/sparql"
+
   @RequestMapping(
     value = Array("{modName}"),
     method = Array(RequestMethod.POST)
@@ -129,7 +133,7 @@ class MainController(
     if (possibleMod.isPresent) {
 
       // TODO replace with DatabusFile constructure
-      val possibleDatabusFile = DatabusQueryUtil.queryDatabusFileByURI(databusID)
+      val possibleDatabusFile = DatabusQueryUtil.queryDatabusFileByURI(databusID, endpoint)
       if (possibleDatabusFile.isDefined) {
         // valid Databus file
         val databusFile = possibleDatabusFile.get

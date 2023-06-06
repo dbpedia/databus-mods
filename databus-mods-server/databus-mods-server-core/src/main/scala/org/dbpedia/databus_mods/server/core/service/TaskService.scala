@@ -1,10 +1,10 @@
 package org.dbpedia.databus_mods.server.core.service
 
 import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingDeque}
-
 import org.dbpedia.databus_mods.server.core.execution.TaskQueue
 import org.dbpedia.databus_mods.server.core.persistence._
 import org.dbpedia.databus_mods.server.core.utils.DatabusQueryUtil
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
 import scala.collection.JavaConversions._
@@ -16,6 +16,9 @@ class TaskService(taskRepository: TaskRepository,
 
   private val taskQueues = new ConcurrentHashMap[String, TaskQueue]()
   // TODO init part put all open in queue
+
+  @Value("${mod-server.databus:https://databus.dbpedia.org/repo/sparql}")
+  var endpoint: String = "https://databus.dbpedia.org/repo/sparql"
 
   def getQueue(key: String): TaskQueue = {
     taskQueues.getOrElseUpdate(key, new TaskQueue)
@@ -33,7 +36,7 @@ class TaskService(taskRepository: TaskRepository,
   def update(): Unit = {
     modRepository.findAll().foreach({
       mod =>
-        DatabusQueryUtil.getUpdates(mod.query).foreach({
+        DatabusQueryUtil.getUpdates(mod.query, endpoint).foreach({
           databusFile =>
             databusFileService.add(databusFile)
             val task = new Task(databusFile, mod)

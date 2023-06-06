@@ -1,19 +1,20 @@
 package org.dbpedia.databus_mods.server.core.service
 
-import java.io.{ByteArrayInputStream, FileOutputStream}
-import java.net.URI
 import org.apache.commons.io.IOUtils
 import org.apache.jena.rdf.model.{ModelFactory, ResourceFactory, SimpleSelector}
-import org.apache.jena.riot.system.{StreamRDFLib, StreamRDFWriter}
+import org.apache.jena.riot.system.StreamRDFLib
 import org.apache.jena.riot.{Lang, RDFDataMgr, RDFFormat}
-import org.dbpedia.databus.mods.core.util.UriUtil
+import org.dbpedia.databus.mods.core.io.DataUtil
+import org.dbpedia.databus.mods.core.util.ModActivityUtils
 import org.dbpedia.databus_mods.server.core.execution.MetadataExtension
+import org.dbpedia.databus_mods.server.core.io.rdf.RewriteIRIStreamWrapper
 import org.dbpedia.databus_mods.server.core.persistence.Task
 import org.slf4j.LoggerFactory
-import org.springframework.stereotype.Service
-import org.dbpedia.databus_mods.server.core.io.rdf.RewriteIRIStreamWrapper
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.stereotype.Service
 
+import java.io.{ByteArrayInputStream, FileOutputStream}
+import java.net.URI
 import scala.collection.JavaConversions._
 
 /**
@@ -79,7 +80,7 @@ class MetadataService(@Value("${mod-server.web-base}") baseURI: String,
     // each mod Result should be loaded into a separate graph?
     modResultURIs.foreach({
       modResultURI =>
-        val remoteIS = UriUtil.openStream(modResultURI)
+        val remoteIS = DataUtil.openStream(modResultURI)
         val modResultFileName = modResultURI.toString.split("/").last
         val modResultFile = fileService.getOrCreate(modName, databusPath, modResultFileName)
         val modResultOS = new FileOutputStream(modResultFile)

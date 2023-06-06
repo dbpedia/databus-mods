@@ -1,19 +1,20 @@
 package org.dbpedia.databus_mods.server.core.execution
 
-import java.net.URI
-import java.util.concurrent.{ConcurrentHashMap, LinkedBlockingDeque}
-import org.apache.http.client.utils.URIBuilder
-import org.dbpedia.databus.mods.core.util.ModApiUtil
+import org.dbpedia.databus.mods.core.worker.api.ModActivityClientHttp
 import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskStatus, Worker}
-import org.dbpedia.databus_mods.server.core.service.{MetadataService, TaskService}
+import org.dbpedia.databus_mods.server.core.service.TaskService
 import org.slf4j.LoggerFactory
 
+import java.net.URI
+
 class WorkerThread(worker: Worker,
-                   taskService: TaskService) extends Thread {
+  taskService: TaskService) extends Thread {
 
   private val log = LoggerFactory.getLogger(classOf[WorkerThread])
 
   private val shutdown = false
+
+  private val client = new ModActivityClientHttp
 
   override def run(): Unit = while (!shutdown) {
     val key = worker.getMod.name
@@ -24,15 +25,14 @@ class WorkerThread(worker: Worker,
     taskService.save(task)
     try {
       val df = task.getDatabusFile
-      val databusPath = new URI(df.getDataIdSingleFile).getPath.replaceFirst("^/","")
-      val uriBuilder = new URIBuilder(worker.getUrl)
-      uriBuilder.addParameter("databusID",df.getDataIdSingleFile)
-      uriBuilder.addParameter("sourceURI",df.getDownloadUrl)
-      val (rdfByteArray,baseURI) = ModApiUtil.submitAndPoll(uriBuilder.build(),1000)
-      if(! rdfByteArray.isEmpty) {
-        Singleton.metadataService.add(new MetadataExtension(task,rdfByteArray,baseURI))
+      val endpointUri = new URI(worker.getUrl)
+      val dataId = new URI(df.getDataIdSingleFile)
+
+      val activityResult = client.send(endpointUri, dataId, minDelay = 200)
+      if (!activityResult.data.isEmpty) {
+        Singleton.metadataService.add(new MetadataExtension(task, activityResult.data, new URI(activityResult.baseUri)))
       } else {
-        throw new Exception("No Metadata Found")
+        log.error("No Metadata Found")
       }
     } catch {
       case e: Exception =>
@@ -45,7 +45,7 @@ class WorkerThread(worker: Worker,
     }
   }
 
-  def saveResult(o: Object): Unit =  {
+  def saveResult(o: Object): Unit = {
 
   }
 
