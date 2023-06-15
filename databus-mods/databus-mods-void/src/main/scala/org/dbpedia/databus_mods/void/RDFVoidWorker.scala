@@ -25,7 +25,7 @@ class RDFVoidWorker {
     override def perform(request: ModActivityRequest, builder: ModActivityMetadataBuilder): ModActivityMetadata = {
       builder.withType("https://mods.tools.dbpedia.org/ns/rdf#VoidMod")
 
-      ModActivity
+//      ModActivity
 
 //      val is = DataUtil.openStream(request.accessUri))
 

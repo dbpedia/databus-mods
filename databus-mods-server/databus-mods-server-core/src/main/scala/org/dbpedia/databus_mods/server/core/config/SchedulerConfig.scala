@@ -1,21 +1,17 @@
 package org.dbpedia.databus_mods.server.core.config
 
-import java.util.Date
-import org.dbpedia.databus_mods.server.core.mods.online.OnlineCheckService
 import org.dbpedia.databus_mods.server.core.service.TaskService
-import org.springframework.beans.factory.annotation.{Autowired, Value}
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Configuration
-import org.springframework.scheduling.{Trigger, TriggerContext}
 import org.springframework.scheduling.annotation.SchedulingConfigurer
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler
 import org.springframework.scheduling.config.ScheduledTaskRegistrar
 
-import java.time.Instant
-
 @Configuration
-class SchedulerConfig(onlineCheckService: OnlineCheckService,
-                      taskService: TaskService,
-                      @Value("${mod-server.schedule.task-updates}") updateDelay: String) extends SchedulingConfigurer {
+class SchedulerConfig(
+  taskService: TaskService,
+  @Value("${mod-server.schedule.task-updates}") updateDelay: String
+) extends SchedulingConfigurer {
 
   override def configureTasks(taskRegistrar: ScheduledTaskRegistrar): Unit = {
     val taskScheduler = new ThreadPoolTaskScheduler();
@@ -23,18 +19,18 @@ class SchedulerConfig(onlineCheckService: OnlineCheckService,
     taskScheduler.initialize();
     taskRegistrar.setTaskScheduler(taskScheduler);
     // online-check
-    taskRegistrar.addTriggerTask(new Runnable {
-      override def run(): Unit = {
-        onlineCheckService.update()
-      }
-    },
-      new Trigger {
-        override def nextExecution(triggerContext: TriggerContext): Instant = {
-          onlineCheckService.getNextExecutionTime(triggerContext.lastActualExecution())
-        }
-      })
+    //    taskRegistrar.addTriggerTask(new Runnable {
+    //      override def run(): Unit = {
+    //        onlineCheckService.update()
+    //      }
+    //    },
+    //      new Trigger {
+    //        override def nextExecution(triggerContext: TriggerContext): Instant = {
+    //          onlineCheckService.getNextExecutionTime(triggerContext.lastActualExecution())
+    //        }
+    //      })
     // task updates
-    if(updateDelay.toInt > 0) {
+    if (updateDelay.toInt > 0) {
       taskRegistrar.addFixedDelayTask(new Runnable {
         override def run(): Unit = {
           taskService.update()
@@ -43,4 +39,5 @@ class SchedulerConfig(onlineCheckService: OnlineCheckService,
     }
   }
 }
+
 

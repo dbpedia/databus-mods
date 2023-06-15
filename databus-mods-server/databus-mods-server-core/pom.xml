@@ -84,12 +84,19 @@
             <artifactId>derby</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>2.1.214</version>
+            <scope>runtime</scope>
         </dependency>
+
+<!--        &lt;!&ndash; https://mvnrepository.com/artifact/javax.persistence/javax.persistence-api &ndash;&gt;-->
+<!--        <dependency>-->
+<!--            <groupId>javax.persistence</groupId>-->
+<!--            <artifactId>javax.persistence-api</artifactId>-->
+<!--            <version>2.2</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>com.openlink.virtuoso</groupId>

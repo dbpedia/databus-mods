@@ -3,7 +3,7 @@ package org.dbpedia.databus_mods.server.core.persistence
 import java.util
 
 import com.fasterxml.jackson.annotation.JsonView
-import javax.persistence._
+import jakarta.persistence._
 import org.dbpedia.databus_mods.server.core.views.Views
 
 import scala.annotation.meta.field
@@ -12,9 +12,10 @@ import scala.beans.BeanProperty
 @Entity
 @Table(
   name = "databus_file",
-  uniqueConstraints = Array(
-    // TODO
-    new UniqueConstraint(columnNames = Array("dataIdSingleFile", "checkSum"))))
+//  uniqueConstraints = Array(
+//    // TODO
+//    new UniqueConstraint(columnNames = Array("dataIdSingleFile", "checkSum")))
+)
 class DatabusFile
 (
   // TODO rename to databusFileID or fileID
@@ -44,7 +45,7 @@ class DatabusFile
 ) {
 
   @(Id@field)
-  @(GeneratedValue@field)(strategy = GenerationType.TABLE)
+  @(GeneratedValue@field)(strategy = GenerationType.IDENTITY)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _

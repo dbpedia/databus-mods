@@ -68,6 +68,12 @@
                 <version>10.14.2.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derbytools</artifactId>
+                <version>10.14.2.0</version><!--                <scope>runtime</scope>-->
+            </dependency>
+
             <!--
             BEGIN This is from mods pom.xml
             -->

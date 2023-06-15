@@ -1,9 +1,8 @@
 package org.dbpedia.databus_mods.server.core.persistence
 
 import com.fasterxml.jackson.annotation.JsonView
-import javax.persistence._
+import jakarta.persistence._
 import org.dbpedia.databus_mods.server.core.views.Views
-import org.hibernate.annotations.{Generated, GenerationTime}
 
 import scala.annotation.meta.field
 import scala.beans.BeanProperty
@@ -11,8 +10,9 @@ import scala.beans.BeanProperty
 @Entity
 @Table(
   name = "task",
-  uniqueConstraints = Array(
-    new UniqueConstraint(columnNames = Array("databusFile_id", "mod_id"))))
+//  uniqueConstraints = Array(
+//    new UniqueConstraint(columnNames = Array("databusFile_id", "mod_id")))
+)
 class Task
 (
   @(ManyToOne@field)(fetch = FetchType.EAGER)
@@ -22,11 +22,11 @@ class Task
   var databusFile: DatabusFile,
   @(ManyToOne@field)(fetch = FetchType.EAGER)
   @BeanProperty
-  @(JsonView@field)(value = Array(classOf[Views.PublicTaskView],classOf[Views.DatabusFileView]))
+  @(JsonView@field)(value = Array(classOf[Views.PublicTaskView], classOf[Views.DatabusFileView]))
   var mod: Mod
 ) {
   @Id
-  @GeneratedValue(strategy = GenerationType.TABLE)
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _
@@ -36,8 +36,8 @@ class Task
     databusFile.getTasks.remove(this)
   }
 
-//  @BeanProperty
-//  var uri: String = _
+  //  @BeanProperty
+  //  var uri: String = _
 
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
@@ -50,19 +50,19 @@ class Task
   var worker: Worker = _
 
   //  @Transient
-//  @Basic
-//  private var statusValue: Int = _
-//
-//  @PostLoad
-//  def fillTransient(): Unit = {
-//    this.state = Status(statusValue)
-//  }
+  //  @Basic
+  //  private var statusValue: Int = _
+  //
+  //  @PostLoad
+  //  def fillTransient(): Unit = {
+  //    this.state = Status(statusValue)
+  //  }
 
-//  @PrePersist
-//  def fillPersist(): Unit = {
-//    println(state)
-//    this.statusValue = state.id
-//  }
+  //  @PrePersist
+  //  def fillPersist(): Unit = {
+  //    println(state)
+  //    this.statusValue = state.id
+  //  }
 
   def copyOf(t: Task): Unit = {
     setId(t.getId)
@@ -75,11 +75,11 @@ class Task
     this(null, null)
   }
 
-    override def toString: String = {
-      s"""TASK#$id(
-         |  databusFile.id : ${databusFile.getId},
-         |  databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile},
-         |  mod.id : ${mod.getId},
-         |  mod.name : ${mod.getName})""".stripMargin
-    }
+  override def toString: String = {
+    s"""TASK#$id(
+       |  databusFile.id : ${databusFile.getId},
+       |  databusFile.dataIdSingleFile : ${databusFile.getDataIdSingleFile},
+       |  mod.id : ${mod.getId},
+       |  mod.name : ${mod.getName})""".stripMargin
+  }
 }

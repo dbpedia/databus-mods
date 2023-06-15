@@ -1,20 +1,20 @@
 package org.dbpedia.databus_mods.server.core.persistence
 
-import java.util
-
 import com.fasterxml.jackson.annotation.JsonView
-import javax.persistence._
+import jakarta.persistence._
 import org.dbpedia.databus_mods.server.core.views.Views
 import org.hibernate.annotations.{LazyCollection, LazyCollectionOption}
 
+import java.util
 import scala.annotation.meta.field
 import scala.beans.BeanProperty
 
 @Entity
 @Table(
   name = "mod",
-  uniqueConstraints = Array(
-    new UniqueConstraint(columnNames = Array("name"))))
+//  uniqueConstraints = Array(
+//    new UniqueConstraint(columnNames = Array("name")))
+)
 class Mod
 (
   @BeanProperty
@@ -26,7 +26,7 @@ class Mod
   var query: String
 ) {
   @(Id@field)
-  @(GeneratedValue@field)(strategy = GenerationType.TABLE)
+  @(GeneratedValue@field)(strategy = GenerationType.IDENTITY)
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   @BeanProperty
   var id: Long = _

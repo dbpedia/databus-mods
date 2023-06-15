@@ -11,13 +11,25 @@ import java.util.concurrent.Callable
 @Command(name = "httpapi", mixinStandardHelpOptions = true)
 class ApiHttpValidator extends Callable[Int] {
 
-  @Option(names = Array("-w", "--worker"), required = true)
+  @Option(
+    names = Array("-w", "--worker-endpoint"),
+    required = true,
+    description = Array("The URL of the mod worker API endpoint '.../activity'")
+  )
   var endpoint: String = _
 
-  @Option(names = Array("-i", "--dataId"), required = true)
+  @Option(
+    names = Array("-i", "--dataId"),
+    required = true,
+    description = Array("A (Databus) DataID IRI")
+  )
   var dataId: String = _
 
-  @Option(names = Array("--accessUri"), required = false)
+  @Option(
+    names = Array("--accessUri"),
+    required = false,
+    description = Array("An alternative access URI of the file referenced by the given DataID")
+  )
   var accessUri: String = _
 
   override def call(): Int = {

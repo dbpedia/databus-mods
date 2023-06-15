@@ -3,15 +3,16 @@ package org.dbpedia.databus_mods.server.core.persistence
 import com.fasterxml.jackson.annotation.JsonView
 import org.dbpedia.databus_mods.server.core.views.Views
 
-import javax.persistence._
+import jakarta.persistence._
 import scala.annotation.meta.field
 import scala.beans.BeanProperty
 
 @Entity
 @Table(
   name = "worker",
-  uniqueConstraints = Array(
-    new UniqueConstraint(columnNames = Array("url"))))
+//  uniqueConstraints = Array(
+//    new UniqueConstraint(columnNames = Array("url")))
+    )
 class Worker
 (
   @(ManyToOne@field)
@@ -24,7 +25,7 @@ class Worker
   var url: String
 ) {
   @(Id@field)
-  @(GeneratedValue@field)(strategy = GenerationType.TABLE)
+  @(GeneratedValue@field)(strategy = GenerationType.IDENTITY)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _

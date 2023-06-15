@@ -18,6 +18,7 @@ import scala.collection.JavaConverters._
 class ModWorkerApiAutoConfig() {
 
   private val log = LoggerFactory.getLogger(classOf[ModWorkerApiAutoConfig])
+  log.info("Starting Mod Worker Interface")
 
   @Bean
   @ConditionalOnMissingBean(Array(classOf[ModActivity]))
@@ -54,8 +55,12 @@ class ModWorkerApiAutoConfig() {
 
     if (annotation.isDefined) {
       annotation.get.profile() match {
-        case ModWorkerApiProfile.Http => new ActivityControllerImpl
-        case ModWorkerApiProfile.HttpPoll => new ActivityControllerPollImpl(activityExecutionService)
+        case ModWorkerApiProfile.Http =>
+          log.info("Started Mod Worker with Http API")
+          new ActivityControllerImpl
+        case ModWorkerApiProfile.HttpPoll =>
+          log.info("Started Mod Worker with HttpPoll API")
+          new ActivityControllerPollImpl(activityExecutionService)
       }
     } else {
       new ActivityControllerImpl
