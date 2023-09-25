@@ -8,9 +8,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 @Transactional
-trait DatabusFileRepository extends CrudRepository[DatabusFile,Long] {
+trait DataIdPartRepo extends CrudRepository[DataIdPart,Long] {
 
-  def findByDataIdSingleFileAndChecksum(dataIdSingleFile: String, checksum: String): Optional[DatabusFile]
-
-
+  def findByDataIdSingleFileAndChecksum(dataIdSingleFile: String, checksum: String): Optional[DataIdPart]
 }

@@ -26,3 +26,92 @@
 
 ## Pollingbased API Profile
 
+## Backlog
+- configuration of boot starter
+- documentation: server setup, boot starter, re-implementation of APIs
+- push metadata over master
+- refactor ActivityController to be a blank trait
+- create VocabFactory to help extend the existing Mod Vocab
+
+### Components
+
+- core: core components for master and workers
+    - model
+        - rdf generation
+        - validation
+    - worker client
+    -
+
+## Springboot Starter
+
+### Http Api Documentation
+
+---
+
+#### Execute Mod Activity at Worker
+
+<details>
+ <summary><code>POST</code> <code><b>/activity</b></code> <code>(execute activity at worker)</code></summary>
+
+##### Parameters
+
+> | name   |  type     | data type | description          |
+> |--------| -------|-----------|-----------|
+> | dataId |  required | string    | IRI of dataid entity | 
+> | accessIRI      |  optional | string    | access IRI of data | 
+
+##### Responses
+
+> | http code | content-type       | response                                  |
+> |--------------------|-------------------------------------------|-----------------------------------|
+> | `200`     | `text/turtle`      | `Descriptive Mod Activity Metadata`       |
+> | `202`     | `text/plain`       | `Descriptive Mod Activity Metadata`       |
+> | `400`     | `application/json` | `{"code":"400","message":"Bad Request"}`  |
+> | `500`     | `application/json` | `{"code":"500","message":"${Exception}"}` |
+
+##### Example cURL
+
+> ```javascript
+>  curl -X POST --data-urlencode "dataId=TODO" http://localhost:8080/
+> ```
+
+</details>
+
+---
+
+#### Polling Activity Status
+
+<details>
+ <summary><code>GET </code> <code><b>/${jobid}/activity</b></code> <code>(check activity at worker)</code></summary>
+
+##### Responses
+
+> | http code | content-type              | response                                                        |
+> |---------------------------|-----------------------------------------------------------------|-----------------------------------|
+> | `202`     | `text/turtle`             | `Configuration created successfully`                            |
+> | `202`     | `text/plain`              | `Configuration created successfully`                            |
+> | `400`     | `application/json`        | `{"code":"400","message":"Bad Request"}`                        |
+> | `500`     |`application/json` | `{"code":"500","message":"${Exception}"}`                       |
+
+##### Example cURL
+
+> ```javascript
+>  curl -X POST -H "Content-Type: application/json" --data @post.json http://localhost:8889/
+> ```
+
+</details>
+
+---
+
+## HTTP API Re-Implementation
+
+[//]: # (The master will follow redirects &#40;includes 202&#41; and obeys retry after headers)
+
+Requirements:
+- Post request that ends with /activity
+
+Pitfalls/Features:
+- Activity Deduplication
+- Resource Management: Delete local files after they have been accessed once
+- 
+
