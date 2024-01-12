@@ -3,16 +3,16 @@ package org.dbpedia.databus_mods.server.core.utils
 import java.sql.Timestamp
 
 import org.apache.jena.query.{QueryExecutionFactory, QueryFactory, Syntax}
-import org.dbpedia.databus_mods.server.core.persistence.DatabusFile
+import org.dbpedia.databus_mods.server.core.persistence.DataIdPart
 
 import scala.collection.mutable.ArrayBuffer
 
 object DatabusQueryUtil {
 
-  def getUpdates(query: String, endpoint: String): Array[DatabusFile] = {
+  def getUpdates(query: String, endpoint: String): Array[DataIdPart] = {
     val limit = 10000
     var responseSize, offset = 0
-    val databusFilesBuffer = new ArrayBuffer[DatabusFile]()
+    val databusFilesBuffer = new ArrayBuffer[DataIdPart]()
 
     do {
       responseSize = 0
@@ -26,7 +26,7 @@ object DatabusQueryUtil {
         responseSize += 1
         val qs = resultSet.next()
         databusFilesBuffer.append(
-          new DatabusFile(
+          new DataIdPart(
             qs.getResource("file").getURI,
             qs.getResource("downloadURL").getURI,
             qs.getLiteral("sha256sum").getLexicalForm,
@@ -40,7 +40,7 @@ object DatabusQueryUtil {
     databusFilesBuffer.toArray
   }
 
-  def queryDatabusFileByURI(uri: String, endpoint: String): Option[DatabusFile] = {
+  def queryDatabusFileByURI(uri: String, endpoint: String): Option[DataIdPart] = {
     val query =
       s"""PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
          |PREFIX dct:    <http://purl.org/dc/terms/>
@@ -58,7 +58,7 @@ object DatabusQueryUtil {
     val resultSet = queryExec.execSelect()
     val possibleDatabusFile = if (resultSet.hasNext) {
       val qs = resultSet.next()
-      Some(new DatabusFile(
+      Some(new DataIdPart(
         uri,
         qs.getResource("downloadURL").getURI,
         qs.getLiteral("sha256sum").getLexicalForm,

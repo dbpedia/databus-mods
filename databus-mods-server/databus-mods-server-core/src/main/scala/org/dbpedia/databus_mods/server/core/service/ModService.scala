@@ -3,7 +3,7 @@ package org.dbpedia.databus_mods.server.core.service
 import java.util
 import java.util.Optional
 
-import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker, WorkerRepository}
+import org.dbpedia.databus_mods.server.core.persistence.{Mod, ModRepository, Worker, WorkerRepo}
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -18,7 +18,7 @@ class ModService {
 
   @Autowired private var modRepository: ModRepository = _
 
-  @Autowired private var workerRepository: WorkerRepository = _
+  @Autowired private var workerRepository: WorkerRepo = _
 
   def add(m: Mod): Unit = {
     val mod = modRepository.findByName(m.name)

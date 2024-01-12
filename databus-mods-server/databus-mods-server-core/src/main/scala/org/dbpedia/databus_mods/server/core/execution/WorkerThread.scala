@@ -4,6 +4,7 @@ import org.dbpedia.databus.mods.core.worker.api.ModActivityClientHttp
 import org.dbpedia.databus_mods.server.core.persistence.{Task, TaskStatus, Worker}
 import org.dbpedia.databus_mods.server.core.service.TaskService
 import org.slf4j.LoggerFactory
+//import org.dbpedia.databus_mods.server.core.execution.Singleton
 
 import java.net.URI
 

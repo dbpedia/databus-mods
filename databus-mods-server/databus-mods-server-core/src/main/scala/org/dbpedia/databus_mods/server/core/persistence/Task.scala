@@ -19,7 +19,7 @@ class Task
   @(JoinColumn@field)(name = "databusFile_id")
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.PublicTaskView]))
-  var databusFile: DatabusFile,
+  var databusFile: DataIdPart,
   @(ManyToOne@field)(fetch = FetchType.EAGER)
   @BeanProperty
   @(JsonView@field)(value = Array(classOf[Views.PublicTaskView], classOf[Views.DatabusFileView]))
@@ -31,10 +31,10 @@ class Task
   @(JsonView@field)(value = Array(classOf[Views.Default]))
   var id: Long = _
 
-  @PreRemove
-  def removeTaskFromDatabusFile(): Unit = {
-    databusFile.getTasks.remove(this)
-  }
+//  @PreRemove
+//  def removeTaskFromDatabusFile(): Unit = {
+//    databusFile.getTasks.remove(this)
+//  }
 
   //  @BeanProperty
   //  var uri: String = _

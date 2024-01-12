@@ -4,14 +4,14 @@ import java.util
 import java.util.Optional
 
 import org.dbpedia.databus_mods.server.core.execution.{WorkerThreadExceptionHandler, WorkerThreadPool}
-import org.dbpedia.databus_mods.server.core.persistence.{Worker, WorkerRepository}
+import org.dbpedia.databus_mods.server.core.persistence.{Worker, WorkerRepo}
 import org.springframework.stereotype.Service
 
 
 @Service
 class WorkerService(
                      workerThreadPool: WorkerThreadPool,
-                     workerRepository: WorkerRepository, taskService: TaskService) {
+                     workerRepository: WorkerRepo, taskService: TaskService) {
 
   def add(w: Worker): Unit = {
     val worker = workerRepository.findByUrl(w.getUrl)

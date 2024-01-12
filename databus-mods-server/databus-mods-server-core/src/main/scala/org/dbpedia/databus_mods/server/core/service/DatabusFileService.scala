@@ -3,13 +3,13 @@ package org.dbpedia.databus_mods.server.core.service
 import java.util.Optional
 import java.util
 
-import org.dbpedia.databus_mods.server.core.persistence.{DatabusFile, DatabusFileRepository}
+import org.dbpedia.databus_mods.server.core.persistence.{DataIdPart, DataIdPartRepo}
 import org.springframework.stereotype.Service
 
 @Service
-class DatabusFileService(databusFileRepository: DatabusFileRepository) {
+class DatabusFileService(databusFileRepository: DataIdPartRepo) {
 
-  def add(df: DatabusFile): Unit = {
+  def add(df: DataIdPart): Unit = {
     val databusFile = databusFileRepository.findByDataIdSingleFileAndChecksum(df.dataIdSingleFile, df.checksum)
     if(databusFile.isPresent) {
       df.copyOf(databusFile.get)
@@ -18,11 +18,11 @@ class DatabusFileService(databusFileRepository: DatabusFileRepository) {
     }
   }
 
-  def get(databusId: String, checksum: String): Optional[DatabusFile] = {
+  def get(databusId: String, checksum: String): Optional[DataIdPart] = {
     databusFileRepository.findByDataIdSingleFileAndChecksum(databusId,checksum)
   }
 
-  def getAll: util.Iterator[DatabusFile] = {
+  def getAll: util.Iterator[DataIdPart] = {
     databusFileRepository.findAll().iterator()
   }
 }
