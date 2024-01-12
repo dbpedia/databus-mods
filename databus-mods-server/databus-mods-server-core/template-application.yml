@@ -1,0 +1,143 @@
+# spring server configuration
+server:
+  port: 9050
+
+# spring
+spring:
+  datasource:
+    driver-class-name: 'org.apache.derby.jdbc.EmbeddedDriver'
+    username: ''
+    password: ''
+    url: 'jdbc:derby:derby;create=true'
+  jpa:
+    hibernate:
+      ddl-auto: 'create-drop'
+#      ddl-auto: 'update'
+
+# configuration for the mod server
+mod-server:
+  # storage for the raw metadata documents
+  volume: ./target/repo
+  web-base: "https://mods.tools.dbpedia.org/main/"
+  triple-store:
+    db-url: 'jdbc:virtuoso://localhost:11111/charset=UTF-8/'
+    db-user: 'dba'
+    db-password: ''
+    endpoint: 'http://localhost:8890/sparql'
+  schedule:
+    online-period: 604800000
+    #    online-check: 5000
+    online-check: 86400000
+    #    task-updates: -1
+    task-updates: 3600000
+
+mods:
+  - name: 'filemetric'
+    accept: 'file'
+    select: 'file-metrics.ttl'
+    workers:
+      - 'http://localhost:14100-14114/modApi'
+    query: '
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+
+SELECT DISTINCT * WHERE {
+  {
+    SELECT ?issued ?file ?downloadURL ?sha256sum {
+      ?d dataid:file ?file .
+      ?d dataid:sha256sum ?sha256sum .
+      ?d dct:issued ?issued .
+      ?d dcat:downloadURL ?downloadURL .
+      {
+        SELECT ?file {
+          ?s a dataid:Dataset.
+          ?s dcat:distribution/dataid:file ?file
+        }
+      }
+    } ORDER BY DESC(?issued)
+  }
+}
+'
+  - name: 'mimetype'
+    accept: 'file'
+    select:
+    workers:
+      - 'http://localhost:14000-14004/modApi'
+    query: '
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+SELECT DISTINCT * WHERE {
+  {
+    SELECT ?issued ?file ?downloadURL ?sha256sum {
+      ?d dataid:file ?file .
+      ?d dataid:sha256sum ?sha256sum .
+      ?d dct:issued ?issued .
+      ?d dcat:downloadURL ?downloadURL .
+      {
+        SELECT ?file {
+          ?s a dataid:Dataset.
+          ?s dcat:distribution/dataid:file ?file
+        }
+      }
+    } ORDER BY DESC(?issued)
+  }
+}
+'
+  - name: 'void'
+    accepts:
+      - 'file'
+    selects:
+      - 'rdfVoid.ttl'
+    workers:
+      - 'http://localhost:14200-14214/modApi'
+    query: '
+    PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+    PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+    PREFIX dct:    <http://purl.org/dc/terms/>
+
+SELECT DISTINCT * WHERE {
+    {
+    SELECT ?issued ?file ?downloadURL ?sha256sum {
+            ?d dataid:file ?file .
+            ?d dataid:sha256sum ?sha256sum .
+            ?d dct:issued ?issued .
+            ?d dcat:downloadURL ?downloadURL .
+            {
+                      SELECT ?file {
+                                  ?s a dataid:Dataset.
+                                      ?s dataid:account <https://databus.dbpedia.org/jj-author> .
+                                          ?s dcat:distribution/dataid:file ?file
+                                            }
+                                            }
+                                          } ORDER BY DESC(?issued)
+                                      }
+                                      }
+
+'
+  - name: 'spo'
+    accept: 'file'
+    select:
+    workers:
+      - 'http://localhost:14300-14309/modApi'
+    query: '
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dataid: <http://dataid.dbpedia.org/ns/core#>
+PREFIX dct:    <http://purl.org/dc/terms/>
+PREFIX dcat:   <http://www.w3.org/ns/dcat#>
+PREFIX db:     <https://databus.dbpedia.org/>
+PREFIX dataid-cv: <http://dataid.dbpedia.org/ns/cv#>
+
+SELECT ?file ?issued ?sha256sum ?downloadURL WHERE {
+  ?s dct:publisher <https://yum-yab.github.io/webid.ttl#onto>.
+  ?s dataid:file ?file .
+  ?s dct:issued ?issued .
+  ?s dataid:sha256sum ?sha256sum .
+  ?s dcat:downloadURL ?downloadURL .
+  ?s dataid-cv:type ?cv .
+  FILTER( str(?cv) = "parsed")
+  ?s dataid:formatExtension ?ext .
+  FILTER( str(?ext) = "nt" )
+}
+'
